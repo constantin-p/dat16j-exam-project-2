@@ -1,0 +1,3 @@
+[submodule "src/main/java/assignment/db"]
+    path = src/main/java/assignment/db
+    url = git@bitbucket.org:constantin-p/mysql-store-db.git
