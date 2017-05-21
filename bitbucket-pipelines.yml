@@ -11,4 +11,5 @@ pipelines:
         script:
           - apt-get update
           - apt-get install -y openjfx
-          - mvn clean install
+          # - mvn clean install
+          - mvn -B verify # -B batch mode makes Maven less verbose
