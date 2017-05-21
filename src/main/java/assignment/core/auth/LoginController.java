@@ -1,4 +1,4 @@
-package assignment.core;
+package assignment.core.auth;
 
 public class LoginController {
 }

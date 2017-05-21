@@ -17,9 +17,9 @@ public class AccountType implements Storable {
         name = new SimpleStringProperty("");
     }
 
-    public AccountType(String id, String firstName) {
+    public AccountType(String id, String name) {
         this.id = id;
-        this.name = new SimpleStringProperty(firstName);
+        this.name = new SimpleStringProperty(name);
     }
 
     /*

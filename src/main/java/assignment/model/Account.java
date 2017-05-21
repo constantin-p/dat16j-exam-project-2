@@ -1,6 +1,7 @@
 package assignment.model;
 
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import store.db.Storable;
 
@@ -8,8 +9,18 @@ import java.util.HashMap;
 
 public class Account implements Storable {
 
+    private String id;
     private StringProperty username;
 
+    public Account() {
+        id = null;
+        username = new SimpleStringProperty("");
+    }
+
+    public Account(String id, String username) {
+        this.id = id;
+        this.username = new SimpleStringProperty(username);
+    }
 
     /*
      *  DB integration
@@ -23,11 +34,11 @@ public class Account implements Storable {
         return values;
     }
 
-    public static AccessType construct(HashMap<String, String> valuesMap) {
+    public static Account construct(HashMap<String, String> valuesMap) {
         String id = valuesMap.get("id");
-        String name = valuesMap.get("username");
+        String username = valuesMap.get("username");
 
-        return new AccessType(id, name);
+        return new Account(id, username);
     }
 
     /*

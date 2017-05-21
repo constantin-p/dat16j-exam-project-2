@@ -17,9 +17,9 @@ public class AccessType implements Storable {
         name = new SimpleStringProperty("");
     }
 
-    public AccessType(String id, String firstName) {
+    public AccessType(String id, String name) {
         this.id = id;
-        this.name = new SimpleStringProperty(firstName);
+        this.name = new SimpleStringProperty(name);
     }
 
     /*
