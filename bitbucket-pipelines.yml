@@ -1,16 +1,11 @@
-# This is a sample build configuration for Java – Maven.
-# Check our guides at https://confluence.atlassian.com/x/zd-5Mw for more examples.
-# Only use spaces to indent your .yml configuration.
-# -----
-# You can specify a custom docker image from Docker Hub as your build environment.
 image: maven:3.5.0-jdk-8
 
 pipelines:
   default:
     - step:
         script:
+          - git submodule update --init --recursive
           - apt-get update
           - apt-get install -y openjfx
-          - git submodule update --init --recursive
           # - mvn clean install
           - mvn -B verify # -B batch mode makes Maven less verbose
