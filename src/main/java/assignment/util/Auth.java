@@ -41,6 +41,7 @@ public class Auth {
         return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" + toHex(hash);
     }
 
+
     /*
      *  Helpers
      */
