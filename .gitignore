@@ -4,6 +4,8 @@
 *.iml
 *.iws
 
+!dat16j-exam-project-2.iml
+
 # macOS
 .DS_Store
 
