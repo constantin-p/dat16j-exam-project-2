@@ -1,6 +1,7 @@
 package assignment.core.modal;
 
 
+import assignment.model.Account;
 import assignment.model.AccountType;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -13,7 +14,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.List;
 
 public class ModalDispatcher {
 
@@ -37,7 +37,6 @@ public class ModalDispatcher {
                 : primaryStage;
 
         try {
-
             // Create the modal Stage
             Stage modalStage = new Stage();
             modalStage.initModality(Modality.WINDOW_MODAL);
@@ -69,6 +68,13 @@ public class ModalDispatcher {
         return (AccountType) showModal(stage, (Stage modalStage) -> {
             return new AccountTypeFormController(this, modalStage,
                      true, new AccountType());
+        });
+    }
+
+    public Account showCreateAccountModal(Stage stage) {
+        return (Account) showModal(stage, (Stage modalStage) -> {
+            return new AccountFormController(this, modalStage,
+                    true, new Account());
         });
     }
 }

@@ -1,5 +1,6 @@
 package assignment.core.modal;
 
+
 import assignment.model.AccessType;
 import assignment.model.AccountType;
 import assignment.util.ValidationHandler;
@@ -19,7 +20,6 @@ import javafx.stage.Stage;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
-
 
 public class AccountTypeFormController extends ModalBaseController {
     private static final String TITLE_CREATE = "account_type_create";

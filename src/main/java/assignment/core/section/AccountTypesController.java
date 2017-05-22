@@ -19,7 +19,7 @@ public class AccountTypesController implements UISection {
     private static final String TEMPLATE_PATH = "templates/section/account_types.fxml";
 
     private RootController rootController;
-    private ObservableList<AccountType> accountTypeMap = FXCollections.observableArrayList();
+    private ObservableList<AccountType> accountTypeList = FXCollections.observableArrayList();
 
     @FXML
     private TableView<AccountType> tableView;
@@ -35,7 +35,7 @@ public class AccountTypesController implements UISection {
 
         TableColumn permissionsColumn = new TableColumn("Permissions");
         tableView.getColumns().addAll(nameColumn, permissionsColumn);
-        tableView.setItems(accountTypeMap);
+        tableView.setItems(accountTypeList);
 
         // Set the permission columns
         List<AccessType> accessTypes = AccessType.dbGetAll();
@@ -50,8 +50,8 @@ public class AccountTypesController implements UISection {
 
         // Load account types
         List<AccountType> accountTypes = AccountType.dbGetAll();
-        accountTypes.forEach(accountType -> {
-            accountTypeMap.add(accountType);
+        accountTypes.forEach(entry -> {
+            accountTypeList.add(entry);
         });
     }
 
@@ -69,9 +69,9 @@ public class AccountTypesController implements UISection {
         if (accountType != null) {
             // Load account types
             List<AccountType> accountTypes = AccountType.dbGetAll();
-            accountTypeMap.clear();
+            accountTypeList.clear();
             accountTypes.forEach(entry -> {
-                accountTypeMap.add(entry);
+                accountTypeList.add(entry);
             });
         }
     }

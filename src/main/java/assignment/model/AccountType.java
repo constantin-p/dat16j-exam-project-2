@@ -63,6 +63,27 @@ public class AccountType implements Storable {
     /*
      *  DB helpers
      */
+    public static AccountType dbGet(String accountTypeID) {
+        if (accountTypeID == null) {
+            throw new IllegalArgumentException("Invalid ID given as argument! [null]");
+        }
+        HashMap<String, String> searchQuery = new HashMap<>();
+        searchQuery.put("id", accountTypeID);
+
+        try {
+            HashMap<String, String> returnValues = Database.getTable(AccountType.DB_TABLE_NAME)
+                    .get(Arrays.asList("id", "name"), searchQuery, new HashMap<>());
+
+            if (returnValues.get("id") != null && returnValues.get("id").equals(accountTypeID)) {
+                return AccountType.construct(returnValues);
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static AccountType dbGetByName(String name) {
         HashMap<String, String> searchQuery = new HashMap<>();
         searchQuery.put("name", name);
