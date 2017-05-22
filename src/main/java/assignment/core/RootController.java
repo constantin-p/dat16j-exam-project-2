@@ -1,6 +1,7 @@
 package assignment.core;
 
 
+import assignment.core.modal.ModalDispatcher;
 import assignment.core.section.AccountTypesController;
 import assignment.core.section.AccountsController;
 import assignment.core.section.UISection;
@@ -18,11 +19,13 @@ import java.util.concurrent.Callable;
 
 public class RootController {
 
+    public ModalDispatcher modalDispatcher;
+
     @FXML
     private TabPane tabPane;
 
     public RootController(Stage primaryStage) {
-
+        modalDispatcher = new ModalDispatcher(primaryStage);
     }
 
     @FXML
@@ -35,9 +38,9 @@ public class RootController {
 
         // TODO: Use Reflection, pass only the class
         loadSection(AccountsController.getAccessTypeName(),
-                () -> new AccountsController());
+                () -> new AccountsController(this));
         loadSection(AccountTypesController.getAccessTypeName(),
-                () -> new AccountTypesController());
+                () -> new AccountTypesController(this));
     }
 
     private void loadSection(String accessTypeName, Callable<UISection> createSectionControllerRequest) {

@@ -1,6 +1,7 @@
 package assignment.core.modal;
 
 
+import assignment.model.AccountType;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -12,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 public class ModalDispatcher {
 
@@ -29,22 +31,22 @@ public class ModalDispatcher {
         isModalOpen.bind(openModalsCount.isNotEqualTo(0));
     }
 
-    private Object showModal(Stage stage, ControllerCreator controllerCreator,
-                             String templatePath, String title) {
+    private Object showModal(Stage stage, ControllerCreator controllerCreator) {
         Stage parentStage = (stage != null)
                 ? stage
                 : primaryStage;
 
         try {
-            FXMLLoader loader = new FXMLLoader(classLoader.getResource(templatePath));
 
             // Create the modal Stage
             Stage modalStage = new Stage();
-            modalStage.setTitle(title);
             modalStage.initModality(Modality.WINDOW_MODAL);
             modalStage.initOwner(parentStage);
 
             ModalController controller = controllerCreator.create(modalStage);
+            modalStage.setTitle(controller.getTitle());
+
+            FXMLLoader loader = new FXMLLoader(classLoader.getResource(controller.getTemplatePath()));
             loader.setController(controller);
 
             Parent layout = loader.load();
@@ -61,5 +63,12 @@ public class ModalDispatcher {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public AccountType showCreateAccountTypeModal(Stage stage) {
+        return (AccountType) showModal(stage, (Stage modalStage) -> {
+            return new AccountTypeFormController(this, modalStage,
+                     true, new AccountType());
+        });
     }
 }

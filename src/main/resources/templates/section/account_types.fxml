@@ -27,6 +27,7 @@
             <children>
                 <Button
                     text="Add account type"
+                    onAction="#handleAddAction"
                     mnemonicParsing="false" />
             </children>
             <padding>

@@ -1,6 +1,7 @@
 package assignment.model;
 
 
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import store.db.Database;
@@ -14,7 +15,7 @@ import java.util.List;
 public class AccessType implements Storable {
     private static final String DB_TABLE_NAME = "accesstypes";
 
-    private String id;
+    public String id;
     public StringProperty name;
 
     public AccessType() {
@@ -49,6 +50,27 @@ public class AccessType implements Storable {
     /*
      *  DB helpers
      */
+    public static AccessType dbGet(String accessTypeID) {
+        if (accessTypeID == null) {
+            throw new IllegalArgumentException("Invalid ID given as argument! [null]");
+        }
+        HashMap<String, String> searchQuery = new HashMap<>();
+        searchQuery.put("id", accessTypeID);
+
+        try {
+            HashMap<String, String> returnValues = Database.getTable(AccessType.DB_TABLE_NAME)
+                    .get(Arrays.asList("id", "name"), searchQuery, new HashMap<>());
+
+            if (returnValues.get("id") != null && returnValues.get("id").equals(accessTypeID)) {
+                return AccessType.construct(returnValues);
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static List<AccessType> dbGetAll() {
         List<AccessType> result = new ArrayList<>();
 
@@ -65,5 +87,7 @@ public class AccessType implements Storable {
             return result;
         }
     }
+
+
 
 }
