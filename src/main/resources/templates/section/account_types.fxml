@@ -9,7 +9,15 @@
 <VBox xmlns:fx="http://javafx.com/fxml">
     <children>
         <TableView fx:id="tableView"
-               VBox.vgrow="ALWAYS" />
+               VBox.vgrow="ALWAYS">
+            <columns>
+                <!-- Table columns -->
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+        </TableView>
+
         <HBox
             styleClass="action-bar"
             alignment="CENTER_RIGHT"

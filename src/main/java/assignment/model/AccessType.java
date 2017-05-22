@@ -3,14 +3,19 @@ package assignment.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import store.db.Database;
 import store.db.Storable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class AccessType implements Storable {
+    private static final String DB_TABLE_NAME = "accesstypes";
 
     private String id;
-    private StringProperty name;
+    public StringProperty name;
 
     public AccessType() {
         id = null;
@@ -44,4 +49,21 @@ public class AccessType implements Storable {
     /*
      *  DB helpers
      */
+    public static List<AccessType> dbGetAll() {
+        List<AccessType> result = new ArrayList<>();
+
+        try {
+            List<HashMap<String, String>> returnList = Database.getTable(AccessType.DB_TABLE_NAME)
+                    .getAll(Arrays.asList("id", "name"), null, null);
+
+            returnList.forEach((HashMap<String, String> valuesMap) -> {
+                result.add(AccessType.construct(valuesMap));
+            });
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result;
+        }
+    }
+
 }

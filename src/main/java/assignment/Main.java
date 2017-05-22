@@ -2,11 +2,13 @@ package assignment;
 
 
 import assignment.core.RootController;
+import assignment.util.Config;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import store.db.Database;
 
 import java.io.IOException;
 
@@ -22,6 +24,9 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
 
         // TODO: Catch unhandled errors and display the crash
+        Config.loadConfig("store", "config/store_secret.properties");
+        Database.configInstance(Config.getConfig("store"));
+
         initRootLayout();
     }
 
