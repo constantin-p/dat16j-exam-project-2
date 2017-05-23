@@ -6,7 +6,7 @@ import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-public class Auth {
+public class Authentication {
     private static final int PBKDF2_ITERATIONS = 1000;
 
     /*
@@ -40,6 +40,7 @@ public class Auth {
         byte[] hash = skf.generateSecret(spec).getEncoded();
         return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" + toHex(hash);
     }
+
 
     /*
      *  Helpers

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+    stylesheets="@../css/main.css">
+    <children>
+        <MenuBar
+            useSystemMenuBar="true"
+            VBox.vgrow="NEVER">
+            <menus>
+                <Menu
+                    text="File"
+                    mnemonicParsing="false">
+                    <items>
+                    </items>
+                </Menu>
+                <Menu
+                    text="Edit"
+                    mnemonicParsing="false">
+                    <items>
+                    </items>
+                </Menu>
+                <Menu
+                    text="Account"
+                    mnemonicParsing="false">
+                    <items>
+                        <MenuItem
+                            text="username"
+                            disable="true"
+                            mnemonicParsing="false" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <TabPane fx:id="tabPane"
+                 tabClosingPolicy="UNAVAILABLE"
+                 VBox.vgrow="ALWAYS">
+            <tabs>
+                <!-- Tabs -->
+            </tabs>
+        </TabPane>
+        <HBox
+            styleClass="status-bar"
+            alignment="CENTER_RIGHT"
+            minHeight="22.0"
+            maxHeight="22.0"
+            VBox.vgrow="NEVER">
+            <children>
+                <Label fx:id="statusLabel"
+                       text="Connection status: OK"/>
+            </children>
+            <padding>
+                <Insets
+                    left="15.0"
+                    right="15.0" />
+            </padding>
+        </HBox>
+    </children>
+</VBox>

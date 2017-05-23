@@ -29,6 +29,10 @@
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         
         <RowConstraints prefHeight="28.0" minHeight="28.0" vgrow="ALWAYS" />
         <RowConstraints maxHeight="15.0" minHeight="15.0" vgrow="NEVER" />
@@ -67,15 +71,45 @@
         <PasswordField fx:id="passwordPasswordField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="5" />
+        <Label
+            text="Repeat password:"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="6"
+            GridPane.valignment="BOTTOM">
+            <padding>
+                <Insets
+                    bottom="2.0" />
+            </padding>
+        </Label>
+        <PasswordField fx:id="repeatPasswordPasswordField"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="7" />
+
+        <Button fx:id="selectAccountTypeButton"
+            text="Select type"
+            onAction="#handleSelectAccountTypeAction"
+            maxWidth="1.7976931348623157E308"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="9" />
+       
         <HBox
             alignment="CENTER_RIGHT"
             GridPane.columnIndex="1"
-            GridPane.rowIndex="8">
+            GridPane.rowIndex="12">
             <children>
-                <Button fx:id="loginButton"
-                    text="Login"
+                <Button
+                    text="Cancel"
+                    cancelButton="true"
+                    onAction="#handleCancelAction">
+                    <HBox.margin>
+                        <Insets
+                            right="15.0" />
+                    </HBox.margin>
+                </Button>
+                <Button fx:id="submitButton"
+                    text="OK"
                     defaultButton="true"
-                    onAction="#handleLoginAction" />
+                    onAction="#handleOKAction" />
             </children>
             <padding>
                 <Insets

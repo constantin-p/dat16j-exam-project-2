@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TableView?>
+
+<VBox xmlns:fx="http://javafx.com/fxml">
+    <children>
+        <TableView fx:id="tableView"
+               VBox.vgrow="ALWAYS">
+            <columns>
+                <!-- Table columns -->
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+        </TableView>
+
+        <HBox
+            styleClass="action-bar"
+            alignment="CENTER_RIGHT"
+            minHeight="34.0"
+            maxHeight="34.0"
+            VBox.vgrow="NEVER">
+            <children>
+                <Button
+                    text="Add maintenance job"
+                    defaultButton="true" />
+            </children>
+            <padding>
+                <Insets
+                    left="15.0"
+                    right="15.0" />
+            </padding>
+        </HBox>
+    </children>
+</VBox>
