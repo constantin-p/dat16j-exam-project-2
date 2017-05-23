@@ -42,7 +42,7 @@ public class AccountTypesController implements UISection {
         accessTypes.forEach(accessType -> {
             TableColumn<AccountType, Boolean> accessTypeColumn = new TableColumn(accessType.name.getValue());
             accessTypeColumn.setCellValueFactory(cellData ->
-                    new SimpleBooleanProperty(hasAccess(cellData.getValue(), accessType)));
+                    new SimpleBooleanProperty(cellData.getValue().hasAccess(accessType)));
             accessTypeColumn.setCellFactory(column -> new CheckBoxTableCell());
 
             permissionsColumn.getColumns().add(accessTypeColumn);

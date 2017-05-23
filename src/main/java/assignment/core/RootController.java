@@ -3,9 +3,7 @@ package assignment.core;
 
 import assignment.core.auth.AuthManager;
 import assignment.core.modal.ModalDispatcher;
-import assignment.core.section.AccountTypesController;
-import assignment.core.section.AccountsController;
-import assignment.core.section.UISection;
+import assignment.core.section.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -20,12 +18,14 @@ import java.util.concurrent.Callable;
 
 public class RootController {
 
+    private AuthManager authManager;
     public ModalDispatcher modalDispatcher;
 
     @FXML
     private TabPane tabPane;
 
     public RootController(AuthManager authManager, Stage primaryStage) {
+        this.authManager = authManager;
         modalDispatcher = new ModalDispatcher(primaryStage);
     }
 
@@ -42,11 +42,27 @@ public class RootController {
                 () -> new AccountsController(this));
         loadSection(AccountTypesController.getAccessTypeName(),
                 () -> new AccountTypesController(this));
+        loadSection(CleaningController.getAccessTypeName(),
+                () -> new CleaningController(this));
+        loadSection(ClientsController.getAccessTypeName(),
+                () -> new ClientsController(this));
+        loadSection(FleetController.getAccessTypeName(),
+                () -> new FleetController(this));
+        loadSection(OrdersController.getAccessTypeName(),
+                () -> new OrdersController(this));
+        loadSection(PaymentsController.getAccessTypeName(),
+                () -> new PaymentsController(this));
+        loadSection(RefundsController.getAccessTypeName(),
+                () -> new RefundsController(this));
+        loadSection(RepairsController.getAccessTypeName(),
+                () -> new RepairsController(this));
+        loadSection(ServiceController.getAccessTypeName(),
+                () -> new ServiceController(this));
     }
 
     private void loadSection(String accessTypeName, Callable<UISection> createSectionControllerRequest) {
-        // TODO: Check permission
-        if (true) {
+        // The section is visible only if the current user has access to it
+        if (authManager.currentUser.hasAccess(accessTypeName)) {
             try {
                 // Initialize the controller
                 UISection controller = createSectionControllerRequest.call();

@@ -54,6 +54,14 @@ public class Account implements Storable {
         return new Account(id, username, type);
     }
 
+    public boolean hasAccess(AccessType accessType) {
+        return type.getValue().hasAccess(accessType);
+    }
+
+    public boolean hasAccess(String accessTypeName) {
+        return type.getValue().hasAccess(accessTypeName);
+    }
+
     /*
      *  DB helpers
      */

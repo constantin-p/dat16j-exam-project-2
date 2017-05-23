@@ -41,6 +41,24 @@ public class AccountType implements Storable {
         }
     }
 
+    public boolean hasAccess(AccessType accessType) {
+        for (AccessType accountAccessType: permissions) {
+            if (accountAccessType.name.getValue().equals(accessType.name.getValue())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasAccess(String accessTypeName) {
+        for (AccessType accountAccessType: permissions) {
+            if (accountAccessType.name.getValue().equals(accessTypeName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /*
      *  DB integration
      */
