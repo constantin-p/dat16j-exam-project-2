@@ -1,6 +1,7 @@
 package assignment.core;
 
 
+import assignment.core.auth.AuthManager;
 import assignment.core.modal.ModalDispatcher;
 import assignment.core.section.AccountTypesController;
 import assignment.core.section.AccountsController;
@@ -24,7 +25,7 @@ public class RootController {
     @FXML
     private TabPane tabPane;
 
-    public RootController(Stage primaryStage) {
+    public RootController(AuthManager authManager, Stage primaryStage) {
         modalDispatcher = new ModalDispatcher(primaryStage);
     }
 
