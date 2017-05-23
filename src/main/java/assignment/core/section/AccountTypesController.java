@@ -48,11 +48,7 @@ public class AccountTypesController implements UISection {
             permissionsColumn.getColumns().add(accessTypeColumn);
         });
 
-        // Load account types
-        List<AccountType> accountTypes = AccountType.dbGetAll();
-        accountTypes.forEach(entry -> {
-            accountTypeList.add(entry);
-        });
+        populateTableView();
     }
 
     public static String getAccessTypeName() {
@@ -67,18 +63,22 @@ public class AccountTypesController implements UISection {
     public void handleAddAction(ActionEvent event) {
         AccountType accountType = rootController.modalDispatcher.showCreateAccountTypeModal(null);
         if (accountType != null) {
-            // Load account types
-            List<AccountType> accountTypes = AccountType.dbGetAll();
-            accountTypeList.clear();
-            accountTypes.forEach(entry -> {
-                accountTypeList.add(entry);
-            });
+            populateTableView();
         }
     }
 
     /*
      *  Helpers
      */
+    private void populateTableView() {
+        // Load account types
+        List<AccountType> accountTypes = AccountType.dbGetAll();
+        accountTypeList.clear();
+        accountTypes.forEach(entry -> {
+            accountTypeList.add(entry);
+        });
+    }
+
     private boolean hasAccess(AccountType accountType, AccessType accessType) {
         for (AccessType accountAccessType: accountType.permissions) {
             if (accountAccessType.name.getValue().equals(accessType.name.getValue())) {

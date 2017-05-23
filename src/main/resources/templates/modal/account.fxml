@@ -10,11 +10,12 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<?import javafx.scene.control.TableView?>
 <GridPane
-        xmlns:fx="http://javafx.com/fxml"
-        stylesheets="@../../css/main.css"
-        hgap="15.0">
+    xmlns:fx="http://javafx.com/fxml"
+    stylesheets="@../../css/main.css"
+    prefHeight="400.0"
+    prefWidth="300.0"
+    hgap="15.0">
     <columnConstraints>
         <ColumnConstraints hgrow="NEVER" maxWidth="15.0" minWidth="15.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" />
@@ -23,12 +24,13 @@
     <rowConstraints>
         <RowConstraints maxHeight="15.0" minHeight="15.0" vgrow="NEVER" />
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
-        <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
-        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
-        <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
-        
-        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
 
+        <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         
@@ -43,7 +45,7 @@
             GridPane.columnIndex="1"
             GridPane.rowIndex="1" />
         <Label
-            text="Name:"
+            text="Username:"
             GridPane.columnIndex="1"
             GridPane.rowIndex="2"
             GridPane.valignment="BOTTOM">
@@ -55,6 +57,7 @@
         <TextField fx:id="usernameTextField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="3" />
+
         <Label
             text="Password:"
             GridPane.columnIndex="1"
@@ -81,14 +84,22 @@
         <PasswordField fx:id="repeatPasswordPasswordField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="7" />
+
+        <Button fx:id="selectAccountTypeButton"
+            text="Select type"
+            onAction="#handleSelectAccountTypeAction"
+            maxWidth="1.7976931348623157E308"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="9" />
        
         <HBox
             alignment="CENTER_RIGHT"
             GridPane.columnIndex="1"
-            GridPane.rowIndex="10">
+            GridPane.rowIndex="12">
             <children>
                 <Button
                     text="Cancel"
+                    cancelButton="true"
                     onAction="#handleCancelAction">
                     <HBox.margin>
                         <Insets
@@ -97,6 +108,7 @@
                 </Button>
                 <Button fx:id="submitButton"
                     text="OK"
+                    defaultButton="true"
                     onAction="#handleOKAction" />
             </children>
             <padding>

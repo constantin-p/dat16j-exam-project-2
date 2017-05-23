@@ -1,6 +1,7 @@
 package assignment.core.modal;
 
 
+import assignment.core.modal.selector.AccountTypeSelectorController;
 import assignment.model.Account;
 import assignment.model.AccountType;
 import javafx.beans.property.BooleanProperty;
@@ -68,6 +69,13 @@ public class ModalDispatcher {
         return (AccountType) showModal(stage, (Stage modalStage) -> {
             return new AccountTypeFormController(this, modalStage,
                      true, new AccountType());
+        });
+    }
+
+    public AccountType showSelectAccountTypeModal(Stage stage) {
+        return (AccountType) showModal(stage, (Stage modalStage) -> {
+            return new AccountTypeSelectorController(this, modalStage,
+                    false);
         });
     }
 

@@ -6,7 +6,7 @@ import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-public class Auth {
+public class Authentication {
     private static final int PBKDF2_ITERATIONS = 1000;
 
     /*

@@ -1,13 +1,16 @@
 package assignment.core.modal;
 
 
+import assignment.core.auth.AuthManager;
 import assignment.model.Account;
 import assignment.model.AccountType;
+import assignment.util.Response;
 import assignment.util.ValidationHandler;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -34,6 +37,10 @@ public class AccountFormController extends ModalBaseController {
     private PasswordField repeatPasswordPasswordField;
     private BooleanProperty isPasswordValid = new SimpleBooleanProperty(false);
 
+    @FXML
+    private Button selectAccountTypeButton;
+    private BooleanProperty isAccountTypeValid = new SimpleBooleanProperty(false);
+
     public AccountFormController(ModalDispatcher modalDispatcher, Stage stage, boolean create,
                                      Account account) {
         super(modalDispatcher, stage);
@@ -47,7 +54,9 @@ public class AccountFormController extends ModalBaseController {
 
         super.isDisabled.bind(
             isUsernameValid.not().or(
-                isPasswordValid.not()
+                isPasswordValid.not().or(
+                    isAccountTypeValid.not()
+                )
             )
         );
 
@@ -60,7 +69,7 @@ public class AccountFormController extends ModalBaseController {
 
         passwordPasswordField.textProperty().addListener((observable, oldValue, newValue) -> {
             isPasswordValid.set(ValidationHandler.showError(errorLabel,
-                ValidationHandler.validateAccountPassword(passwordPasswordField.getText(), newValue)));
+                ValidationHandler.validateAccountPassword(newValue, repeatPasswordPasswordField.getText())));
         });
 
         repeatPasswordPasswordField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -72,8 +81,23 @@ public class AccountFormController extends ModalBaseController {
     @Override
     public void handleOKAction(ActionEvent event) {
         if (create) {
+            boolean success = ValidationHandler.showError(errorLabel,
+                    AuthManager.register(account, passwordPasswordField.getText()));
 
+            if (success) {
+                account = Account.dbGetByUsername(account.username.getValue());
+
+                super.handleOKAction(event);
+            }
         }
+    }
+
+    @Override
+    public Account result() {
+        if (super.isOKClicked && !super.isDisabled.getValue()) {
+            return account;
+        }
+        return null;
     }
 
     @Override
@@ -86,5 +110,20 @@ public class AccountFormController extends ModalBaseController {
         return create
                 ?   TITLE_CREATE
                 :   TITLE_EDIT;
+    }
+
+    @FXML
+    public void handleSelectAccountTypeAction(ActionEvent event) {
+        AccountType accountType = modalDispatcher.showSelectAccountTypeModal(super.stage);
+
+        Response validation = ValidationHandler.validateAccountAccountType(accountType);
+        if (validation.success) {
+            account.type.setValue(accountType);
+            selectAccountTypeButton.setText(accountType.name.getValue());
+        } else {
+            selectAccountTypeButton.setText("Select type");
+        }
+
+        isAccountTypeValid.set(ValidationHandler.showError(errorLabel, validation));
     }
 }

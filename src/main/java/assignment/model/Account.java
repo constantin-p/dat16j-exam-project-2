@@ -59,7 +59,6 @@ public class Account implements Storable {
      */
     public static List<Account> dbGetAll() {
         List<Account> result = new ArrayList<>();
-
         try {
             List<HashMap<String, String>> returnList = Database.getTable(Account.DB_TABLE_NAME)
                     .getAll(Arrays.asList("id", "username", "accounttype_id"),
@@ -72,6 +71,25 @@ public class Account implements Storable {
         } catch (Exception e) {
             e.printStackTrace();
             return result;
+        }
+    }
+
+    public static Account dbGetByUsername(String username) {
+        HashMap<String, String> searchQuery = new HashMap<>();
+        searchQuery.put("username", username);
+
+        try {
+            HashMap<String, String> returnValues = Database.getTable(Account.DB_TABLE_NAME)
+                    .get(Arrays.asList("id", "username", "accounttype_id"),
+                            searchQuery, new HashMap<>());
+
+            if (returnValues.get("username") != null && returnValues.get("username").equals(username)) {
+                return Account.construct(returnValues);
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

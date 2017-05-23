@@ -87,10 +87,10 @@ public class AccountTypeFormController extends ModalBaseController {
             boolean success = ValidationHandler.showError(errorLabel,
                     ValidationHandler.validateAccountTypeDBOperation(AccountType.dbInsert(accountType)));
 
-            // Add the permissions set
             if (success) {
                 accountType = AccountType.dbGetByName(accountType.name.getValue());
 
+                // Add the permissions set
                 accessMap.forEach(entry -> {
                     if (entry.getValue().getValue() == true) {
                         accountType.addPermission(entry.getKey());

@@ -1,11 +1,13 @@
 package assignment.util;
 
 
+import assignment.model.AccountType;
 import javafx.scene.control.Label;
 
 public class ValidationHandler {
 
     // Error messages
+    public static final String ERROR_DB = "DB error";
     public static final String ERROR_DB_CONNECTION = "DB connection error";
 
     public static final String ERROR_ACCOUNT_INVALID = "Invalid credentials";
@@ -15,6 +17,7 @@ public class ValidationHandler {
     public static final String ERROR_ACCOUNT_USERNAME_INVALID = "Invalid username (non-alphanumeric)";
     public static final String ERROR_ACCOUNT_USERNAME_NONEXISTENT = "Username not registered";
     public static final String ERROR_ACCOUNT_USERNAME_DUPLICATE = "Username already registered";
+    public static final String ERROR_ACCOUNT_ACCOUNT_TYPE_REQUIRED = "Account type required";
     public static final String ERROR_ACCOUNT_PASSWORD_REQUIRED = "Password required";
     public static final String ERROR_ACCOUNT_PASSWORD_SHORT = "Password too short";
     public static final String ERROR_ACCOUNT_PASSWORD_LONG = "Password too long";
@@ -64,6 +67,13 @@ public class ValidationHandler {
             return new Response(false, ERROR_ACCOUNT_PASSWORD_LONG);
         } else if(!password.equals(repeatPassword)) {
             return new Response(false, ERROR_ACCOUNT_PASSWORD_DIFFERENT);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateAccountAccountType(AccountType accountType) {
+        if(accountType == null || accountType.id == null) {
+            return new Response(false, ERROR_ACCOUNT_ACCOUNT_TYPE_REQUIRED);
         }
         return new Response(true);
     }

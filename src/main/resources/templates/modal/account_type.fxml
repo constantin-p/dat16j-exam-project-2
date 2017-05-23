@@ -11,9 +11,11 @@
 
 <?import javafx.scene.control.TableView?>
 <GridPane
-        xmlns:fx="http://javafx.com/fxml"
-        stylesheets="@../../css/main.css"
-        hgap="15.0">
+    xmlns:fx="http://javafx.com/fxml"
+    stylesheets="@../../css/main.css"
+    prefHeight="400.0"
+    prefWidth="300.0"
+    hgap="15.0">
     <columnConstraints>
         <ColumnConstraints hgrow="NEVER" maxWidth="15.0" minWidth="15.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" />
@@ -77,6 +79,7 @@
             <children>
                 <Button
                     text="Cancel"
+                    cancelButton="true"
                     onAction="#handleCancelAction">
                     <HBox.margin>
                         <Insets
@@ -85,6 +88,7 @@
                 </Button>
                 <Button fx:id="submitButton"
                     text="OK"
+                    defaultButton="true"
                     onAction="#handleOKAction" />
             </children>
             <padding>
