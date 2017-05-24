@@ -69,6 +69,7 @@
         <TextField fx:id="brandTextField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="5" />
+
         <Label
             text="Capacity"
             GridPane.columnIndex="1"

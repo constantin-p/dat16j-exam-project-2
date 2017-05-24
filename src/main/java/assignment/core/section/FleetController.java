@@ -1,5 +1,6 @@
 package assignment.core.section;
 
+
 import assignment.core.RootController;
 import assignment.model.Motorhome;
 import javafx.collections.FXCollections;
@@ -34,7 +35,7 @@ public class FleetController implements UISection {
         modelColumn.setCellValueFactory(cellData -> cellData.getValue().model);
 
         TableColumn<Motorhome, String> capacityColumn = new TableColumn("Capacity");
-        capacityColumn.setCellValueFactory(cellData -> cellData.getValue().capacity.asString());
+        capacityColumn.setCellValueFactory(cellData -> cellData.getValue().capacity);
         tableView.getColumns().addAll(brandColumn, modelColumn, capacityColumn);
         tableView.setItems(motorhomeList);
 
@@ -58,6 +59,9 @@ public class FleetController implements UISection {
         }
     }
 
+    /*
+     *  Helpers
+     */
     private void populateTableView() {
 
         List<Motorhome> motorhome = Motorhome.dbGetAll();

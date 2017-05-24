@@ -16,20 +16,21 @@ public class Motorhome implements Storable {
     public String id;
     public StringProperty brand;
     public StringProperty model;
-    public IntegerProperty capacity;
+    // TODO: Change to integerProp
+    public StringProperty capacity;
 
     public Motorhome() {
         id = null;
         brand = new SimpleStringProperty("");
         model = new SimpleStringProperty("");
-        capacity = new SimpleIntegerProperty(1);
+        capacity = new SimpleStringProperty("1");
     }
 
-    public Motorhome(String id, String brand, String model, int capacity) {
+    public Motorhome(String id, String brand, String model, String capacity) {
         this.id = id;
         this.brand = new SimpleStringProperty(brand);
         this.model = new SimpleStringProperty(model);
-        this.capacity = new SimpleIntegerProperty(capacity);
+        this.capacity = new SimpleStringProperty(capacity);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class Motorhome implements Storable {
 
         values.put("brand", brand.getValue());
         values.put("model", model.getValue());
-        values.put("capacity", capacity.getValue().toString());
+        values.put("capacity", capacity.getValue());
 
         return values;
     }
@@ -47,7 +48,7 @@ public class Motorhome implements Storable {
         String id = valuesMap.get("id");
         String brand = valuesMap.get("brand");
         String model = valuesMap.get("model");
-        int capacity = Integer.parseInt(valuesMap.get("capacity"));
+        String capacity = valuesMap.get("capacity");
 
         return new Motorhome(id, brand, model, capacity);
     }
@@ -98,6 +99,4 @@ public class Motorhome implements Storable {
             return 0;
         }
     }
-
-
 }

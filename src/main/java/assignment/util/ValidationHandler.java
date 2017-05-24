@@ -34,14 +34,12 @@ public class ValidationHandler {
     public static final String ERROR_MOTORHOME_MODEL_SHORT = "Model too short";
     public static final String ERROR_MOTORHOME_MODEL_LONG = "Model too long";
     public static final String ERROR_MOTORHOME_MODEL_INVALID = "Invalid Model (non-alphanumeric)";
-
     public static final String ERROR_MOTORHOME_BRAND_REQUIRED = "Brand required";
     public static final String ERROR_MOTORHOME_BRAND_SHORT = "Brand too short";
     public static final String ERROR_MOTORHOME_BRAND_LONG = "Brand too long";
     public static final String ERROR_MOTORHOME_BRAND_INVALID = "Invalid Brand (non-alphanumeric)";
-
-    public static final String ERROR_FLEET_CAPACITY_REQUIRED = "Capacity required";
-    public static final String ERROR_FLEET_CAPACITY_INVALID = "Invalid capacity";
+    public static final String ERROR_MOTORHOME_CAPACITY_REQUIRED = "Capacity required";
+    public static final String ERROR_MOTORHOME_CAPACITY_INVALID = "Invalid capacity";
 
     public static boolean showError(Label errorLabel, Response validation) {
         if (validation.success) {
@@ -124,10 +122,10 @@ public class ValidationHandler {
         } else if (returnValue == -1) {
             return new Response(false, ERROR_ACCOUNT_TYPE_NAME_DUPLICATE);
         }
-
         return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
     }
 
+    // MOTORHOME fields
     public static Response validateMotorhomeBrand(String brand) {
         if(brand == null || brand.isEmpty()) {
             return new Response(false, ERROR_MOTORHOME_BRAND_REQUIRED);
@@ -141,7 +139,6 @@ public class ValidationHandler {
         return new Response(true);
     }
 
-
     public static Response validateMotorhomeModel(String model) {
         if(model == null || model.isEmpty()) {
             return new Response(false, ERROR_MOTORHOME_MODEL_REQUIRED);
@@ -154,22 +151,23 @@ public class ValidationHandler {
         }
         return new Response(true);
     }
+
     public static Response validateMotorhomeCapacity(String capacity) {
         if(capacity == null || capacity.isEmpty()) {
-            return new Response(false, ERROR_FLEET_CAPACITY_REQUIRED);
+            return new Response(false, ERROR_MOTORHOME_CAPACITY_REQUIRED);
         } else if (!capacity.matches("[a-zA-Z0-9]+")) {
-            return new Response(false, ERROR_FLEET_CAPACITY_INVALID);
+            return new Response(false, ERROR_MOTORHOME_CAPACITY_INVALID);
         }
         return new Response(true);
 
     }
+
     public static Response validateMotorhomeDBOperation(int returnValue) {
         if(returnValue == 1) {
             return new Response(true);
         } else if (returnValue == -1) {
             return new Response(false, ERROR_ACCOUNT_TYPE_NAME_DUPLICATE);
         }
-
         return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
     }
 }
