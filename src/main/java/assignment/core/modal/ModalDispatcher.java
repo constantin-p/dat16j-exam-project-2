@@ -4,7 +4,7 @@ package assignment.core.modal;
 import assignment.core.modal.selector.AccountTypeSelectorController;
 import assignment.model.Account;
 import assignment.model.AccountType;
-import assignment.model.Fleet;
+import assignment.model.Motorhome;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -86,10 +86,10 @@ public class ModalDispatcher {
                     true, new Account());
         });
     }
-//    public Fleet showCreateVehicleModal(Stage stage) {
-//        return (Fleet) showModal(stage, (Stage modalStage) -> {
-//            return new FleetFormController(this, modalStage,
-//                    true, new Fleet());
-//        });
-//    }
+    public Motorhome showCreateMotorhomeModal(Stage stage) {
+        return (Motorhome) showModal(stage, (Stage modalStage) -> {
+            return new MotorhomeFormController(this, modalStage,
+                    true, new Motorhome());
+        });
+    }
 }

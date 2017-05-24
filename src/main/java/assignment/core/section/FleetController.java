@@ -1,9 +1,7 @@
 package assignment.core.section;
 
 import assignment.core.RootController;
-import assignment.model.Account;
-import assignment.model.AccountType;
-import assignment.model.Fleet;
+import assignment.model.Motorhome;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,14 +12,14 @@ import javafx.scene.control.TableView;
 import java.util.List;
 
 public class FleetController implements UISection {
-    public static final String ACCESS_TYPE_NAME = "fleet";
+    private static final String ACCESS_TYPE_NAME = "fleet";
     private static final String TEMPLATE_PATH = "templates/section/fleet.fxml";
 
     private RootController rootController;
-    private ObservableList<Fleet> fleetList = FXCollections.observableArrayList();
+    private ObservableList<Motorhome> motorhomeList = FXCollections.observableArrayList();
 
     @FXML
-    private TableView<Fleet> tableView;
+    private TableView<Motorhome> tableView;
 
     public FleetController(RootController rootController) {
         this.rootController = rootController;
@@ -29,16 +27,20 @@ public class FleetController implements UISection {
 
     @FXML
     public void initialize() {
-        TableColumn<Fleet, String> nameColumn = new TableColumn("Name");
-        nameColumn.setCellValueFactory(cellData -> cellData.getValue().name);
+        TableColumn<Motorhome, String> brandColumn = new TableColumn("Brand");
+        brandColumn.setCellValueFactory(cellData -> cellData.getValue().brand);
 
-        TableColumn<Fleet, String> capacityColumn = new TableColumn("Capacity");
+        TableColumn<Motorhome, String> modelColumn = new TableColumn("Model");
+        modelColumn.setCellValueFactory(cellData -> cellData.getValue().model);
+
+        TableColumn<Motorhome, String> capacityColumn = new TableColumn("Capacity");
         capacityColumn.setCellValueFactory(cellData -> cellData.getValue().capacity.asString());
-        tableView.getColumns().addAll(nameColumn, capacityColumn);
-        tableView.setItems(fleetList);
+        tableView.getColumns().addAll(brandColumn, modelColumn, capacityColumn);
+        tableView.setItems(motorhomeList);
 
         populateTableView();
     }
+
 
     public static String getAccessTypeName() {
         return ACCESS_TYPE_NAME;
@@ -48,20 +50,20 @@ public class FleetController implements UISection {
         return TEMPLATE_PATH;
     }
 
-//    @FXML
-//    public void handleAddAction(ActionEvent event) {
-//        Fleet fleet = rootController.modalDispatcher.showCreateVehicleModal(null);
-//        if (fleet != null) {
-//            populateTableView();
-//        }
-//    }
+    @FXML
+    public void handleAddAction(ActionEvent event) {
+        Motorhome motorhome = rootController.modalDispatcher.showCreateMotorhomeModal(null);
+        if (motorhome != null) {
+            populateTableView();
+        }
+    }
 
     private void populateTableView() {
-        // Load account types
-        List<Fleet> fleet = Fleet.dbGetAll();
-        fleetList.clear();
-        fleet.forEach(entry -> {
-            fleetList.add(entry);
+
+        List<Motorhome> motorhome = Motorhome.dbGetAll();
+        motorhomeList.clear();
+        motorhome.forEach(entry -> {
+            motorhomeList.add(entry);
         });
     }
 }

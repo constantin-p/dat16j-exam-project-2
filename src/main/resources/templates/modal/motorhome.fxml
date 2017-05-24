@@ -31,8 +31,6 @@
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
-        <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
-        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         
         <RowConstraints prefHeight="28.0" minHeight="28.0" vgrow="ALWAYS" />
         <RowConstraints maxHeight="15.0" minHeight="15.0" vgrow="NEVER" />
@@ -45,7 +43,7 @@
             GridPane.columnIndex="1"
             GridPane.rowIndex="1" />
         <Label
-            text="Username:"
+            text="Model:"
             GridPane.columnIndex="1"
             GridPane.rowIndex="2"
             GridPane.valignment="BOTTOM">
@@ -54,12 +52,12 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <TextField fx:id="usernameTextField"
+        <TextField fx:id="modelTextField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="3" />
 
         <Label
-            text="Password:"
+            text="Brand:"
             GridPane.columnIndex="1"
             GridPane.rowIndex="4"
             GridPane.valignment="BOTTOM">
@@ -68,11 +66,11 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <PasswordField fx:id="passwordPasswordField"
+        <TextField fx:id="brandTextField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="5" />
         <Label
-            text="Repeat password:"
+            text="Capacity"
             GridPane.columnIndex="1"
             GridPane.rowIndex="6"
             GridPane.valignment="BOTTOM">
@@ -81,17 +79,10 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <PasswordField fx:id="repeatPasswordPasswordField"
+        <TextField fx:id="capacityTextField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="7" />
 
-        <Button fx:id="selectAccountTypeButton"
-            text="Select type"
-            onAction="#handleSelectAccountTypeAction"
-            maxWidth="1.7976931348623157E308"
-            GridPane.columnIndex="1"
-            GridPane.rowIndex="9" />
-       
         <HBox
             alignment="CENTER_RIGHT"
             GridPane.columnIndex="1"
