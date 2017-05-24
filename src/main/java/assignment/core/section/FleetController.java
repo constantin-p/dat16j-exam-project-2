@@ -35,6 +35,7 @@ public class FleetController implements UISection {
 
         TableColumn<Motorhome, String> capacityColumn = new TableColumn("Capacity");
         capacityColumn.setCellValueFactory(cellData -> cellData.getValue().capacity.asString());
+
         tableView.getColumns().addAll(brandColumn, modelColumn, capacityColumn);
         tableView.setItems(motorhomeList);
 

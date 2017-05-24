@@ -172,4 +172,14 @@ public class ValidationHandler {
 
         return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
     }
+
+    public static Response validateExtrasDBOperation(int returnValue) {
+        if(returnValue == 1) {
+            return new Response(true);
+        } else if (returnValue == -1) {
+            return new Response(false, ERROR_ACCOUNT_TYPE_NAME_DUPLICATE);
+        }
+
+        return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
+    }
 }
