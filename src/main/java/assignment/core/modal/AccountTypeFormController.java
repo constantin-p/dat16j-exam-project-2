@@ -111,7 +111,6 @@ public class AccountTypeFormController extends ModalBaseController {
         return null;
     }
 
-
     @Override
     public String getTemplatePath() {
         return TEMPLATE_PATH;

@@ -4,6 +4,7 @@ package assignment.core.modal;
 import assignment.core.modal.selector.AccountTypeSelectorController;
 import assignment.model.Account;
 import assignment.model.AccountType;
+import assignment.model.Motorhome;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -83,6 +84,12 @@ public class ModalDispatcher {
         return (Account) showModal(stage, (Stage modalStage) -> {
             return new AccountFormController(this, modalStage,
                     true, new Account());
+        });
+    }
+    public Motorhome showCreateMotorhomeModal(Stage stage) {
+        return (Motorhome) showModal(stage, (Stage modalStage) -> {
+            return new MotorhomeFormController(this, modalStage,
+                    true, new Motorhome());
         });
     }
 }
