@@ -4,7 +4,7 @@ import assignment.core.RootController;
 import javafx.fxml.FXML;
 
 public class OrdersController implements UISection {
-    public static final String ACCESS_TYPE_NAME = "orders";
+    private static final String ACCESS_TYPE_NAME = "orders";
     private static final String TEMPLATE_PATH = "templates/section/orders.fxml";
 
     private RootController rootController;

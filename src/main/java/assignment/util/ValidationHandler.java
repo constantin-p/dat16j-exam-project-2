@@ -4,6 +4,10 @@ package assignment.util;
 import assignment.model.AccountType;
 import javafx.scene.control.Label;
 
+import java.time.LocalDate;
+
+import static java.time.temporal.ChronoUnit.YEARS;
+
 public class ValidationHandler {
 
     // Error messages
@@ -29,6 +33,21 @@ public class ValidationHandler {
     public static final String ERROR_ACCOUNT_TYPE_NAME_LONG = "Name too long";
     public static final String ERROR_ACCOUNT_TYPE_NAME_INVALID = "Invalid name (non-alphanumeric)";
     public static final String ERROR_ACCOUNT_TYPE_NAME_DUPLICATE = "Name already registered";
+
+    public static final String ERROR_CLIENT_FIRSTNAME_REQUIRED = "First name required";
+    public static final String ERROR_CLIENT_FIRSTNAME_SHORT = "First name too short";
+    public static final String ERROR_CLIENT_FIRSTNAME_LONG = "First name too long";
+    public static final String ERROR_CLIENT_FIRSTNAME_INVALID = "Invalid first name (non-alphanumeric)";
+    public static final String ERROR_CLIENT_LASTNAME_REQUIRED = "Last name required";
+    public static final String ERROR_CLIENT_LASTNAME_SHORT = "Last name too short";
+    public static final String ERROR_CLIENT_LASTNAME_LONG = "Last name too long";
+    public static final String ERROR_CLIENT_LASTNAME_INVALID = "Invalid last name (non-alphanumeric)";
+    public static final String ERROR_CLIENT_EMAIL_REQUIRED = "Email required";
+    public static final String ERROR_CLIENT_EMAIL_LONG = "Email too long";
+    public static final String ERROR_CLIENT_EMAIL_DUPLICATE = "Email already registered";
+    public static final String ERROR_CLIENT_EMAIL_INVALID = "Invalid email address";
+    public static final String ERROR_CLIENT_DOB_REQUIRED = "Date of birth required";
+    public static final String ERROR_CLIENT_DOB_YOUNG = "Too young (<18 years)";
 
     public static final String ERROR_MOTORHOME_MODEL_REQUIRED = "Model required";
     public static final String ERROR_MOTORHOME_MODEL_SHORT = "Model too short";
@@ -170,4 +189,62 @@ public class ValidationHandler {
         }
         return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
     }
+
+    // CLIENT fields
+    public static Response validateClientFirstName(String firstName) {
+        if(firstName == null || firstName.isEmpty()) {
+            return new Response(false, ERROR_CLIENT_FIRSTNAME_REQUIRED);
+        } else if (!firstName.chars().allMatch(Character::isLetter)) {
+            return new Response(false, ERROR_CLIENT_FIRSTNAME_INVALID);
+        } else if (firstName.length() <= 1) {
+            return new Response(false, ERROR_CLIENT_FIRSTNAME_SHORT);
+        } else if (firstName.length() > 25) {
+            return new Response(false, ERROR_CLIENT_FIRSTNAME_LONG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateClientLastName(String lastName) {
+        if(lastName == null || lastName.isEmpty()) {
+            return new Response(false, ERROR_CLIENT_LASTNAME_REQUIRED);
+        } else if (!lastName.chars().allMatch(Character::isLetter)) {
+            return new Response(false, ERROR_CLIENT_LASTNAME_INVALID);
+        } else if (lastName.length() <= 1) {
+            return new Response(false, ERROR_CLIENT_LASTNAME_SHORT);
+        } else if (lastName.length() > 25) {
+            return new Response(false, ERROR_CLIENT_LASTNAME_LONG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateClientEmail(String email) {
+        if(email == null || email.isEmpty()) {
+            return new Response(false, ERROR_CLIENT_EMAIL_REQUIRED);
+        } else if (!email.matches("^(.+)@(.+)$")) {
+            return new Response(false, ERROR_CLIENT_EMAIL_INVALID);
+        } else if (email.length() > 25) {
+            return new Response(false, ERROR_CLIENT_EMAIL_LONG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateClientDateOfBirth(LocalDate date) {
+        if(date == null) {
+            return new Response(false, ERROR_CLIENT_DOB_REQUIRED);
+        } else if (YEARS.between(date, LocalDate.now()) < 18) {
+            return new Response(false, ERROR_CLIENT_DOB_YOUNG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateClientDBOperation(int returnValue) {
+        if(returnValue == 1) {
+            return new Response(true);
+        } else if (returnValue == -1) {
+            return new Response(false, ERROR_CLIENT_EMAIL_DUPLICATE);
+        }
+
+        return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
+    }
+
 }

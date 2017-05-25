@@ -4,7 +4,7 @@ import assignment.core.RootController;
 import javafx.fxml.FXML;
 
 public class ServiceController implements UISection {
-    public static final String ACCESS_TYPE_NAME = "service";
+    private static final String ACCESS_TYPE_NAME = "service";
     private static final String TEMPLATE_PATH = "templates/section/service.fxml";
 
     private RootController rootController;

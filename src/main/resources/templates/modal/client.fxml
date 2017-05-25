@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -10,11 +11,11 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 <GridPane
-    xmlns:fx="http://javafx.com/fxml"
-    stylesheets="@../../css/main.css"
-    prefHeight="400.0"
-    prefWidth="300.0"
-    hgap="15.0">
+        xmlns:fx="http://javafx.com/fxml"
+        stylesheets="@../../css/main.css"
+        prefHeight="400.0"
+        prefWidth="300.0"
+        hgap="15.0">
     <columnConstraints>
         <ColumnConstraints hgrow="NEVER" maxWidth="15.0" minWidth="15.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" />
@@ -30,19 +31,21 @@
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
-        
+        <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
+
         <RowConstraints prefHeight="28.0" minHeight="28.0" vgrow="ALWAYS" />
         <RowConstraints maxHeight="15.0" minHeight="15.0" vgrow="NEVER" />
         <RowConstraints maxHeight="42.0" minHeight="42.0" vgrow="NEVER" />
     </rowConstraints>
     <children>
         <Label fx:id="errorLabel"
-            styleClass="error-label"
-            text="INFO LABEL"
-            GridPane.columnIndex="1"
-            GridPane.rowIndex="1" />
+           styleClass="error-label"
+           text="INFO LABEL"
+           GridPane.columnIndex="1"
+           GridPane.rowIndex="1" />
         <Label
-            text="Model:"
+            text="First name:"
             GridPane.columnIndex="1"
             GridPane.rowIndex="2"
             GridPane.valignment="BOTTOM">
@@ -51,12 +54,12 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <TextField fx:id="modelTextField"
+        <TextField fx:id="firstNameTextField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="3" />
 
         <Label
-            text="Brand:"
+            text="Last name:"
             GridPane.columnIndex="1"
             GridPane.rowIndex="4"
             GridPane.valignment="BOTTOM">
@@ -65,12 +68,12 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <TextField fx:id="brandTextField"
+        <TextField fx:id="lastNameTextField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="5" />
 
         <Label
-            text="Capacity"
+            text="Email:"
             GridPane.columnIndex="1"
             GridPane.rowIndex="6"
             GridPane.valignment="BOTTOM">
@@ -79,9 +82,25 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <TextField fx:id="capacityTextField"
+        <TextField fx:id="emailTextField"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="7" />
+
+        <Label
+            text="Date of birth:"
             GridPane.columnIndex="1"
-            GridPane.rowIndex="7" />
+            GridPane.rowIndex="8"
+            GridPane.valignment="BOTTOM">
+            <padding>
+                <Insets
+                        bottom="2.0" />
+            </padding>
+        </Label>
+        <DatePicker fx:id="dateOfBirthDatePicker"
+            onAction="#handleSetDateOfBirthAction"
+            maxWidth="1.7976931348623157E308"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="9" />
 
         <HBox
             alignment="CENTER_RIGHT"
