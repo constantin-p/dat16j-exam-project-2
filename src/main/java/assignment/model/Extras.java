@@ -70,7 +70,7 @@ public class Extras implements Storable {
         searchQuery.put("id", id);
 
         try {
-            HashMap<String, String> returnValues = Database.getTable(Motorhome.DB_TABLE_NAME)
+            HashMap<String, String> returnValues = Database.getTable(Extras.DB_TABLE_NAME)
                     .get(Arrays.asList("id","name"),
                             searchQuery, new HashMap<>());
 

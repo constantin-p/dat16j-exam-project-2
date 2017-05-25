@@ -49,7 +49,7 @@ public class ExtrasFormController extends ModalBaseController {
         nameTextField.textProperty().bindBidirectional(extras.name);
         nameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             isNameValid.set(ValidationHandler.showError(errorLabel,
-                    ValidationHandler.validateMotorhomeModel(newValue)));
+                    ValidationHandler.validateExtrasModel(newValue)));
         });
 
     }

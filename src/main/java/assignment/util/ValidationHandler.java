@@ -43,6 +43,12 @@ public class ValidationHandler {
     public static final String ERROR_FLEET_CAPACITY_REQUIRED = "Capacity required";
     public static final String ERROR_FLEET_CAPACITY_INVALID = "Invalid capacity";
 
+    public static final String ERROR_EXTRAS_NAME_REQUIRED = "Name required";
+    public static final String ERROR_EXTRAS_NAME_SHORT = "Name too short";
+    public static final String ERROR_EXTRAS_NAME_LONG = "Name too long";
+    public static final String ERROR_EXTRAS_NAME_INVALID = "Invalid name (non-alphanumeric)";
+    public static final String ERROR_EXTRAS_NAME_DUPLICATE = "Name already registered";
+
     public static boolean showError(Label errorLabel, Response validation) {
         if (validation.success) {
             errorLabel.setVisible(false);
@@ -154,6 +160,21 @@ public class ValidationHandler {
         }
         return new Response(true);
     }
+
+    public static Response validateExtrasModel(String name) {
+        if(name == null || name.isEmpty()) {
+            return new Response(false, ERROR_EXTRAS_NAME_REQUIRED);
+        } else if (!name.matches("[a-zA-Z0-9 ]+")) {
+            return new Response(false, ERROR_EXTRAS_NAME_INVALID);
+        } else if (name.length() <= 3) {
+            return new Response(false, ERROR_EXTRAS_NAME_SHORT);
+        } else if (name.length() > 25) {
+            return new Response(false, ERROR_EXTRAS_NAME_LONG);
+        }
+        return new Response(true);
+    }
+
+
     public static Response validateMotorhomeCapacity(String capacity) {
         if(capacity == null || capacity.isEmpty()) {
             return new Response(false, ERROR_FLEET_CAPACITY_REQUIRED);

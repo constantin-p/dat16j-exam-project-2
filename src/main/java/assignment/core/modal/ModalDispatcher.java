@@ -96,8 +96,8 @@ public class ModalDispatcher {
 
     public Extras showCreateExtrasModal(Stage stage) {
         return (Extras) showModal(stage, (Stage modalStage) -> {
-            return new MotorhomeFormController(this, modalStage,
-                    true, new Motorhome());
+            return new ExtrasFormController(this, modalStage,
+                    true, new Extras());
         });
     }
 

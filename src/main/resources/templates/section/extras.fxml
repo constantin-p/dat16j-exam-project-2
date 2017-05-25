@@ -27,7 +27,8 @@
             <children>
                 <Button
                     text="Add extra"
-                    defaultButton="true" />
+                    defaultButton="true"
+                    onAction="#handleAddAction"/>
             </children>
             <padding>
                 <Insets
