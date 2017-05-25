@@ -2,10 +2,8 @@ package assignment.core.modal;
 
 
 import assignment.core.modal.selector.AccountTypeSelectorController;
-import assignment.model.Account;
-import assignment.model.AccountType;
-import assignment.model.Client;
-import assignment.model.Motorhome;
+import assignment.core.modal.selector.PriceTypeSelectorController;
+import assignment.model.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -92,6 +90,20 @@ public class ModalDispatcher {
         return (Client) showModal(stage, (Stage modalStage) -> {
             return new ClientFormController(this, modalStage,
                     true, new Client());
+        });
+    }
+
+    public PriceType showSelectPriceTypeModal(Stage stage) {
+        return (PriceType) showModal(stage, (Stage modalStage) -> {
+            return new PriceTypeSelectorController(this, modalStage,
+                    false);
+        });
+    }
+
+    public Price showCreatePriceModal(Stage stage) {
+        return (Price) showModal(stage, (Stage modalStage) -> {
+            return new PriceFormController(this, modalStage,
+                    true, new Price());
         });
     }
 
