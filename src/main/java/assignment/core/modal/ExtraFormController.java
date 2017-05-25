@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 
 public class ExtraFormController extends ModalBaseController {
     private static final String TITLE_CREATE = "extras_create";
-    private static final String TITLE_EDIT = "extras_create";
+    private static final String TITLE_EDIT = "extras_edit";
     private static final String TEMPLATE_PATH = "templates/modal/extras.fxml";
 
     private Extra extra;
@@ -54,7 +54,6 @@ public class ExtraFormController extends ModalBaseController {
             isNameValid.set(ValidationHandler.showError(errorLabel,
                     ValidationHandler.validateExtraName(newValue)));
         });
-
     }
 
     @Override
@@ -64,7 +63,6 @@ public class ExtraFormController extends ModalBaseController {
                     ValidationHandler.validateExtraDBOperation(Extra.dbInsert(extra)));
 
             if (success) {
-
                 super.handleOKAction(event);
             }
         } else {
@@ -99,7 +97,8 @@ public class ExtraFormController extends ModalBaseController {
         Response validation = ValidationHandler.validateExtraPrice(price);
         if (validation.success) {
             extra.price.setValue(price);
-            selectPriceButton.setText(price.name.getValue() + " - " + price.value.getValue());
+            selectPriceButton.setText(price.name.getValue() + " - [" + price.value.getValue() +
+                    " / " + price.type.getValue().name.getValue() + "]");
         } else {
             selectPriceButton.setText("Select price");
         }

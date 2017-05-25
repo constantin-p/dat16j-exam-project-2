@@ -18,21 +18,27 @@ public class Motorhome implements Storable {
     public StringProperty model;
     // TODO: Change to integerProp
     public StringProperty capacity;
+    public ObjectProperty<Price> price;
 
     public Motorhome() {
         id = null;
         brand = new SimpleStringProperty("");
         model = new SimpleStringProperty("");
         capacity = new SimpleStringProperty("1");
+        price = new SimpleObjectProperty<>(null);
     }
 
-    public Motorhome(String id, String brand, String model, String capacity) {
+    public Motorhome(String id, String brand, String model, String capacity, Price price) {
         this.id = id;
         this.brand = new SimpleStringProperty(brand);
         this.model = new SimpleStringProperty(model);
         this.capacity = new SimpleStringProperty(capacity);
+        this.price = new SimpleObjectProperty<>(price);
     }
 
+    /*
+     *  DB integration
+     */
     @Override
     public HashMap<String, String> deconstruct() {
         HashMap<String, String> values = new HashMap<>();
@@ -40,6 +46,7 @@ public class Motorhome implements Storable {
         values.put("brand", brand.getValue());
         values.put("model", model.getValue());
         values.put("capacity", capacity.getValue());
+        values.put("price_id", price.getValue().id);
 
         return values;
     }
@@ -50,15 +57,20 @@ public class Motorhome implements Storable {
         String model = valuesMap.get("model");
         String capacity = valuesMap.get("capacity");
 
-        return new Motorhome(id, brand, model, capacity);
+        Price price = Price.dbGet(valuesMap.get("price_id"));
+
+        return new Motorhome(id, brand, model, capacity, price);
     }
 
+    /*
+     *  DB helpers
+     */
     public static List<Motorhome> dbGetAll() {
         List<Motorhome> result = new ArrayList<>();
 
         try {
             List<HashMap<String, String>> returnList = Database.getTable(Motorhome.DB_TABLE_NAME)
-                    .getAll(Arrays.asList("id","brand", "model", "capacity"),
+                    .getAll(Arrays.asList("id","brand", "model", "capacity", "price_id"),
                             null, null);
 
             returnList.forEach((HashMap<String, String> valuesMap) -> {
@@ -77,7 +89,7 @@ public class Motorhome implements Storable {
 
         try {
             HashMap<String, String> returnValues = Database.getTable(Motorhome.DB_TABLE_NAME)
-                    .get(Arrays.asList("id", "brand", "model", "capacity"),
+                    .get(Arrays.asList("id", "brand", "model", "capacity", "price_id"),
                             searchQuery, new HashMap<>());
 
             if (returnValues.get("id") != null && returnValues.get("id").equals(id)) {

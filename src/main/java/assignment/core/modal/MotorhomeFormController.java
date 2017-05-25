@@ -2,19 +2,22 @@ package assignment.core.modal;
 
 
 import assignment.model.Motorhome;
+import assignment.model.Price;
+import assignment.util.Response;
 import assignment.util.ValidationHandler;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class MotorhomeFormController extends ModalBaseController {
     private static final String TITLE_CREATE = "motorhome_create";
-    private static final String TITLE_EDIT = "motorhome_create";
+    private static final String TITLE_EDIT = "motorhome_edit";
     private static final String TEMPLATE_PATH = "templates/modal/motorhome.fxml";
 
     private Motorhome motorhome;
@@ -36,6 +39,10 @@ public class MotorhomeFormController extends ModalBaseController {
     private TextField capacityTextField;
     private BooleanProperty isCapacityValid = new SimpleBooleanProperty(false);
 
+    @FXML
+    private Button selectPriceButton;
+    private BooleanProperty isPriceValid = new SimpleBooleanProperty(false);
+
     public MotorhomeFormController(ModalDispatcher modalDispatcher, Stage stage, boolean create,
                                    Motorhome motorhome) {
         super(modalDispatcher, stage);
@@ -50,7 +57,9 @@ public class MotorhomeFormController extends ModalBaseController {
         super.isDisabled.bind(
             isModelValid.not().or(
                 isBrandValid.not().or(
-                    isCapacityValid.not()
+                    isCapacityValid.not().or(
+                        isPriceValid.not()
+                    )
                 )
             )
         );
@@ -72,7 +81,6 @@ public class MotorhomeFormController extends ModalBaseController {
             isCapacityValid.set(ValidationHandler.showError(errorLabel,
                     ValidationHandler.validateMotorhomeCapacity(newValue)));
         });
-
     }
 
     @Override
@@ -107,5 +115,21 @@ public class MotorhomeFormController extends ModalBaseController {
         return create
                 ?   TITLE_CREATE
                 :   TITLE_EDIT;
+    }
+
+    @FXML
+    public void handleSelectPriceAction(ActionEvent event) {
+        Price price = modalDispatcher.showSelectPriceModal(super.stage);
+
+        Response validation = ValidationHandler.validateExtraPrice(price);
+        if (validation.success) {
+            motorhome.price.setValue(price);
+            selectPriceButton.setText(price.name.getValue() + " - [" + price.value.getValue() +
+                " / " + price.type.getValue().name.getValue() + "]");
+        } else {
+            selectPriceButton.setText("Select price");
+        }
+
+        isPriceValid.set(ValidationHandler.showError(errorLabel, validation));
     }
 }

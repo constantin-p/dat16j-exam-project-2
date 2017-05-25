@@ -2,7 +2,9 @@ package assignment.core.section;
 
 
 import assignment.core.RootController;
+import assignment.model.Extra;
 import assignment.model.Motorhome;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -36,7 +38,13 @@ public class FleetController implements UISection {
 
         TableColumn<Motorhome, String> capacityColumn = new TableColumn("Capacity");
         capacityColumn.setCellValueFactory(cellData -> cellData.getValue().capacity);
-        tableView.getColumns().addAll(brandColumn, modelColumn, capacityColumn);
+
+        TableColumn<Motorhome, String> priceColumn = new TableColumn("Base price");
+        priceColumn.setCellValueFactory(cellData ->
+            new SimpleStringProperty(cellData.getValue().price.getValue().value.getValue() +
+                        " / " + cellData.getValue().price.getValue().type.getValue().name.getValue())
+        );
+        tableView.getColumns().addAll(brandColumn, modelColumn, capacityColumn, priceColumn);
         tableView.setItems(motorhomeList);
 
         populateTableView();

@@ -30,6 +30,8 @@
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         
         <RowConstraints prefHeight="28.0" minHeight="28.0" vgrow="ALWAYS" />
         <RowConstraints maxHeight="15.0" minHeight="15.0" vgrow="NEVER" />
@@ -83,10 +85,18 @@
             GridPane.columnIndex="1"
             GridPane.rowIndex="7" />
 
+
+        <Button fx:id="selectPriceButton"
+                text="Select price"
+                onAction="#handleSelectPriceAction"
+                maxWidth="1.7976931348623157E308"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="9" />
+
         <HBox
             alignment="CENTER_RIGHT"
             GridPane.columnIndex="1"
-            GridPane.rowIndex="12">
+            GridPane.rowIndex="14">
             <children>
                 <Button
                     text="Cancel"

@@ -3,6 +3,7 @@ package assignment.core.section;
 import assignment.core.RootController;
 import assignment.model.Account;
 import assignment.model.Extra;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -33,7 +34,10 @@ public class ExtrasController implements UISection {
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().name);
 
         TableColumn<Extra, String> priceColumn = new TableColumn("Price");
-        priceColumn.setCellValueFactory(cellData -> cellData.getValue().price.getValue().value);
+        priceColumn.setCellValueFactory(cellData ->
+            new SimpleStringProperty(cellData.getValue().price.getValue().value.getValue() +
+                    " / " + cellData.getValue().price.getValue().type.getValue().name.getValue())
+        );
         tableView.getColumns().addAll(nameColumn, priceColumn);
         tableView.setItems(extraList);
 

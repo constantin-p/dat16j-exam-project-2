@@ -20,7 +20,6 @@ public class Extra implements Storable {
     public StringProperty name;
     public ObjectProperty<Price> price;
 
-
     public Extra() {
         id = null;
         name = new SimpleStringProperty("");
