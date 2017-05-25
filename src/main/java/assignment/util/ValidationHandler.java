@@ -2,6 +2,7 @@ package assignment.util;
 
 
 import assignment.model.AccountType;
+import assignment.model.Price;
 import assignment.model.PriceType;
 import javafx.scene.control.Label;
 
@@ -62,12 +63,20 @@ public class ValidationHandler {
     public static final String ERROR_MOTORHOME_MODEL_SHORT = "Model too short";
     public static final String ERROR_MOTORHOME_MODEL_LONG = "Model too long";
     public static final String ERROR_MOTORHOME_MODEL_INVALID = "Invalid Model (non-alphanumeric)";
+
     public static final String ERROR_MOTORHOME_BRAND_REQUIRED = "Brand required";
     public static final String ERROR_MOTORHOME_BRAND_SHORT = "Brand too short";
     public static final String ERROR_MOTORHOME_BRAND_LONG = "Brand too long";
     public static final String ERROR_MOTORHOME_BRAND_INVALID = "Invalid Brand (non-alphanumeric)";
     public static final String ERROR_MOTORHOME_CAPACITY_REQUIRED = "Capacity required";
     public static final String ERROR_MOTORHOME_CAPACITY_INVALID = "Invalid capacity";
+
+    public static final String ERROR_EXTRA_NAME_REQUIRED = "Name required";
+    public static final String ERROR_EXTRA_NAME_SHORT = "Name too short";
+    public static final String ERROR_EXTRA_NAME_LONG = "Name too long";
+    public static final String ERROR_EXTRA_NAME_INVALID = "Invalid name (non-alphanumeric)";
+    public static final String ERROR_EXTRA_NAME_DUPLICATE = "Name already registered";
+    public static final String ERROR_EXTRA_PRICE_REQUIRED = "Price required";
 
     public static boolean showError(Label errorLabel, Response validation) {
         if (validation.success) {
@@ -264,6 +273,7 @@ public class ValidationHandler {
         return new Response(true);
     }
 
+
     public static Response validateMotorhomeModel(String model) {
         if(model == null || model.isEmpty()) {
             return new Response(false, ERROR_MOTORHOME_MODEL_REQUIRED);
@@ -296,4 +306,34 @@ public class ValidationHandler {
         return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
     }
 
+    // EXTRA fields
+    public static Response validateExtraName(String name) {
+        if(name == null || name.isEmpty()) {
+            return new Response(false, ERROR_EXTRA_NAME_REQUIRED);
+        } else if (!name.matches("[a-zA-Z0-9 ]+")) {
+            return new Response(false, ERROR_EXTRA_NAME_INVALID);
+        } else if (name.length() <= 3) {
+            return new Response(false, ERROR_EXTRA_NAME_SHORT);
+        } else if (name.length() > 25) {
+            return new Response(false, ERROR_EXTRA_NAME_LONG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateExtraPrice(Price price) {
+        if(price == null || price.id == null) {
+            return new Response(false, ERROR_EXTRA_PRICE_REQUIRED);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateExtraDBOperation(int returnValue) {
+        if(returnValue == 1) {
+            return new Response(true);
+        } else if (returnValue == -1) {
+            return new Response(false, ERROR_EXTRA_NAME_DUPLICATE);
+        }
+
+        return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
+    }
 }

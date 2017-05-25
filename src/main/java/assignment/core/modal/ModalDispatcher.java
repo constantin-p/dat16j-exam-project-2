@@ -2,6 +2,7 @@ package assignment.core.modal;
 
 
 import assignment.core.modal.selector.AccountTypeSelectorController;
+import assignment.core.modal.selector.PriceSelectorController;
 import assignment.core.modal.selector.PriceTypeSelectorController;
 import assignment.model.*;
 import javafx.beans.property.BooleanProperty;
@@ -107,10 +108,25 @@ public class ModalDispatcher {
         });
     }
 
+    public Price showSelectPriceModal(Stage stage) {
+        return (Price) showModal(stage, (Stage modalStage) -> {
+            return new PriceSelectorController(this, modalStage,
+                    false);
+        });
+    }
+
     public Motorhome showCreateMotorhomeModal(Stage stage) {
         return (Motorhome) showModal(stage, (Stage modalStage) -> {
             return new MotorhomeFormController(this, modalStage,
                     true, new Motorhome());
         });
     }
+
+    public Extra showCreateExtrasModal(Stage stage) {
+        return (Extra) showModal(stage, (Stage modalStage) -> {
+            return new ExtraFormController(this, modalStage,
+                    true, new Extra());
+        });
+    }
+
 }

@@ -60,6 +60,8 @@ public class RootController {
                 () -> new RepairsController(this));
         loadSection(ServiceController.getAccessTypeName(),
                 () -> new ServiceController(this));
+        loadSection(ExtrasController.getAccessTypeName(),
+                () -> new ExtrasController(this));
     }
 
     private void loadSection(String accessTypeName, Callable<UISection> createSectionControllerRequest) {
