@@ -13,7 +13,7 @@ import javafx.scene.control.TableView;
 import java.util.List;
 
 public class AccountsController implements UISection {
-    public static final String ACCESS_TYPE_NAME = "accounts";
+    private static final String ACCESS_TYPE_NAME = "accounts";
     private static final String TEMPLATE_PATH = "templates/section/accounts.fxml";
 
     private RootController rootController;

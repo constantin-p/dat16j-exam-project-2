@@ -4,7 +4,7 @@ import assignment.core.RootController;
 import javafx.fxml.FXML;
 
 public class RepairsController implements UISection {
-    public static final String ACCESS_TYPE_NAME = "repairs";
+    private static final String ACCESS_TYPE_NAME = "repairs";
     private static final String TEMPLATE_PATH = "templates/section/repairs.fxml";
 
     private RootController rootController;

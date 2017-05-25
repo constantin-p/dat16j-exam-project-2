@@ -2,7 +2,12 @@ package assignment.util;
 
 
 import assignment.model.AccountType;
+import assignment.model.PriceType;
 import javafx.scene.control.Label;
+
+import java.time.LocalDate;
+
+import static java.time.temporal.ChronoUnit.YEARS;
 
 public class ValidationHandler {
 
@@ -30,6 +35,29 @@ public class ValidationHandler {
     public static final String ERROR_ACCOUNT_TYPE_NAME_INVALID = "Invalid name (non-alphanumeric)";
     public static final String ERROR_ACCOUNT_TYPE_NAME_DUPLICATE = "Name already registered";
 
+    public static final String ERROR_CLIENT_FIRSTNAME_REQUIRED = "First name required";
+    public static final String ERROR_CLIENT_FIRSTNAME_SHORT = "First name too short";
+    public static final String ERROR_CLIENT_FIRSTNAME_LONG = "First name too long";
+    public static final String ERROR_CLIENT_FIRSTNAME_INVALID = "Invalid first name (non-alphanumeric)";
+    public static final String ERROR_CLIENT_LASTNAME_REQUIRED = "Last name required";
+    public static final String ERROR_CLIENT_LASTNAME_SHORT = "Last name too short";
+    public static final String ERROR_CLIENT_LASTNAME_LONG = "Last name too long";
+    public static final String ERROR_CLIENT_LASTNAME_INVALID = "Invalid last name (non-alphanumeric)";
+    public static final String ERROR_CLIENT_EMAIL_REQUIRED = "Email required";
+    public static final String ERROR_CLIENT_EMAIL_LONG = "Email too long";
+    public static final String ERROR_CLIENT_EMAIL_DUPLICATE = "Email already registered";
+    public static final String ERROR_CLIENT_EMAIL_INVALID = "Invalid email address";
+    public static final String ERROR_CLIENT_DOB_REQUIRED = "Date of birth required";
+    public static final String ERROR_CLIENT_DOB_YOUNG = "Too young (<18 years)";
+
+    public static final String ERROR_PRICE_NAME_REQUIRED = "Name required";
+    public static final String ERROR_PRICE_NAME_SHORT = "Name too short";
+    public static final String ERROR_PRICE_NAME_LONG = "Name too long";
+    public static final String ERROR_PRICE_NAME_INVALID = "Invalid name (non-alphanumeric)";
+    public static final String ERROR_PRICE_NAME_DUPLICATE = "Name already registered";
+    public static final String ERROR_PRICE_VALUE_REQUIRED = "Name required";
+    public static final String ERROR_PRICE_PRICE_TYPE_REQUIRED = "Price type required";
+
     public static final String ERROR_MOTORHOME_MODEL_REQUIRED = "Model required";
     public static final String ERROR_MOTORHOME_MODEL_SHORT = "Model too short";
     public static final String ERROR_MOTORHOME_MODEL_LONG = "Model too long";
@@ -39,9 +67,8 @@ public class ValidationHandler {
     public static final String ERROR_MOTORHOME_BRAND_SHORT = "Brand too short";
     public static final String ERROR_MOTORHOME_BRAND_LONG = "Brand too long";
     public static final String ERROR_MOTORHOME_BRAND_INVALID = "Invalid Brand (non-alphanumeric)";
-
-    public static final String ERROR_FLEET_CAPACITY_REQUIRED = "Capacity required";
-    public static final String ERROR_FLEET_CAPACITY_INVALID = "Invalid capacity";
+    public static final String ERROR_MOTORHOME_CAPACITY_REQUIRED = "Capacity required";
+    public static final String ERROR_MOTORHOME_CAPACITY_INVALID = "Invalid capacity";
 
     public static final String ERROR_EXTRAS_NAME_REQUIRED = "Name required";
     public static final String ERROR_EXTRAS_NAME_SHORT = "Name too short";
@@ -130,10 +157,107 @@ public class ValidationHandler {
         } else if (returnValue == -1) {
             return new Response(false, ERROR_ACCOUNT_TYPE_NAME_DUPLICATE);
         }
+        return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
+    }
+
+    // PRICE fields
+    public static Response validatePriceName(String name) {
+        if(name == null || name.isEmpty()) {
+            return new Response(false, ERROR_PRICE_NAME_REQUIRED);
+        } else if (!name.matches("[a-zA-Z0-9 ]+")) {
+            return new Response(false, ERROR_PRICE_NAME_INVALID);
+        } else if (name.length() <= 3) {
+            return new Response(false, ERROR_PRICE_NAME_SHORT);
+        } else if (name.length() > 25) {
+            return new Response(false, ERROR_PRICE_NAME_LONG);
+        }
+        return new Response(true);
+    }
+
+    // TODO: Replace with float
+    public static Response validatePriceValue(String value) {
+        if(value == null || value.isEmpty()) {
+            return new Response(false, ERROR_PRICE_VALUE_REQUIRED);
+        } else if (value.length() <= 1) {
+            return new Response(false, ERROR_PRICE_VALUE_REQUIRED);
+        }
+        return new Response(true);
+    }
+
+    public static Response validatePricePriceType(PriceType priceType) {
+        if(priceType == null || priceType.id == null) {
+            return new Response(false, ERROR_PRICE_PRICE_TYPE_REQUIRED);
+        }
+        return new Response(true);
+    }
+
+    public static Response validatePriceDBOperation(int returnValue) {
+        if(returnValue == 1) {
+            return new Response(true);
+        } else if (returnValue == -1) {
+            return new Response(false, ERROR_PRICE_NAME_DUPLICATE);
+        }
+        return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
+    }
+
+    // CLIENT fields
+    public static Response validateClientFirstName(String firstName) {
+        if(firstName == null || firstName.isEmpty()) {
+            return new Response(false, ERROR_CLIENT_FIRSTNAME_REQUIRED);
+        } else if (!firstName.chars().allMatch(Character::isLetter)) {
+            return new Response(false, ERROR_CLIENT_FIRSTNAME_INVALID);
+        } else if (firstName.length() <= 1) {
+            return new Response(false, ERROR_CLIENT_FIRSTNAME_SHORT);
+        } else if (firstName.length() > 25) {
+            return new Response(false, ERROR_CLIENT_FIRSTNAME_LONG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateClientLastName(String lastName) {
+        if(lastName == null || lastName.isEmpty()) {
+            return new Response(false, ERROR_CLIENT_LASTNAME_REQUIRED);
+        } else if (!lastName.chars().allMatch(Character::isLetter)) {
+            return new Response(false, ERROR_CLIENT_LASTNAME_INVALID);
+        } else if (lastName.length() <= 1) {
+            return new Response(false, ERROR_CLIENT_LASTNAME_SHORT);
+        } else if (lastName.length() > 25) {
+            return new Response(false, ERROR_CLIENT_LASTNAME_LONG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateClientEmail(String email) {
+        if(email == null || email.isEmpty()) {
+            return new Response(false, ERROR_CLIENT_EMAIL_REQUIRED);
+        } else if (!email.matches("^(.+)@(.+)$")) {
+            return new Response(false, ERROR_CLIENT_EMAIL_INVALID);
+        } else if (email.length() > 25) {
+            return new Response(false, ERROR_CLIENT_EMAIL_LONG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateClientDateOfBirth(LocalDate date) {
+        if(date == null) {
+            return new Response(false, ERROR_CLIENT_DOB_REQUIRED);
+        } else if (YEARS.between(date, LocalDate.now()) < 18) {
+            return new Response(false, ERROR_CLIENT_DOB_YOUNG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateClientDBOperation(int returnValue) {
+        if(returnValue == 1) {
+            return new Response(true);
+        } else if (returnValue == -1) {
+            return new Response(false, ERROR_CLIENT_EMAIL_DUPLICATE);
+        }
 
         return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
     }
 
+    // MOTORHOME fields
     public static Response validateMotorhomeBrand(String brand) {
         if(brand == null || brand.isEmpty()) {
             return new Response(false, ERROR_MOTORHOME_BRAND_REQUIRED);
@@ -161,6 +285,26 @@ public class ValidationHandler {
         return new Response(true);
     }
 
+    public static Response validateMotorhomeCapacity(String capacity) {
+        if(capacity == null || capacity.isEmpty()) {
+            return new Response(false, ERROR_MOTORHOME_CAPACITY_REQUIRED);
+        } else if (!capacity.matches("[a-zA-Z0-9]+")) {
+            return new Response(false, ERROR_MOTORHOME_CAPACITY_INVALID);
+        }
+        return new Response(true);
+
+    }
+
+    public static Response validateMotorhomeDBOperation(int returnValue) {
+        if(returnValue == 1) {
+            return new Response(true);
+        } else if (returnValue == -1) {
+            return new Response(false, ERROR_ACCOUNT_TYPE_NAME_DUPLICATE);
+        }
+        return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
+    }
+
+    // EXTRA fields
     public static Response validateExtrasModel(String name) {
         if(name == null || name.isEmpty()) {
             return new Response(false, ERROR_EXTRAS_NAME_REQUIRED);
@@ -172,26 +316,6 @@ public class ValidationHandler {
             return new Response(false, ERROR_EXTRAS_NAME_LONG);
         }
         return new Response(true);
-    }
-
-
-    public static Response validateMotorhomeCapacity(String capacity) {
-        if(capacity == null || capacity.isEmpty()) {
-            return new Response(false, ERROR_FLEET_CAPACITY_REQUIRED);
-        } else if (!capacity.matches("[a-zA-Z0-9]+")) {
-            return new Response(false, ERROR_FLEET_CAPACITY_INVALID);
-        }
-        return new Response(true);
-
-    }
-    public static Response validateMotorhomeDBOperation(int returnValue) {
-        if(returnValue == 1) {
-            return new Response(true);
-        } else if (returnValue == -1) {
-            return new Response(false, ERROR_ACCOUNT_TYPE_NAME_DUPLICATE);
-        }
-
-        return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
     }
 
     public static Response validateExtrasDBOperation(int returnValue) {

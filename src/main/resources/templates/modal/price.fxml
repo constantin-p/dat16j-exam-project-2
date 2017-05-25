@@ -28,9 +28,7 @@
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
-        <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
-        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
-        
+
         <RowConstraints prefHeight="28.0" minHeight="28.0" vgrow="ALWAYS" />
         <RowConstraints maxHeight="15.0" minHeight="15.0" vgrow="NEVER" />
         <RowConstraints maxHeight="42.0" minHeight="42.0" vgrow="NEVER" />
@@ -41,8 +39,9 @@
             text="INFO LABEL"
             GridPane.columnIndex="1"
             GridPane.rowIndex="1" />
+
         <Label
-            text="Model:"
+            text="Name:"
             GridPane.columnIndex="1"
             GridPane.rowIndex="2"
             GridPane.valignment="BOTTOM">
@@ -51,12 +50,12 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <TextField fx:id="modelTextField"
+        <TextField fx:id="nameTextField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="3" />
 
         <Label
-            text="Brand:"
+            text="Value:"
             GridPane.columnIndex="1"
             GridPane.rowIndex="4"
             GridPane.valignment="BOTTOM">
@@ -65,28 +64,21 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <TextField fx:id="brandTextField"
-            GridPane.columnIndex="1"
-            GridPane.rowIndex="5" />
+        <TextField fx:id="valueTextField"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="5" />
 
-        <Label
-            text="Capacity"
-            GridPane.columnIndex="1"
-            GridPane.rowIndex="6"
-            GridPane.valignment="BOTTOM">
-            <padding>
-                <Insets
-                    bottom="2.0" />
-            </padding>
-        </Label>
-        <TextField fx:id="capacityTextField"
+        <Button fx:id="selectPriceTypeButton"
+            text="Select type"
+            onAction="#handleSelectPriceTypeAction"
+            maxWidth="1.7976931348623157E308"
             GridPane.columnIndex="1"
             GridPane.rowIndex="7" />
 
         <HBox
             alignment="CENTER_RIGHT"
             GridPane.columnIndex="1"
-            GridPane.rowIndex="12">
+            GridPane.rowIndex="10">
             <children>
                 <Button
                     text="Cancel"
@@ -94,7 +86,7 @@
                     onAction="#handleCancelAction">
                     <HBox.margin>
                         <Insets
-                            right="15.0" />
+                                right="15.0" />
                     </HBox.margin>
                 </Button>
                 <Button fx:id="submitButton"

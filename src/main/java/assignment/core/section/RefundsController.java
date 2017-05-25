@@ -4,7 +4,7 @@ import assignment.core.RootController;
 import javafx.fxml.FXML;
 
 public class RefundsController implements UISection {
-    public static final String ACCESS_TYPE_NAME = "refunds";
+    private static final String ACCESS_TYPE_NAME = "refunds";
     private static final String TEMPLATE_PATH = "templates/section/refunds.fxml";
 
     private RootController rootController;

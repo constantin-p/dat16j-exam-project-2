@@ -1,6 +1,6 @@
 package assignment.core.modal;
 
-import assignment.model.AccountType;
+
 import assignment.model.Motorhome;
 import assignment.util.ValidationHandler;
 import javafx.beans.property.BooleanProperty;
@@ -22,7 +22,6 @@ public class MotorhomeFormController extends ModalBaseController {
 
     @FXML
     private Label errorLabel;
-
 
     @FXML
     private TextField modelTextField;
@@ -49,11 +48,11 @@ public class MotorhomeFormController extends ModalBaseController {
         super.initialize();
 
         super.isDisabled.bind(
-                isModelValid.not().or(
-                            isBrandValid.not().or(
-                                    isCapacityValid.not())
+            isModelValid.not().or(
+                isBrandValid.not().or(
+                    isCapacityValid.not()
                 )
-
+            )
         );
 
         modelTextField.textProperty().bindBidirectional(motorhome.model);
@@ -68,9 +67,7 @@ public class MotorhomeFormController extends ModalBaseController {
                     ValidationHandler.validateMotorhomeBrand(newValue)));
         });
 
-        capacityTextField.textProperty().bindBidirectional(
-                new SimpleStringProperty(String.valueOf(motorhome.capacity.getValue()))
-        );
+        capacityTextField.textProperty().bindBidirectional(motorhome.capacity);
         capacityTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             isCapacityValid.set(ValidationHandler.showError(errorLabel,
                     ValidationHandler.validateMotorhomeCapacity(newValue)));
@@ -85,7 +82,6 @@ public class MotorhomeFormController extends ModalBaseController {
                     ValidationHandler.validateMotorhomeDBOperation(Motorhome.dbInsert(motorhome)));
 
             if (success) {
-
                 super.handleOKAction(event);
             }
         } else {
@@ -100,8 +96,6 @@ public class MotorhomeFormController extends ModalBaseController {
         }
         return null;
     }
-
-
 
     @Override
     public String getTemplatePath() {

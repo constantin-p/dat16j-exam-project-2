@@ -50,6 +50,8 @@ public class RootController {
                 () -> new FleetController(this));
         loadSection(OrdersController.getAccessTypeName(),
                 () -> new OrdersController(this));
+        loadSection(PricesController.getAccessTypeName(),
+                () -> new PricesController(this));
         loadSection(PaymentsController.getAccessTypeName(),
                 () -> new PaymentsController(this));
         loadSection(RefundsController.getAccessTypeName(),

@@ -4,7 +4,7 @@ import assignment.core.RootController;
 import javafx.fxml.FXML;
 
 public class PaymentsController implements UISection {
-    public static final String ACCESS_TYPE_NAME = "payments";
+    private static final String ACCESS_TYPE_NAME = "payments";
     private static final String TEMPLATE_PATH = "templates/section/payments.fxml";
 
     private RootController rootController;
