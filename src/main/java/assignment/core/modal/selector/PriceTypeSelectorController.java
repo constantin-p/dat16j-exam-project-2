@@ -23,8 +23,6 @@ public class PriceTypeSelectorController extends SelectorBaseController {
 
     public PriceTypeSelectorController(ModalDispatcher modalDispatcher, Stage stage, boolean canCreate) {
         super(modalDispatcher, stage, canCreate);
-
-        populateTableView();
     }
 
     @Override
@@ -36,6 +34,8 @@ public class PriceTypeSelectorController extends SelectorBaseController {
 
         tableView.getColumns().addAll(nameColumn);
         tableView.setItems(priceTypeList);
+
+        populateTableView();
     }
 
     @Override

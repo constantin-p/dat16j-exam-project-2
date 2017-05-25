@@ -16,7 +16,7 @@ import java.util.List;
 public class Price implements Storable {
     public static final String DB_TABLE_NAME = "prices";
 
-    private String id;
+    public String id;
     public StringProperty name;
     public StringProperty value;
     public ObjectProperty<PriceType> type;
@@ -62,20 +62,25 @@ public class Price implements Storable {
     /*
      *  DB helpers
      */
-    public static List<Price> dbGetAll() {
-        List<Price> result = new ArrayList<>();
-        try {
-            List<HashMap<String, String>> returnList = Database.getTable(Price.DB_TABLE_NAME)
-                    .getAll(Arrays.asList("id", "name", "value", "pricetype_id"),
-                            null, null);
+    public static Price dbGet(String priceID) {
+        if (priceID == null) {
+            throw new IllegalArgumentException("Invalid ID given as argument! [null]");
+        }
+        HashMap<String, String> searchQuery = new HashMap<>();
+        searchQuery.put("id", priceID);
 
-            returnList.forEach((HashMap<String, String> valuesMap) -> {
-                result.add(Price.construct(valuesMap));
-            });
-            return result;
+        try {
+            HashMap<String, String> returnValues = Database.getTable(Price.DB_TABLE_NAME)
+                    .get(Arrays.asList("id", "name", "value", "pricetype_id"),
+                            searchQuery, new HashMap<>());
+
+            if (returnValues.get("id") != null && returnValues.get("id").equals(priceID)) {
+                return Price.construct(returnValues);
+            }
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
-            return result;
+            return null;
         }
     }
 
@@ -95,6 +100,23 @@ public class Price implements Storable {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static List<Price> dbGetAll() {
+        List<Price> result = new ArrayList<>();
+        try {
+            List<HashMap<String, String>> returnList = Database.getTable(Price.DB_TABLE_NAME)
+                    .getAll(Arrays.asList("id", "name", "value", "pricetype_id"),
+                            null, null);
+
+            returnList.forEach((HashMap<String, String> valuesMap) -> {
+                result.add(Price.construct(valuesMap));
+            });
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result;
         }
     }
 

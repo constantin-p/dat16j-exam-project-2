@@ -22,8 +22,6 @@ public class AccountTypeSelectorController extends SelectorBaseController {
 
     public AccountTypeSelectorController(ModalDispatcher modalDispatcher, Stage stage, boolean canCreate) {
         super(modalDispatcher, stage, canCreate);
-
-        populateTableView();
     }
 
     @Override
@@ -35,6 +33,8 @@ public class AccountTypeSelectorController extends SelectorBaseController {
 
         tableView.getColumns().addAll(nameColumn);
         tableView.setItems(accountTypeList);
+
+        populateTableView();
     }
 
     @Override

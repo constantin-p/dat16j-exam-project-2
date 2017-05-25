@@ -1,38 +1,41 @@
 package assignment.core.modal;
 
-import assignment.model.AccountType;
-import assignment.model.Extras;
-import assignment.model.Motorhome;
+import assignment.model.Extra;
+import assignment.model.Price;
+import assignment.util.Response;
 import assignment.util.ValidationHandler;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class ExtrasFormController extends ModalBaseController {
+public class ExtraFormController extends ModalBaseController {
     private static final String TITLE_CREATE = "extras_create";
     private static final String TITLE_EDIT = "extras_create";
     private static final String TEMPLATE_PATH = "templates/modal/extras.fxml";
 
-    private Extras extras;
+    private Extra extra;
     private boolean create;
 
     @FXML
     private Label errorLabel;
 
-
     @FXML
     private TextField nameTextField;
     private BooleanProperty isNameValid = new SimpleBooleanProperty(false);
 
-    public ExtrasFormController(ModalDispatcher modalDispatcher, Stage stage, boolean create,
-                                   Extras extras) {
+    @FXML
+    private Button selectPriceButton;
+    private BooleanProperty isPriceValid = new SimpleBooleanProperty(false);
+
+    public ExtraFormController(ModalDispatcher modalDispatcher, Stage stage, boolean create,
+                               Extra extra) {
         super(modalDispatcher, stage);
-        this.extras = extras;
+        this.extra = extra;
         this.create = create;
     }
 
@@ -41,15 +44,15 @@ public class ExtrasFormController extends ModalBaseController {
         super.initialize();
 
         super.isDisabled.bind(
-                isNameValid.not()
-
-
+            isNameValid.not().or(
+                isPriceValid.not()
+            )
         );
 
-        nameTextField.textProperty().bindBidirectional(extras.name);
+        nameTextField.textProperty().bindBidirectional(extra.name);
         nameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             isNameValid.set(ValidationHandler.showError(errorLabel,
-                    ValidationHandler.validateExtrasModel(newValue)));
+                    ValidationHandler.validateExtraName(newValue)));
         });
 
     }
@@ -58,7 +61,7 @@ public class ExtrasFormController extends ModalBaseController {
     public void handleOKAction(ActionEvent event) {
         if (create) {
             boolean success = ValidationHandler.showError(errorLabel,
-                    ValidationHandler.validateExtrasDBOperation(Extras.dbInsert(extras)));
+                    ValidationHandler.validateExtraDBOperation(Extra.dbInsert(extra)));
 
             if (success) {
 
@@ -70,14 +73,12 @@ public class ExtrasFormController extends ModalBaseController {
     }
 
     @Override
-    public Extras result() {
+    public Extra result() {
         if (super.isOKClicked && !super.isDisabled.getValue()) {
-            return extras;
+            return extra;
         }
         return null;
     }
-
-
 
     @Override
     public String getTemplatePath() {
@@ -91,6 +92,19 @@ public class ExtrasFormController extends ModalBaseController {
                 :   TITLE_EDIT;
     }
 
+    @FXML
+    public void handleSelectPriceAction(ActionEvent event) {
+        Price price = modalDispatcher.showSelectPriceModal(super.stage);
 
+        Response validation = ValidationHandler.validateExtraPrice(price);
+        if (validation.success) {
+            extra.price.setValue(price);
+            selectPriceButton.setText(price.name.getValue() + " - " + price.value.getValue());
+        } else {
+            selectPriceButton.setText("Select price");
+        }
+
+        isPriceValid.set(ValidationHandler.showError(errorLabel, validation));
+    }
 }
 

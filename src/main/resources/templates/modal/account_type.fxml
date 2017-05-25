@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 <?import javafx.scene.control.TableView?>
+
 <GridPane
     xmlns:fx="http://javafx.com/fxml"
     stylesheets="@../../css/main.css"
