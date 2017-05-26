@@ -52,6 +52,8 @@ public class RootController {
                 () -> new OrdersController(this));
         loadSection(PricesController.getAccessTypeName(),
                 () -> new PricesController(this));
+        loadSection(SeasonsController.getAccessTypeName(),
+                () -> new SeasonsController(this));
         loadSection(PaymentsController.getAccessTypeName(),
                 () -> new PaymentsController(this));
         loadSection(RefundsController.getAccessTypeName(),

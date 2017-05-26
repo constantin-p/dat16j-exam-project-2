@@ -61,6 +61,9 @@ public class ExtrasController implements UISection {
         }
     }
 
+    /*
+     *  Helpers
+     */
     private void populateTableView() {
 
         List<Extra> extras = Extra.dbGetAll();
