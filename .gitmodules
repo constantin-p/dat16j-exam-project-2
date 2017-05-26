@@ -1,3 +1,6 @@
 [submodule "src/main/java/store/db"]
 	path = src/main/java/store/db
 	url = git@bitbucket.org:constantin-p/mysql-store-db.git
+[submodule "src/main/java/ui/control"]
+	path = src/main/java/ui/control
+	url = git@bitbucket.org:constantin-p/javafx-ui-kit-control.git

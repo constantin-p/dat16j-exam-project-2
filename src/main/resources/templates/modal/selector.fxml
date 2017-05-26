@@ -3,11 +3,12 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+
+<?import ui.control.CPSearchField?>
 
 <GridPane
     xmlns:fx="http://javafx.com/fxml"
@@ -33,15 +34,12 @@
             minHeight="42.0"
             GridPane.columnSpan="2147483647">
             <children>
-                <TextField fx:id="searchTextField"
+                <CPSearchField fx:id="searchTextField"
                     HBox.hgrow="ALWAYS">
                     <HBox.margin>
                         <Insets right="15.0" />
                     </HBox.margin>
-                </TextField>
-                <Button
-                    text="Clear"
-                    mnemonicParsing="false"/>
+                </CPSearchField>
             </children>
             <padding>
                 <Insets left="15.0" right="15.0" />

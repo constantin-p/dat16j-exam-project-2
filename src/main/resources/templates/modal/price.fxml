@@ -3,11 +3,12 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+
+<?import ui.control.CPTextField?>
 
 <GridPane
     xmlns:fx="http://javafx.com/fxml"
@@ -50,7 +51,7 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <TextField fx:id="nameTextField"
+        <CPTextField fx:id="nameTextField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="3" />
 
@@ -64,9 +65,9 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <TextField fx:id="valueTextField"
-               GridPane.columnIndex="1"
-               GridPane.rowIndex="5" />
+        <CPTextField fx:id="valueTextField"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="5" />
 
         <Button fx:id="selectPriceTypeButton"
             text="Select type"

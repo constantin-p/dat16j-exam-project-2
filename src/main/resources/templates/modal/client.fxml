@@ -4,11 +4,12 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+
+<?import ui.control.CPTextField?>
 
 <GridPane
         xmlns:fx="http://javafx.com/fxml"
@@ -54,7 +55,7 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <TextField fx:id="firstNameTextField"
+        <CPTextField fx:id="firstNameTextField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="3" />
 
@@ -68,7 +69,7 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <TextField fx:id="lastNameTextField"
+        <CPTextField fx:id="lastNameTextField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="5" />
 
@@ -82,7 +83,7 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <TextField fx:id="emailTextField"
+        <CPTextField fx:id="emailTextField"
                GridPane.columnIndex="1"
                GridPane.rowIndex="7" />
 
