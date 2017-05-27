@@ -1,35 +1,34 @@
-package assignment.core.section;
+package assignment.core.modal.selector;
 
 
-import assignment.core.RootController;
-import assignment.model.Extra;
+import assignment.core.modal.ModalDispatcher;
 import assignment.model.Motorhome;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.stage.Stage;
 
 import java.util.List;
 
-public class FleetController implements UISection {
-    private static final String ACCESS_TYPE_NAME = "fleet";
-    private static final String TEMPLATE_PATH = "templates/section/fleet.fxml";
+public class MotorhomeSelectorController extends SelectorBaseController {
+    private static final String TITLE = "motorhome_select";
 
-    private RootController rootController;
     private ObservableList<Motorhome> motorhomeList = FXCollections.observableArrayList();
 
     @FXML
     private TableView<Motorhome> tableView;
 
-    public FleetController(RootController rootController) {
-        this.rootController = rootController;
+    public MotorhomeSelectorController(ModalDispatcher modalDispatcher, Stage stage, boolean canCreate) {
+        super(modalDispatcher, stage, canCreate);
     }
 
-    @FXML
+    @Override
     public void initialize() {
+        super.initialize();
+
         TableColumn<Motorhome, String> brandColumn = new TableColumn("Brand");
         brandColumn.setCellValueFactory(cellData -> cellData.getValue().brand);
 
@@ -41,7 +40,7 @@ public class FleetController implements UISection {
 
         TableColumn<Motorhome, String> priceColumn = new TableColumn("Base price");
         priceColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(cellData.getValue().price.getValue().value.getValue() +
+                new SimpleStringProperty(cellData.getValue().price.getValue().value.getValue() +
                         " / " + cellData.getValue().price.getValue().type.getValue().name.getValue())
         );
         tableView.getColumns().addAll(brandColumn, modelColumn, capacityColumn, priceColumn);
@@ -50,28 +49,25 @@ public class FleetController implements UISection {
         populateTableView();
     }
 
-
-    public static String getAccessTypeName() {
-        return ACCESS_TYPE_NAME;
-    }
-
-    public String getTemplatePath() {
-        return TEMPLATE_PATH;
-    }
-
-    @FXML
-    public void handleAddAction(ActionEvent event) {
-        Motorhome motorhome = rootController.modalDispatcher.showCreateMotorhomeModal(null);
-        if (motorhome != null) {
-            populateTableView();
+    @Override
+    public Motorhome result() {
+        Motorhome selectedMotorhome = tableView.getSelectionModel().getSelectedItem();
+        if (super.isOKClicked && selectedMotorhome != null) {
+            return selectedMotorhome;
         }
+        return null;
+    }
+
+    @Override
+    public String getTitle() {
+        return TITLE;
     }
 
     /*
      *  Helpers
      */
     private void populateTableView() {
-
+        // Load motorhomes
         List<Motorhome> motorhomes = Motorhome.dbGetAll();
         motorhomeList.clear();
         motorhomes.forEach(entry -> {
@@ -79,5 +75,3 @@ public class FleetController implements UISection {
         });
     }
 }
-
-

@@ -57,16 +57,16 @@ public class Extra implements Storable {
     /*
      *  DB helpers
      */
-    public static Extra dbGet(String id) {
+    public static Extra dbGet(String extraID) {
         HashMap<String, String> searchQuery = new HashMap<>();
-        searchQuery.put("id", id);
+        searchQuery.put("id", extraID);
 
         try {
             HashMap<String, String> returnValues = Database.getTable(Extra.DB_TABLE_NAME)
                     .get(Arrays.asList("id", "name", "price_id"),
                             searchQuery, new HashMap<>());
 
-            if (returnValues.get("id") != null && returnValues.get("id").equals(id)) {
+            if (returnValues.get("id") != null && returnValues.get("id").equals(extraID)) {
                 return Extra.construct(returnValues);
             }
             return null;

@@ -8,12 +8,14 @@ import assignment.util.ValidationHandler;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import ui.control.CPIntegerField;
+import ui.control.CPTextField;
 
 public class MotorhomeFormController extends ModalBaseController {
     private static final String TITLE_CREATE = "motorhome_create";
@@ -27,17 +29,17 @@ public class MotorhomeFormController extends ModalBaseController {
     private Label errorLabel;
 
     @FXML
-    private TextField modelTextField;
+    private CPTextField modelTextField;
     private BooleanProperty isModelValid = new SimpleBooleanProperty(false);
 
     @FXML
-    private TextField brandTextField;
+    private CPTextField brandTextField;
     private BooleanProperty isBrandValid = new SimpleBooleanProperty(false);
 
-    // TODO: use numeric TextField
     @FXML
-    private TextField capacityTextField;
+    private CPIntegerField capacityTextField;
     private BooleanProperty isCapacityValid = new SimpleBooleanProperty(false);
+    private StringProperty motorhomeCapacity = new SimpleStringProperty();
 
     @FXML
     private Button selectPriceButton;
@@ -76,10 +78,10 @@ public class MotorhomeFormController extends ModalBaseController {
                     ValidationHandler.validateMotorhomeBrand(newValue)));
         });
 
-        capacityTextField.textProperty().bindBidirectional(motorhome.capacity);
-        capacityTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+        capacityTextField.integerProperty().bindBidirectional(motorhome.capacity);
+        capacityTextField.integerProperty().addListener((observable, oldValue, newValue) -> {
             isCapacityValid.set(ValidationHandler.showError(errorLabel,
-                    ValidationHandler.validateMotorhomeCapacity(newValue)));
+                    ValidationHandler.validateMotorhomeCapacity(newValue.intValue())));
         });
     }
 
@@ -121,7 +123,7 @@ public class MotorhomeFormController extends ModalBaseController {
     public void handleSelectPriceAction(ActionEvent event) {
         Price price = modalDispatcher.showSelectPriceModal(super.stage);
 
-        Response validation = ValidationHandler.validateExtraPrice(price);
+        Response validation = ValidationHandler.validateMotorhomePrice(price);
         if (validation.success) {
             motorhome.price.setValue(price);
             selectPriceButton.setText(price.name.getValue() + " - [" + price.value.getValue() +

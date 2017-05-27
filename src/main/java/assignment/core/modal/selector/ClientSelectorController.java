@@ -1,37 +1,36 @@
-package assignment.core.section;
+package assignment.core.modal.selector;
 
 
-import assignment.core.RootController;
+import assignment.core.modal.ModalDispatcher;
 import assignment.model.Client;
-import javafx.beans.binding.Bindings;
+import assignment.model.Motorhome;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.stage.Stage;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class ClientsController implements UISection {
-    private static final String ACCESS_TYPE_NAME = "clients";
-    private static final String TEMPLATE_PATH = "templates/section/clients.fxml";
+public class ClientSelectorController extends SelectorBaseController {
+    private static final String TITLE = "client_select";
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-
-    private RootController rootController;
-    private ObservableList<Client> clientsList = FXCollections.observableArrayList();
+    private ObservableList<Client> clientList = FXCollections.observableArrayList();
 
     @FXML
     private TableView<Client> tableView;
 
-    public ClientsController(RootController rootController) {
-        this.rootController = rootController;
+    public ClientSelectorController(ModalDispatcher modalDispatcher, Stage stage, boolean canCreate) {
+        super(modalDispatcher, stage, canCreate);
     }
 
-    @FXML
+    @Override
     public void initialize() {
+        super.initialize();
+
         TableColumn<Client, String> firstNameColumn = new TableColumn("First name");
         firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().firstName);
 
@@ -42,29 +41,31 @@ public class ClientsController implements UISection {
         emailColumn.setCellValueFactory(cellData -> cellData.getValue().email);
 
         TableColumn<Client, String> dateOfBirthColumn = new TableColumn("Date of birth");
-        dateOfBirthColumn.setCellValueFactory(cellData -> {
-            return Bindings.createStringBinding(() ->
-                formatter.format(cellData.getValue().dateOfBirth.getValue()),
-                    cellData.getValue().dateOfBirth);
-        });
+        dateOfBirthColumn.setCellValueFactory(cellData -> cellData.getValue().dateOfBirth.asString());
 
         tableView.getColumns().addAll(firstNameColumn, lastNameColumn, emailColumn, dateOfBirthColumn);
-        tableView.setItems(clientsList);
+        tableView.setItems(clientList);
 
         populateTableView();
     }
 
-    public static String getAccessTypeName() {
-        return ACCESS_TYPE_NAME;
+    @Override
+    public Client result() {
+        Client selectedClient = tableView.getSelectionModel().getSelectedItem();
+        if (super.isOKClicked && selectedClient != null) {
+            return selectedClient;
+        }
+        return null;
     }
 
-    public String getTemplatePath() {
-        return TEMPLATE_PATH;
+    @Override
+    public String getTitle() {
+        return TITLE;
     }
 
     @FXML
-    public void handleAddAction(ActionEvent event) {
-        Client client = rootController.modalDispatcher.showCreateClientModal(null);
+    protected void handleCreateAction(ActionEvent event) {
+        Client client = modalDispatcher.showCreateClientModal(null);
         if (client != null) {
             populateTableView();
         }
@@ -76,9 +77,9 @@ public class ClientsController implements UISection {
     private void populateTableView() {
         // Load clients
         List<Client> clients = Client.dbGetAll();
-        clientsList.clear();
+        clientList.clear();
         clients.forEach(entry -> {
-            clientsList.add(entry);
+            clientList.add(entry);
         });
     }
 }

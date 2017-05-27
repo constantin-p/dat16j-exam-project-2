@@ -28,6 +28,7 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
 
         // TODO: Catch unhandled errors and display the crash
+        Config.loadConfig("invoice", "config/invoice.properties");
         Config.loadConfig("store", "config/store_secret.properties");
         Database.configInstance(Config.getConfig("store"));
 

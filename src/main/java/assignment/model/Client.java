@@ -17,10 +17,10 @@ import java.util.List;
 
 public class Client implements Storable {
     public static final String DB_TABLE_NAME = "clients";
+    public static final String[] DB_TABLE_COLUMNS = {"id", "first_name", "last_name", "email", "date_of_birth"};
+    public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
 
-    private static final String DATE_FORMAT = "dd-MM-yyyy";
-
-    private String id;
+    public String id;
     public StringProperty firstName;
     public StringProperty lastName;
     public StringProperty email;
@@ -31,7 +31,7 @@ public class Client implements Storable {
         firstName = new SimpleStringProperty("");
         lastName = new SimpleStringProperty("");
         email = new SimpleStringProperty("");
-        dateOfBirth = new SimpleObjectProperty<>(LocalDate.now());
+        dateOfBirth = new SimpleObjectProperty<>(LocalDate.now().minusYears(16));
     }
 
     public Client(String id, String firstName, String lastName, String email, LocalDate dateOfBirth) {
@@ -52,7 +52,7 @@ public class Client implements Storable {
         values.put("first_name", firstName.getValue());
         values.put("last_name", lastName.getValue());
         values.put("email", email.getValue());
-        values.put("date_of_birth", DateTimeFormatter.ofPattern(DATE_FORMAT)
+        values.put("date_of_birth", DateTimeFormatter.ofPattern(DB_DATE_FORMAT)
                 .format(dateOfBirth.getValue()));
 
         return values;
@@ -66,7 +66,7 @@ public class Client implements Storable {
         String email = valuesMap.get("email");
 
         LocalDate dateOfBirth = LocalDate.parse(valuesMap.get("date_of_birth"),
-                DateTimeFormatter.ofPattern(DATE_FORMAT));
+                DateTimeFormatter.ofPattern(DB_DATE_FORMAT));
 
         return new Client(id, firstName, lastName, email, dateOfBirth);
     }
@@ -75,30 +75,36 @@ public class Client implements Storable {
     /*
      *  DB helpers
      */
-    public static List<Client> dbGetAll() {
-        List<Client> result = new ArrayList<>();
-        try {
-            List<HashMap<String, String>> returnList = Database.getTable(Client.DB_TABLE_NAME)
-                    .getAll(Arrays.asList("id", "first_name", "last_name", "email", "date_of_birth"),
-                            null, null);
+    public static Client dbGet(String clientID) {
+        if (clientID == null) {
+            throw new IllegalArgumentException("Invalid ID given as argument! [null]");
+        }
+        HashMap<String, String> searchQuery = new HashMap<>();
+        searchQuery.put("id", clientID);
 
-            returnList.forEach((HashMap<String, String> valuesMap) -> {
-                result.add(Client.construct(valuesMap));
-            });
-            return result;
+        try {
+            HashMap<String, String> returnValues = Database.getTable(DB_TABLE_NAME)
+                    .get(Arrays.asList(DB_TABLE_COLUMNS),
+                            searchQuery, new HashMap<>());
+
+            if (returnValues.get("id") != null && returnValues.get("id").equals(clientID)) {
+                return Client.construct(returnValues);
+            }
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
-            return result;
+            return null;
         }
     }
+
 
     public static Client dbGetByEmail(String email) {
         HashMap<String, String> searchQuery = new HashMap<>();
         searchQuery.put("email", email);
 
         try {
-            HashMap<String, String> returnValues = Database.getTable(Client.DB_TABLE_NAME)
-                    .get(Arrays.asList("id", "first_name", "last_name", "email", "date_of_birth"),
+            HashMap<String, String> returnValues = Database.getTable(DB_TABLE_NAME)
+                    .get(Arrays.asList(DB_TABLE_COLUMNS),
                             searchQuery, new HashMap<>());
 
             if (returnValues.get("email") != null && returnValues.get("email").equals(email)) {
@@ -111,9 +117,26 @@ public class Client implements Storable {
         }
     }
 
+    public static List<Client> dbGetAll() {
+        List<Client> result = new ArrayList<>();
+        try {
+            List<HashMap<String, String>> returnList = Database.getTable(DB_TABLE_NAME)
+                    .getAll(Arrays.asList(DB_TABLE_COLUMNS),
+                            null, null);
+
+            returnList.forEach((HashMap<String, String> valuesMap) -> {
+                result.add(Client.construct(valuesMap));
+            });
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result;
+        }
+    }
+
     public static int dbInsert(Client client) {
         try {
-            return Database.getTable(Client.DB_TABLE_NAME)
+            return Database.getTable(DB_TABLE_NAME)
                     .insert(client.deconstruct());
         } catch (Exception e) {
             e.printStackTrace();

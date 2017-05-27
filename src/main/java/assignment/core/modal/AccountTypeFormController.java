@@ -13,9 +13,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.stage.Stage;
+import ui.control.CPTextField;
 
 import java.util.AbstractMap;
 import java.util.List;
@@ -34,7 +34,7 @@ public class AccountTypeFormController extends ModalBaseController {
     private Label errorLabel;
 
     @FXML
-    private TextField nameTextField;
+    private CPTextField nameTextField;
     private BooleanProperty isNameValid = new SimpleBooleanProperty(false);
 
     @FXML

@@ -98,7 +98,6 @@
             </padding>
         </Label>
         <DatePicker fx:id="dateOfBirthDatePicker"
-            onAction="#handleSetDateOfBirthAction"
             maxWidth="1.7976931348623157E308"
             GridPane.columnIndex="1"
             GridPane.rowIndex="9" />

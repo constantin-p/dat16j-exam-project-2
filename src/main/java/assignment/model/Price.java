@@ -1,10 +1,7 @@
 package assignment.model;
 
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import store.db.Database;
 import store.db.Storable;
 
@@ -15,23 +12,24 @@ import java.util.List;
 
 public class Price implements Storable {
     public static final String DB_TABLE_NAME = "prices";
+    public static final String[] DB_TABLE_COLUMNS = {"id", "name", "value", "pricetype_id"};
 
     public String id;
     public StringProperty name;
-    public StringProperty value;
+    public DoubleProperty value;
     public ObjectProperty<PriceType> type;
 
     public Price() {
         id = null;
         name = new SimpleStringProperty("");
-        value = new SimpleStringProperty("");
+        value = new SimpleDoubleProperty(0.00);
         type = new SimpleObjectProperty<>(null);
     }
 
-    public Price(String id, String name, String value, PriceType type) {
+    public Price(String id, String name, double value, PriceType type) {
         this.id = id;
         this.name = new SimpleStringProperty(name);
-        this.value = new SimpleStringProperty(value);
+        this.value = new SimpleDoubleProperty(value);
         this.type = new SimpleObjectProperty(type);
     }
 
@@ -43,7 +41,7 @@ public class Price implements Storable {
         HashMap<String, String> values = new HashMap<>();
 
         values.put("name", name.getValue());
-        values.put("value", value.getValue());
+        values.put("value", value.getValue().toString());
         values.put("pricetype_id", type.getValue().id);
 
         return values;
@@ -52,7 +50,7 @@ public class Price implements Storable {
     public static Price construct(HashMap<String, String> valuesMap) {
         String id = valuesMap.get("id");
         String name = valuesMap.get("name");
-        String value = valuesMap.get("value");
+        double value = Double.valueOf(valuesMap.get("value"));
 
         PriceType type = PriceType.dbGet(valuesMap.get("pricetype_id"));
 
@@ -70,8 +68,8 @@ public class Price implements Storable {
         searchQuery.put("id", priceID);
 
         try {
-            HashMap<String, String> returnValues = Database.getTable(Price.DB_TABLE_NAME)
-                    .get(Arrays.asList("id", "name", "value", "pricetype_id"),
+            HashMap<String, String> returnValues = Database.getTable(DB_TABLE_NAME)
+                    .get(Arrays.asList(DB_TABLE_COLUMNS),
                             searchQuery, new HashMap<>());
 
             if (returnValues.get("id") != null && returnValues.get("id").equals(priceID)) {
@@ -106,8 +104,8 @@ public class Price implements Storable {
     public static List<Price> dbGetAll() {
         List<Price> result = new ArrayList<>();
         try {
-            List<HashMap<String, String>> returnList = Database.getTable(Price.DB_TABLE_NAME)
-                    .getAll(Arrays.asList("id", "name", "value", "pricetype_id"),
+            List<HashMap<String, String>> returnList = Database.getTable(DB_TABLE_NAME)
+                    .getAll(Arrays.asList(DB_TABLE_COLUMNS),
                             null, null);
 
             returnList.forEach((HashMap<String, String> valuesMap) -> {
@@ -122,7 +120,7 @@ public class Price implements Storable {
 
     public static int dbInsert(Price price) {
         try {
-            return Database.getTable(Price.DB_TABLE_NAME)
+            return Database.getTable(DB_TABLE_NAME)
                     .insert(price.deconstruct());
         } catch (Exception e) {
             e.printStackTrace();

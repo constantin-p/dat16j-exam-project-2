@@ -2,7 +2,6 @@ package assignment.core.modal.selector;
 
 
 import assignment.core.modal.ModalDispatcher;
-import assignment.model.AccountType;
 import assignment.model.PriceType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

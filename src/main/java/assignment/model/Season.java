@@ -70,16 +70,16 @@ public class Season implements Storable {
     /*
      *  DB helpers
      */
-    public static Season dbGet(String id) {
+    public static Season dbGet(String seasonID) {
         HashMap<String, String> searchQuery = new HashMap<>();
-        searchQuery.put("id", id);
+        searchQuery.put("id", seasonID);
 
         try {
             HashMap<String, String> returnValues = Database.getTable(DB_TABLE_NAME)
                     .get(Arrays.asList(DB_TABLE_COLUMNS),
                             searchQuery, new HashMap<>());
 
-            if (returnValues.get("id") != null && returnValues.get("id").equals(id)) {
+            if (returnValues.get("id") != null && returnValues.get("id").equals(seasonID)) {
                 return Season.construct(returnValues);
             }
             return null;

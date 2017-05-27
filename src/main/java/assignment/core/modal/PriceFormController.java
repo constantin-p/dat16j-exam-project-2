@@ -1,9 +1,6 @@
 package assignment.core.modal;
 
 
-import assignment.core.auth.AuthManager;
-import assignment.model.Account;
-import assignment.model.AccountType;
 import assignment.model.Price;
 import assignment.model.PriceType;
 import assignment.util.Response;
@@ -14,8 +11,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import ui.control.CPDecimalField;
+import ui.control.CPTextField;
 
 public class PriceFormController extends ModalBaseController {
     private static final String TITLE_CREATE = "price_create";
@@ -29,11 +27,11 @@ public class PriceFormController extends ModalBaseController {
     private Label errorLabel;
 
     @FXML
-    private TextField nameTextField;
+    private CPTextField nameTextField;
     private BooleanProperty isNameValid = new SimpleBooleanProperty(false);
 
     @FXML
-    private TextField valueTextField;
+    private CPDecimalField valueTextField;
     private BooleanProperty isValueValid = new SimpleBooleanProperty(false);
 
     @FXML
@@ -66,10 +64,10 @@ public class PriceFormController extends ModalBaseController {
                     ValidationHandler.validatePriceName(newValue)));
         });
 
-        valueTextField.textProperty().bindBidirectional(price.value);
-        valueTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+        valueTextField.doubleProperty().bindBidirectional(price.value);
+        valueTextField.doubleProperty().addListener((observable, oldValue, newValue) -> {
             isValueValid.set(ValidationHandler.showError(errorLabel,
-                    ValidationHandler.validatePriceValue(newValue)));
+                    ValidationHandler.validatePriceValue(newValue.doubleValue())));
         });
     }
 

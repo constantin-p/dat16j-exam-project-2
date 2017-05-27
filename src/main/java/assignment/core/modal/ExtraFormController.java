@@ -1,5 +1,6 @@
 package assignment.core.modal;
 
+
 import assignment.model.Extra;
 import assignment.model.Price;
 import assignment.util.Response;
@@ -10,8 +11,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import ui.control.CPTextField;
 
 public class ExtraFormController extends ModalBaseController {
     private static final String TITLE_CREATE = "extras_create";
@@ -25,7 +26,7 @@ public class ExtraFormController extends ModalBaseController {
     private Label errorLabel;
 
     @FXML
-    private TextField nameTextField;
+    private CPTextField nameTextField;
     private BooleanProperty isNameValid = new SimpleBooleanProperty(false);
 
     @FXML

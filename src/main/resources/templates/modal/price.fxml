@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 <?import ui.control.CPTextField?>
+<?import ui.control.CPDecimalField?>
 
 <GridPane
     xmlns:fx="http://javafx.com/fxml"
@@ -65,7 +66,7 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <CPTextField fx:id="valueTextField"
+        <CPDecimalField fx:id="valueTextField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="5" />
 

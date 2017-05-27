@@ -1,9 +1,7 @@
 package assignment.core.modal;
 
 
-import assignment.core.modal.selector.AccountTypeSelectorController;
-import assignment.core.modal.selector.PriceSelectorController;
-import assignment.core.modal.selector.PriceTypeSelectorController;
+import assignment.core.modal.selector.*;
 import assignment.model.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -94,6 +92,20 @@ public class ModalDispatcher {
         });
     }
 
+    public Client showSelectClientModal(Stage stage) {
+        return (Client) showModal(stage, (Stage modalStage) -> {
+            return new ClientSelectorController(this, modalStage,
+                    false);
+        });
+    }
+
+    public Client showSelectClientModal(Stage stage, boolean canCreate) {
+        return (Client) showModal(stage, (Stage modalStage) -> {
+            return new ClientSelectorController(this, modalStage,
+                    canCreate);
+        });
+    }
+
     public PriceType showSelectPriceTypeModal(Stage stage) {
         return (PriceType) showModal(stage, (Stage modalStage) -> {
             return new PriceTypeSelectorController(this, modalStage,
@@ -122,6 +134,13 @@ public class ModalDispatcher {
         });
     }
 
+    public Motorhome showSelectMotorhomeModal(Stage stage) {
+        return (Motorhome) showModal(stage, (Stage modalStage) -> {
+            return new MotorhomeSelectorController(this, modalStage,
+                    false);
+        });
+    }
+
     public Extra showCreateExtrasModal(Stage stage) {
         return (Extra) showModal(stage, (Stage modalStage) -> {
             return new ExtraFormController(this, modalStage,
@@ -129,4 +148,17 @@ public class ModalDispatcher {
         });
     }
 
+    public Extra showExtraClientModal(Stage stage) {
+        return (Extra) showModal(stage, (Stage modalStage) -> {
+            return new ExtraSelectorController(this, modalStage,
+                    false);
+        });
+    }
+
+    public Order showCreateOrderModal(Stage stage) {
+        return (Order) showModal(stage, (Stage modalStage) -> {
+            return new OrderFormController(this, modalStage,
+                    true, new Order());
+        });
+    }
 }

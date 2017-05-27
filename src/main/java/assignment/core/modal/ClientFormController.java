@@ -9,19 +9,25 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import javafx.util.converter.LocalDateStringConverter;
+import ui.control.CPTextField;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class ClientFormController extends ModalBaseController {
     private static final String TITLE_CREATE = "client_create";
     private static final String TITLE_EDIT = "client_edit";
     private static final String TEMPLATE_PATH = "templates/modal/client.fxml";
+
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     private Client client;
     private boolean create;
@@ -30,14 +36,14 @@ public class ClientFormController extends ModalBaseController {
     private Label errorLabel;
 
     @FXML
-    private TextField firstNameTextField;
+    private CPTextField firstNameTextField;
     private BooleanProperty isFirstNameValid = new SimpleBooleanProperty(false);
 
     @FXML
-    private TextField lastNameTextField;
+    private CPTextField lastNameTextField;
     private BooleanProperty isLastNameValid = new SimpleBooleanProperty(false);
     @FXML
-    private TextField emailTextField;
+    private CPTextField emailTextField;
     private BooleanProperty isEmailValid = new SimpleBooleanProperty(false);
     @FXML
     private DatePicker dateOfBirthDatePicker;
@@ -58,11 +64,11 @@ public class ClientFormController extends ModalBaseController {
         super.initialize();
 
         super.isDisabled.bind(isFirstNameValid.not().or(
-                isLastNameValid.not()).or(
-                        isEmailValid.not().or(
-                                isDateOfBirthValid.not()
-                        )
+            isLastNameValid.not()).or(
+                isEmailValid.not().or(
+                    isDateOfBirthValid.not()
                 )
+            )
         );
 
         firstNameTextField.textProperty().bindBidirectional(client.firstName);
@@ -82,6 +88,32 @@ public class ClientFormController extends ModalBaseController {
             isEmailValid.set(ValidationHandler.showError(errorLabel,
                     ValidationHandler.validateClientEmail(newValue)));
         });
+
+
+        dateOfBirthDatePicker.setConverter(new LocalDateStringConverter(formatter, formatter));
+        dateOfBirthDatePicker.setDayCellFactory(new Callback<DatePicker, DateCell>() {
+            @Override
+            public DateCell call(final DatePicker datePicker) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if (item.isAfter(LocalDate.now().minusYears(16))) {
+                            setDisable(true);
+                            setStyle("-fx-background-color: #ffc0cb;");
+                        }
+                    }
+                };
+            }
+        });
+
+        dateOfBirthDatePicker.valueProperty().bindBidirectional(client.dateOfBirth);
+        dateOfBirthDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
+            isDateOfBirthValid.set(ValidationHandler.showError(errorLabel,
+                    ValidationHandler.validateClientDateOfBirth(newValue)));
+        });
+
     }
 
     @Override
@@ -119,16 +151,5 @@ public class ClientFormController extends ModalBaseController {
         return create
                 ?   TITLE_CREATE
                 :   TITLE_EDIT;
-    }
-
-    @FXML
-    public void handleSetDateOfBirthAction(ActionEvent event) {
-        LocalDate date = dateOfBirthDatePicker.getValue();
-
-        Response validation = ValidationHandler.validateClientDateOfBirth(date);
-        if (validation.success) {
-            client.dateOfBirth.setValue(date);
-        }
-        isDateOfBirthValid.set(ValidationHandler.showError(errorLabel, validation));
     }
 }

@@ -32,7 +32,7 @@ public class PricesController implements UISection {
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().name);
 
         TableColumn<Price, String> valueColumn = new TableColumn("Amount");
-        valueColumn.setCellValueFactory(cellData -> cellData.getValue().value);
+        valueColumn.setCellValueFactory(cellData -> cellData.getValue().value.asString());
 
         TableColumn<Price, String> priceTypeColumn = new TableColumn("Price type");
         priceTypeColumn.setCellValueFactory(cellData -> cellData.getValue().type.getValue().name);

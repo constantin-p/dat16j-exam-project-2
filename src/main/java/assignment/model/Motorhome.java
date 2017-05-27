@@ -12,27 +12,27 @@ import java.util.List;
 
 public class Motorhome implements Storable {
     public static final String DB_TABLE_NAME = "motorhomes";
+    public static final String[] DB_TABLE_COLUMNS = {"id", "brand", "model", "capacity", "price_id"};
 
     public String id;
     public StringProperty brand;
     public StringProperty model;
-    // TODO: Change to integerProp
-    public StringProperty capacity;
+    public IntegerProperty capacity;
     public ObjectProperty<Price> price;
 
     public Motorhome() {
         id = null;
         brand = new SimpleStringProperty("");
         model = new SimpleStringProperty("");
-        capacity = new SimpleStringProperty("1");
+        capacity = new SimpleIntegerProperty(1);
         price = new SimpleObjectProperty<>(null);
     }
 
-    public Motorhome(String id, String brand, String model, String capacity, Price price) {
+    public Motorhome(String id, String brand, String model, int capacity, Price price) {
         this.id = id;
         this.brand = new SimpleStringProperty(brand);
         this.model = new SimpleStringProperty(model);
-        this.capacity = new SimpleStringProperty(capacity);
+        this.capacity = new SimpleIntegerProperty(capacity);
         this.price = new SimpleObjectProperty<>(price);
     }
 
@@ -45,7 +45,7 @@ public class Motorhome implements Storable {
 
         values.put("brand", brand.getValue());
         values.put("model", model.getValue());
-        values.put("capacity", capacity.getValue());
+        values.put("capacity", capacity.getValue().toString());
         values.put("price_id", price.getValue().id);
 
         return values;
@@ -55,7 +55,7 @@ public class Motorhome implements Storable {
         String id = valuesMap.get("id");
         String brand = valuesMap.get("brand");
         String model = valuesMap.get("model");
-        String capacity = valuesMap.get("capacity");
+        int capacity = Integer.valueOf(valuesMap.get("capacity"));
 
         Price price = Price.dbGet(valuesMap.get("price_id"));
 
@@ -65,12 +65,31 @@ public class Motorhome implements Storable {
     /*
      *  DB helpers
      */
+    public static Motorhome dbGet(String motorhomeID) {
+        HashMap<String, String> searchQuery = new HashMap<>();
+        searchQuery.put("id", motorhomeID);
+
+        try {
+            HashMap<String, String> returnValues = Database.getTable(DB_TABLE_NAME)
+                    .get(Arrays.asList(DB_TABLE_COLUMNS),
+                            searchQuery, new HashMap<>());
+
+            if (returnValues.get("id") != null && returnValues.get("id").equals(motorhomeID)) {
+                return Motorhome.construct(returnValues);
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static List<Motorhome> dbGetAll() {
         List<Motorhome> result = new ArrayList<>();
 
         try {
-            List<HashMap<String, String>> returnList = Database.getTable(Motorhome.DB_TABLE_NAME)
-                    .getAll(Arrays.asList("id","brand", "model", "capacity", "price_id"),
+            List<HashMap<String, String>> returnList = Database.getTable(DB_TABLE_NAME)
+                    .getAll(Arrays.asList(DB_TABLE_COLUMNS),
                             null, null);
 
             returnList.forEach((HashMap<String, String> valuesMap) -> {
@@ -83,28 +102,9 @@ public class Motorhome implements Storable {
         }
     }
 
-    public static Motorhome dbGet(String id) {
-        HashMap<String, String> searchQuery = new HashMap<>();
-        searchQuery.put("id", id);
-
-        try {
-            HashMap<String, String> returnValues = Database.getTable(Motorhome.DB_TABLE_NAME)
-                    .get(Arrays.asList("id", "brand", "model", "capacity", "price_id"),
-                            searchQuery, new HashMap<>());
-
-            if (returnValues.get("id") != null && returnValues.get("id").equals(id)) {
-                return Motorhome.construct(returnValues);
-            }
-            return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public static int dbInsert(Motorhome motorhome) {
         try {
-            return Database.getTable(Motorhome.DB_TABLE_NAME)
+            return Database.getTable(DB_TABLE_NAME)
                     .insert(motorhome.deconstruct());
         } catch (Exception e) {
             e.printStackTrace();

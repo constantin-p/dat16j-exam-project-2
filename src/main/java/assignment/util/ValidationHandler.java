@@ -1,9 +1,7 @@
 package assignment.util;
 
 
-import assignment.model.AccountType;
-import assignment.model.Price;
-import assignment.model.PriceType;
+import assignment.model.*;
 import javafx.scene.control.Label;
 
 import java.time.LocalDate;
@@ -49,14 +47,14 @@ public class ValidationHandler {
     public static final String ERROR_CLIENT_EMAIL_DUPLICATE = "Email already registered";
     public static final String ERROR_CLIENT_EMAIL_INVALID = "Invalid email address";
     public static final String ERROR_CLIENT_DOB_REQUIRED = "Date of birth required";
-    public static final String ERROR_CLIENT_DOB_YOUNG = "Too young (<18 years)";
+    public static final String ERROR_CLIENT_DOB_YOUNG = "Too young (<16 years)";
 
     public static final String ERROR_PRICE_NAME_REQUIRED = "Name required";
     public static final String ERROR_PRICE_NAME_SHORT = "Name too short";
     public static final String ERROR_PRICE_NAME_LONG = "Name too long";
     public static final String ERROR_PRICE_NAME_INVALID = "Invalid name (non-alphanumeric)";
     public static final String ERROR_PRICE_NAME_DUPLICATE = "Name already registered";
-    public static final String ERROR_PRICE_VALUE_REQUIRED = "Name required";
+    public static final String ERROR_PRICE_VALUE_REQUIRED = "Amount required";
     public static final String ERROR_PRICE_PRICE_TYPE_REQUIRED = "Price type required";
 
     public static final String ERROR_MOTORHOME_MODEL_REQUIRED = "Model required";
@@ -68,8 +66,10 @@ public class ValidationHandler {
     public static final String ERROR_MOTORHOME_BRAND_SHORT = "Brand too short";
     public static final String ERROR_MOTORHOME_BRAND_LONG = "Brand too long";
     public static final String ERROR_MOTORHOME_BRAND_INVALID = "Invalid Brand (non-alphanumeric)";
-    public static final String ERROR_MOTORHOME_CAPACITY_REQUIRED = "Capacity required";
-    public static final String ERROR_MOTORHOME_CAPACITY_INVALID = "Invalid capacity";
+    public static final String ERROR_MOTORHOME_CAPACITY_LOW = "Capacity too low <1";
+    public static final String ERROR_MOTORHOME_CAPACITY_BIG = "Capacity too big >10";
+    public static final String ERROR_MOTORHOME_PRICE_REQUIRED = "Price required";
+
 
     public static final String ERROR_EXTRA_NAME_REQUIRED = "Name required";
     public static final String ERROR_EXTRA_NAME_SHORT = "Name too short";
@@ -77,6 +77,14 @@ public class ValidationHandler {
     public static final String ERROR_EXTRA_NAME_INVALID = "Invalid name (non-alphanumeric)";
     public static final String ERROR_EXTRA_NAME_DUPLICATE = "Name already registered";
     public static final String ERROR_EXTRA_PRICE_REQUIRED = "Price required";
+
+    public static final String ERROR_ORDER_START_DATE_REQUIRED = "Start date required";
+    public static final String ERROR_ORDER_START_DATE_PAST = "Start date not in future";
+    public static final String ERROR_ORDER_END_DATE_REQUIRED = "End date required";
+    public static final String ERROR_ORDER_END_DATE_PAST = "End date not in future";
+    public static final String ERROR_ORDER_CLIENT_REQUIRED = "Client required";
+    public static final String ERROR_ORDER_MOTORHOME_REQUIRED = "Price required";
+
 
     public static boolean showError(Label errorLabel, Response validation) {
         if (validation.success) {
@@ -176,11 +184,8 @@ public class ValidationHandler {
         return new Response(true);
     }
 
-    // TODO: Replace with float
-    public static Response validatePriceValue(String value) {
-        if(value == null || value.isEmpty()) {
-            return new Response(false, ERROR_PRICE_VALUE_REQUIRED);
-        } else if (value.length() <= 1) {
+    public static Response validatePriceValue(double value) {
+        if(value == 0) {
             return new Response(false, ERROR_PRICE_VALUE_REQUIRED);
         }
         return new Response(true);
@@ -243,7 +248,7 @@ public class ValidationHandler {
     public static Response validateClientDateOfBirth(LocalDate date) {
         if(date == null) {
             return new Response(false, ERROR_CLIENT_DOB_REQUIRED);
-        } else if (YEARS.between(date, LocalDate.now()) < 18) {
+        } else if (YEARS.between(date, LocalDate.now()) < 16) {
             return new Response(false, ERROR_CLIENT_DOB_YOUNG);
         }
         return new Response(true);
@@ -287,14 +292,20 @@ public class ValidationHandler {
         return new Response(true);
     }
 
-    public static Response validateMotorhomeCapacity(String capacity) {
-        if(capacity == null || capacity.isEmpty()) {
-            return new Response(false, ERROR_MOTORHOME_CAPACITY_REQUIRED);
-        } else if (!capacity.matches("[a-zA-Z0-9]+")) {
-            return new Response(false, ERROR_MOTORHOME_CAPACITY_INVALID);
+    public static Response validateMotorhomeCapacity(int capacity) {
+        if(capacity < 1) {
+            return new Response(false, ERROR_MOTORHOME_CAPACITY_LOW);
+        } else if (capacity > 10) {
+            return new Response(false, ERROR_MOTORHOME_CAPACITY_BIG);
         }
         return new Response(true);
+    }
 
+    public static Response validateMotorhomePrice(Price price) {
+        if(price == null || price.id == null) {
+            return new Response(false, ERROR_MOTORHOME_PRICE_REQUIRED);
+        }
+        return new Response(true);
     }
 
     public static Response validateMotorhomeDBOperation(int returnValue) {
@@ -334,6 +345,46 @@ public class ValidationHandler {
             return new Response(false, ERROR_EXTRA_NAME_DUPLICATE);
         }
 
+        return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
+    }
+
+    // ORDER fields
+    public static Response validateOrderStartDate(LocalDate startDate) {
+        if(startDate == null) {
+            return new Response(false, ERROR_ORDER_START_DATE_REQUIRED);
+        } else if (startDate.isBefore(LocalDate.now())) {
+            return new Response(false, ERROR_ORDER_START_DATE_PAST);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateOrderEndDate(LocalDate endDate) {
+        if (endDate == null) {
+            return new Response(false, ERROR_ORDER_END_DATE_REQUIRED);
+        } else if (endDate.isBefore(LocalDate.now().plusDays(1))) {
+            return new Response(false, ERROR_ORDER_END_DATE_PAST);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateOrderClient(Client client) {
+        if(client == null || client.id == null) {
+            return new Response(false, ERROR_ORDER_MOTORHOME_REQUIRED);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateOrderMotorhome(Motorhome motorhome) {
+        if(motorhome == null || motorhome.id == null) {
+            return new Response(false, ERROR_ORDER_MOTORHOME_REQUIRED);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateOrderDBOperation(int returnValue) {
+        if(returnValue == 1) {
+            return new Response(true);
+        }
         return new Response(false, ValidationHandler.ERROR_DB_CONNECTION);
     }
 }

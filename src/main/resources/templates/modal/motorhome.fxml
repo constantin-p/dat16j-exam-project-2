@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 <?import ui.control.CPTextField?>
+<?import ui.control.CPIntegerField?>
 
 <GridPane
     xmlns:fx="http://javafx.com/fxml"
@@ -82,7 +83,7 @@
                     bottom="2.0" />
             </padding>
         </Label>
-        <CPTextField fx:id="capacityTextField"
+        <CPIntegerField fx:id="capacityTextField"
             GridPane.columnIndex="1"
             GridPane.rowIndex="7" />
 

@@ -13,8 +13,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import ui.control.CPTextField;
 
 public class AccountFormController extends ModalBaseController {
     private static final String TITLE_CREATE = "account_create";
@@ -28,7 +28,7 @@ public class AccountFormController extends ModalBaseController {
     private Label errorLabel;
 
     @FXML
-    private TextField usernameTextField;
+    private CPTextField usernameTextField;
     private BooleanProperty isUsernameValid = new SimpleBooleanProperty(false);
 
     @FXML
