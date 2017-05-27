@@ -14,7 +14,10 @@ import java.util.*;
 public class Order implements Storable {
     public static final String DB_TABLE_NAME = "orders";
     private static final String DB_INTERSECTION_TABLE_NAME = "order_extra";
-    public static final String[] DB_TABLE_COLUMNS = {"id", "start_date", "end_date", "pick_up", "drop_off", "client_id", "motorhome_id", "motorhome_price_value", "season_id", "season_price_value"};
+    public static final String[] DB_TABLE_COLUMNS = {"id", "start_date", "end_date",
+            "pick_up", "drop_off", "client_id", "motorhome_id", "motorhome_price_value",
+            "motorhome_mileage_start", "motorhome_mileage_end", "season_id",
+            "season_price_modifier", "canceled_price_modifier"};
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
 
     public String id;
@@ -27,9 +30,14 @@ public class Order implements Storable {
 
     public ObjectProperty<Motorhome> motorhome;
     public DoubleProperty motorhomeValue;
+    public IntegerProperty motorhomeMileageStart;
+    public IntegerProperty motorhomeMileageEnd;
 
     public ObjectProperty<Season> season;
     public DoubleProperty seasonModifier;
+
+    public boolean isCanceled;
+    public DoubleProperty cancellationModifier;
 
     public ObservableList<Map.Entry<Extra, Double>> extras = FXCollections.observableArrayList();
 
@@ -42,13 +50,19 @@ public class Order implements Storable {
         client = new SimpleObjectProperty<>(null);
         motorhome = new SimpleObjectProperty<>(null);
         motorhomeValue = new SimpleDoubleProperty(0.00);
+        motorhomeMileageStart = new SimpleIntegerProperty(0);
+        motorhomeMileageEnd = new SimpleIntegerProperty(0);
         season = new SimpleObjectProperty<>(null);
         seasonModifier = new SimpleDoubleProperty(0.00);
+
+        isCanceled = false;
+        cancellationModifier = new SimpleDoubleProperty(0.00);
     }
 
     public Order(String id, LocalDate startDate, LocalDate endDate, String pickUp, String dropOff,
                  Client client, Motorhome motorhome, Double motorhomeValue,
-                 Season season, Double seasonModifier) {
+                 int motorhomeMileageStart, int motorhomeMileageEnd,
+                 Season season, Double seasonModifier, boolean isCanceled, Double cancellationModifier) {
         this.id = id;
         this.startDate = new SimpleObjectProperty<>(startDate);
         this.endDate = new SimpleObjectProperty<>(endDate);
@@ -57,7 +71,12 @@ public class Order implements Storable {
         this.client = new SimpleObjectProperty<>(client);
         this.motorhome = new SimpleObjectProperty<>(motorhome);
         this.motorhomeValue = new SimpleDoubleProperty(motorhomeValue);
+        this.motorhomeMileageStart = new SimpleIntegerProperty(motorhomeMileageStart);
+        this.motorhomeMileageEnd = new SimpleIntegerProperty(motorhomeMileageEnd);
         this.season = new SimpleObjectProperty<>(season);
+        this.seasonModifier = new SimpleDoubleProperty(seasonModifier);
+
+        this.isCanceled = isCanceled;
         this.seasonModifier = new SimpleDoubleProperty(seasonModifier);
 
         if (this.id != null) {
@@ -80,8 +99,16 @@ public class Order implements Storable {
         values.put("client_id", client.getValue().id);
         values.put("motorhome_id", motorhome.getValue().id);
         values.put("motorhome_price_value", motorhomeValue.getValue().toString());
+        values.put("motorhome_mileage_start", motorhomeMileageStart.getValue().toString());
+        values.put("motorhome_mileage_end", motorhomeMileageEnd.getValue().toString());
         values.put("season_id", season.getValue().id);
-        values.put("season_price_value", seasonModifier.getValue().toString());
+        values.put("season_price_modifier", seasonModifier.getValue().toString());
+
+        if (isCanceled) {
+            values.put("canceled_price_modifier", cancellationModifier.getValue().toString());
+        } else {
+            values.put("canceled_price_modifier", null);
+        }
 
         return values;
     }
@@ -100,11 +127,21 @@ public class Order implements Storable {
         Client client = Client.dbGet(valuesMap.get("client_id"));
         Motorhome motorhome = Motorhome.dbGet(valuesMap.get("motorhome_id"));
         double motorhomeValue = Double.valueOf(valuesMap.get("motorhome_price_value"));
+        int motorhomeMileageStart = Integer.valueOf(valuesMap.get("motorhome_mileage_start"));
+        int motorhomeMileageEnd = Integer.valueOf(valuesMap.get("motorhome_mileage_end"));
         Season season = Season.dbGet(valuesMap.get("season_id"));
-        double seasonModifier = Double.valueOf(valuesMap.get("season_price_value"));
+        double seasonModifier = Double.valueOf(valuesMap.get("season_price_modifier"));
+
+        String canceledPriceModifierString = valuesMap.get("canceled_price_modifier");
+        boolean isCanceled = false;
+        double canceledPriceModifier = 0.00;
+        if (canceledPriceModifierString != null) {
+            isCanceled = true;
+            canceledPriceModifier = Double.valueOf(canceledPriceModifierString);
+        }
 
         return new Order(id, startDate, endDate, pickUp, dropOff,
-                client, motorhome, motorhomeValue, season, seasonModifier);
+                client, motorhome, motorhomeValue, motorhomeMileageStart, motorhomeMileageEnd, season, seasonModifier, isCanceled, canceledPriceModifier);
     }
 
     /*

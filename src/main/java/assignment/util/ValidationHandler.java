@@ -97,6 +97,7 @@ public class ValidationHandler {
         }
     }
 
+    // TODO: Trim strings
     // Validation filters
     // ACCOUNT fields
     public static Response validateAccountUsername(String username) {

@@ -12,12 +12,13 @@ import java.util.List;
 
 public class Motorhome implements Storable {
     public static final String DB_TABLE_NAME = "motorhomes";
-    public static final String[] DB_TABLE_COLUMNS = {"id", "brand", "model", "capacity", "price_id"};
+    public static final String[] DB_TABLE_COLUMNS = {"id", "brand", "model", "capacity", "mileage", "price_id"};
 
     public String id;
     public StringProperty brand;
     public StringProperty model;
     public IntegerProperty capacity;
+    public IntegerProperty mileage;
     public ObjectProperty<Price> price;
 
     public Motorhome() {
@@ -25,14 +26,16 @@ public class Motorhome implements Storable {
         brand = new SimpleStringProperty("");
         model = new SimpleStringProperty("");
         capacity = new SimpleIntegerProperty(1);
+        mileage = new SimpleIntegerProperty(0);
         price = new SimpleObjectProperty<>(null);
     }
 
-    public Motorhome(String id, String brand, String model, int capacity, Price price) {
+    public Motorhome(String id, String brand, String model, int capacity, int mileage, Price price) {
         this.id = id;
         this.brand = new SimpleStringProperty(brand);
         this.model = new SimpleStringProperty(model);
         this.capacity = new SimpleIntegerProperty(capacity);
+        this.mileage = new SimpleIntegerProperty(mileage);
         this.price = new SimpleObjectProperty<>(price);
     }
 
@@ -46,6 +49,7 @@ public class Motorhome implements Storable {
         values.put("brand", brand.getValue());
         values.put("model", model.getValue());
         values.put("capacity", capacity.getValue().toString());
+        values.put("mileage", mileage.getValue().toString());
         values.put("price_id", price.getValue().id);
 
         return values;
@@ -56,10 +60,11 @@ public class Motorhome implements Storable {
         String brand = valuesMap.get("brand");
         String model = valuesMap.get("model");
         int capacity = Integer.valueOf(valuesMap.get("capacity"));
+        int mileage = Integer.valueOf(valuesMap.get("mileage"));
 
         Price price = Price.dbGet(valuesMap.get("price_id"));
 
-        return new Motorhome(id, brand, model, capacity, price);
+        return new Motorhome(id, brand, model, capacity, mileage, price);
     }
 
     /*
