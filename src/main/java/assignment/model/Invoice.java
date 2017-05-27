@@ -87,6 +87,43 @@ public class Invoice implements Storable {
         }
     }
 
+    public static Invoice dbGetByOrderID(String orderID) {
+        HashMap<String, String> searchQuery = new HashMap<>();
+        searchQuery.put("order_id", orderID);
+
+        try {
+            HashMap<String, String> returnValues = Database.getTable(DB_TABLE_NAME)
+                    .get(Arrays.asList(DB_TABLE_COLUMNS), searchQuery, new HashMap<>());
+
+            if (returnValues.get("order_id") != null && returnValues.get("order_id").equals(orderID)) {
+                return Invoice.construct(returnValues);
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // TODO: use getAll with whitelist
+    public static boolean dbExists(String orderID) {
+        HashMap<String, String> searchQuery = new HashMap<>();
+        searchQuery.put("order_id", orderID);
+
+        try {
+            HashMap<String, String> returnValues = Database.getTable(DB_TABLE_NAME)
+                    .get(Arrays.asList(DB_TABLE_COLUMNS), searchQuery, new HashMap<>());
+
+            if (returnValues.get("order_id") != null && returnValues.get("order_id").equals(orderID)) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static List<Invoice> dbGetAll() {
         List<Invoice> result = new ArrayList<>();
         try {

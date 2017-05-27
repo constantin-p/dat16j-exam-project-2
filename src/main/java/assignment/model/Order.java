@@ -1,6 +1,7 @@
 package assignment.model;
 
 
+import assignment.util.Config;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -142,6 +143,26 @@ public class Order implements Storable {
 
         return new Order(id, startDate, endDate, pickUp, dropOff,
                 client, motorhome, motorhomeValue, motorhomeMileageStart, motorhomeMileageEnd, season, seasonModifier, isCanceled, canceledPriceModifier);
+    }
+
+    public void schedulePayment() {
+        Payment payment = new Payment(null, generateInvoice(), null);
+        Payment.dbInsert(payment);
+    }
+
+    public Invoice generateInvoice() {
+        int paymentPeriod = Integer.valueOf(Config.getConfig("invoice").getProperty("INVOICE_PAYMENT_PERIOD"));
+        Invoice invoice = new Invoice(null, this,
+                LocalDate.now(), LocalDate.now().plusDays(paymentPeriod));
+
+        if (Invoice.dbInsert(invoice) == 1) {
+            return Invoice.dbGetByOrderID(id);
+        }
+        return null;
+    }
+
+    public boolean hasInvoice() {
+        return Invoice.dbExists(id);
     }
 
     /*

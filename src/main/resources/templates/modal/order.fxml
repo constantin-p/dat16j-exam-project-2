@@ -24,7 +24,7 @@
         <ColumnConstraints hgrow="NEVER" maxWidth="15.0" minWidth="15.0" />
         <ColumnConstraints hgrow="NEVER" minWidth="200.0" />
         <ColumnConstraints hgrow="NEVER" maxWidth="3.0" minWidth="3.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="320.0" />
+        <ColumnConstraints hgrow="ALWAYS" minWidth="360.0" />
         <ColumnConstraints hgrow="NEVER" maxWidth="15.0" minWidth="15.0" />
     </columnConstraints>
     <rowConstraints>
@@ -188,6 +188,7 @@
                                     bottom="10.0" />
                            </padding>
                         </HBox>
+
                         <Label fx:id="companyAddressLabel"
                             text="company address"
                             textFill="#777777"
@@ -196,6 +197,38 @@
                             text="company email"
                             textFill="#777777"
                             wrapText="true" />
+
+                        <HBox>
+                            <children>
+                                <Label
+                                    text="Date:"
+                                    minWidth="140.0"
+                                    maxWidth="140.0" />
+                                <Label fx:id="dateLabel"
+                                    text="..."
+                                    maxWidth="1.7976931348623157E308"
+                                    alignment="TOP_RIGHT"
+                                    HBox.hgrow="ALWAYS" />
+                            </children>
+                            <padding>
+                                <Insets
+                                    top="5.0" />
+                            </padding>
+                        </HBox>
+                        <HBox>
+                            <children>
+                                <Label
+                                    text="Due date:"
+                                    minWidth="140.0"
+                                    maxWidth="140.0" />
+                                <Label fx:id="dueDateLabel"
+                                    text="..."
+                                    maxWidth="1.7976931348623157E308"
+                                    alignment="TOP_RIGHT"
+                                    HBox.hgrow="ALWAYS" />
+                            </children>
+                        </HBox>
+
 
                         <!-- Bill to -->
                         <Label
@@ -339,7 +372,7 @@
                                     alignment="TOP_RIGHT"
                                     HBox.hgrow="ALWAYS">
                                     <children>
-                                        <Label fx:id="motorhomeLabel"
+                                        <Label fx:id="motorhomeMileageStartLabel"
                                             text="..."
                                             alignment="TOP_RIGHT"
                                             wrapText="true" />
@@ -369,7 +402,7 @@
                                     alignment="TOP_RIGHT"
                                     HBox.hgrow="ALWAYS">
                                     <children>
-                                        <Label fx:id="motorhomeLabel"
+                                        <Label fx:id="motorhomeMileageEndLabel"
                                             text="..."
                                             wrapText="true" />
                                     </children>
@@ -525,7 +558,7 @@
                                             name="System Bold" />
                                     </font>
                                 </Label>
-                                <Label fx:id="ExtrasTotalLabel"
+                                <Label fx:id="extrasTotalLabel"
                                     text="..."
                                     textFill="#999999"
                                     maxWidth="1.7976931348623157E308"
@@ -603,7 +636,7 @@
                                             name="System Bold" />
                                     </font>
                                 </Label>
-                                <Label fx:id="daysSeasonTotalLabel"
+                                <Label fx:id="fuelTransportTotalLabel"
                                     text="..."
                                     textFill="#999999"
                                     maxWidth="1.7976931348623157E308"
@@ -660,7 +693,7 @@
                                     minWidth="140.0"
                                     maxWidth="140.0"
                                     HBox.hgrow="NEVER" />
-                                <Label fx:id="vatLabel"
+                                <Label fx:id="VATLabel"
                                     text="..."
                                     minWidth="100.0"
                                     alignment="TOP_RIGHT"

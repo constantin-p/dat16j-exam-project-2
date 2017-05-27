@@ -9,8 +9,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.util.Callback;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -37,6 +40,9 @@ public class OrdersController implements UISection {
         TableColumn<Order, String> motorhomeColumn = new TableColumn("Motorhome");
         TableColumn<Order, String> clientColumn = new TableColumn("Client");
         TableColumn<Order, String> priceColumn = new TableColumn("Price");
+        TableColumn<Order, String> actionColumn = new TableColumn("Actions");
+        actionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().id));
+        actionColumn.setCellFactory(getActionCellFactory());
 
         TableColumn<Order, String> startColumn = new TableColumn("Start");
         startColumn.setCellValueFactory(cellData -> {
@@ -68,7 +74,7 @@ public class OrdersController implements UISection {
         clientColumn.getColumns().addAll(firstNameColumn, lastnameColumn);
 
 
-        tableView.getColumns().addAll(durationColumn, motorhomeColumn, clientColumn, priceColumn);
+        tableView.getColumns().addAll(durationColumn, motorhomeColumn, clientColumn, priceColumn, actionColumn);
         tableView.setItems(orderList);
 
         populateTableView();
@@ -97,7 +103,39 @@ public class OrdersController implements UISection {
         List<Order> orders = Order.dbGetAll();
         orderList.clear();
         orders.forEach(entry -> {
+            if (!entry.hasInvoice()) {
+                entry.schedulePayment();
+            }
             orderList.add(entry);
         });
+    }
+
+    private Callback<TableColumn<Order, String>, TableCell<Order, String>> getActionCellFactory() {
+        return new Callback<TableColumn<Order, String>, TableCell<Order, String>>() {
+            @Override
+            public TableCell call( final TableColumn<Order, String> param) {
+                final TableCell<Order, String> cell = new TableCell<Order, String>() {
+
+                    Button cancel = new Button("Cancel");
+
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                            setText(null);
+                        } else {
+                            cancel.setOnAction((ActionEvent event) -> {
+                                Order order = getTableView().getItems().get(getIndex());
+                                System.out.println("---- "+order.id + "  "+ item);
+                            });
+                            setGraphic(cancel);
+                            setText(null);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
     }
 }

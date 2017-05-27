@@ -43,7 +43,11 @@ public class Payment implements Storable {
         HashMap<String, String> values = new HashMap<>();
 
         values.put("invoice_id", invoice.getValue().id);
-        values.put("date", formatter.format(date.getValue()));
+        if (date.getValue() == null) {
+            values.put("date", null);
+        } else {
+            values.put("date", formatter.format(date.getValue()));
+        }
 
         return values;
     }
@@ -52,7 +56,11 @@ public class Payment implements Storable {
         String id = valuesMap.get("id");
 
         Invoice invoice = Invoice.dbGet(valuesMap.get("invoice_id"));
-        LocalDate date = LocalDate.parse(valuesMap.get("date"), formatter);
+
+        LocalDate date = null;
+        if (valuesMap.get("date") != null) {
+            date = LocalDate.parse(valuesMap.get("date"), formatter);
+        }
 
         return new Payment(id, invoice, date);
     }
@@ -103,6 +111,22 @@ public class Payment implements Storable {
         try {
             return Database.getTable(DB_TABLE_NAME)
                     .insert(payment.deconstruct());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public static int dbUpdate(String paymentID, LocalDate date) {
+        HashMap<String, String> entry = new HashMap<>();
+        entry.put("date", (date == null) ? null : formatter.format(date));
+
+        HashMap<String, String> whitelist = new HashMap<>();
+        whitelist.put("id", paymentID);
+
+        try {
+            return Database.getTable(DB_TABLE_NAME)
+                    .update(entry, whitelist, new HashMap<>());
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
