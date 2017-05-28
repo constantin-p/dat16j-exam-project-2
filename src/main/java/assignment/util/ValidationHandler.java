@@ -52,7 +52,7 @@ public class ValidationHandler {
     public static final String ERROR_PRICE_NAME_REQUIRED = "Name required";
     public static final String ERROR_PRICE_NAME_SHORT = "Name too short";
     public static final String ERROR_PRICE_NAME_LONG = "Name too long";
-    public static final String ERROR_PRICE_NAME_INVALID = "Invalid name (non-alphanumeric)";
+    public static final String ERROR_PRICE_NAME_INVALID = "Invalid name (non-alphanumeric  +_-)";
     public static final String ERROR_PRICE_NAME_DUPLICATE = "Name already registered";
     public static final String ERROR_PRICE_VALUE_REQUIRED = "Amount required";
     public static final String ERROR_PRICE_PRICE_TYPE_REQUIRED = "Price type required";
@@ -175,7 +175,7 @@ public class ValidationHandler {
     public static Response validatePriceName(String name) {
         if(name == null || name.isEmpty()) {
             return new Response(false, ERROR_PRICE_NAME_REQUIRED);
-        } else if (!name.matches("[a-zA-Z0-9 ]+")) {
+        } else if (!name.matches("[a-zA-Z0-9 +_-]+")) {
             return new Response(false, ERROR_PRICE_NAME_INVALID);
         } else if (name.length() <= 3) {
             return new Response(false, ERROR_PRICE_NAME_SHORT);
@@ -370,7 +370,7 @@ public class ValidationHandler {
 
     public static Response validateOrderClient(Client client) {
         if(client == null || client.id == null) {
-            return new Response(false, ERROR_ORDER_MOTORHOME_REQUIRED);
+            return new Response(false, ERROR_ORDER_CLIENT_REQUIRED);
         }
         return new Response(true);
     }

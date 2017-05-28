@@ -21,7 +21,7 @@ public class ClientsController implements UISection {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     private RootController rootController;
-    private ObservableList<Client> clientsList = FXCollections.observableArrayList();
+    private ObservableList<Client> clientList = FXCollections.observableArrayList();
 
     @FXML
     private TableView<Client> tableView;
@@ -49,7 +49,7 @@ public class ClientsController implements UISection {
         });
 
         tableView.getColumns().addAll(firstNameColumn, lastNameColumn, emailColumn, dateOfBirthColumn);
-        tableView.setItems(clientsList);
+        tableView.setItems(clientList);
 
         populateTableView();
     }
@@ -76,9 +76,9 @@ public class ClientsController implements UISection {
     private void populateTableView() {
         // Load clients
         List<Client> clients = Client.dbGetAll();
-        clientsList.clear();
+        clientList.clear();
         clients.forEach(entry -> {
-            clientsList.add(entry);
+            clientList.add(entry);
         });
     }
 }

@@ -7,10 +7,7 @@ import assignment.util.Response;
 import assignment.util.ValidationHandler;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -259,12 +256,12 @@ public class OrderFormController extends ModalBaseController {
             isStartDateValid.set(ValidationHandler.showError(errorLabel,
                     ValidationHandler.validateOrderStartDate(newValue)));
 
-            setSeason();
+            setSeasonPrice();
             setInvoiceDays();
         });
         isStartDateValid.set(ValidationHandler.showError(errorLabel,
                 ValidationHandler.validateOrderStartDate(startDatePicker.getValue())));
-        setSeason();
+        setSeasonPrice();
         setInvoiceDays();
 
         endDatePicker.setConverter(new LocalDateStringConverter(formatter, formatter));
@@ -315,7 +312,14 @@ public class OrderFormController extends ModalBaseController {
             boolean success = ValidationHandler.showError(errorLabel,
                     ValidationHandler.validateOrderDBOperation(Order.dbInsert(order)));
             if (success) {
+                order = Order.dbGetByDateMotorhomeClient(order.startDate.getValue(),
+                        order.endDate.getValue(), order.motorhome.getValue().id,
+                        order.motorhome.getValue().id);
+                System.out.println(order);
                 // 1. Add the extras
+                // 2. Schedule payment
+                // 3. Schedule cleaning job
+                // 4. Schedule service job
 
                 // Add the extras
 //                extraMap.forEach(entry -> {
@@ -323,6 +327,10 @@ public class OrderFormController extends ModalBaseController {
 //                        accountType.addPermission(entry.getKey());
 //                    }
 //                });
+
+                order.schedulePayment();
+                order.scheduleCleaningJob();
+                order.scheduleServiceJob();
                 super.handleOKAction(event);
             }
         }
@@ -402,10 +410,11 @@ public class OrderFormController extends ModalBaseController {
     /*
      *  Helpers
      */
-    private void setSeason() {
+    private void setSeasonPrice() {
         if (isStartDateValid.getValue()) {
             MonthDay startDate = MonthDay.of(startDatePicker.getValue().getMonth(),
                     startDatePicker.getValue().getDayOfMonth());
+            // TODO: sort seasons by date
             boolean found = false;
             for (int i = 1; i < seasons.size(); i++) {
                 if (startDate.isBefore(seasons.get(i).start.getValue())) {
@@ -413,6 +422,7 @@ public class OrderFormController extends ModalBaseController {
                     order.season.setValue(seasons.get(i - 1));
                     order.seasonModifier.setValue(order.season.getValue().
                             price.getValue().value.getValue());
+                    break;
                 }
             }
 

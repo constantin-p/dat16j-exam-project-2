@@ -18,8 +18,10 @@ public class Order implements Storable {
     public static final String[] DB_TABLE_COLUMNS = {"id", "start_date", "end_date",
             "pick_up", "drop_off", "client_id", "motorhome_id", "motorhome_price_value",
             "motorhome_mileage_start", "motorhome_mileage_end", "season_id",
-            "season_price_modifier", "canceled_price_modifier"};
+            "season_price_modifier", "cancellation_price_value"};
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
+
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DB_DATE_FORMAT);
 
     public String id;
     public ObjectProperty<LocalDate> startDate;
@@ -37,8 +39,8 @@ public class Order implements Storable {
     public ObjectProperty<Season> season;
     public DoubleProperty seasonModifier;
 
-    public boolean isCanceled;
-    public DoubleProperty cancellationModifier;
+    public boolean isCancelled;
+    public DoubleProperty cancellationValue; // null: order not cancelled, <=1: modifier, >1: fixed value
 
     public ObservableList<Map.Entry<Extra, Double>> extras = FXCollections.observableArrayList();
 
@@ -56,14 +58,14 @@ public class Order implements Storable {
         season = new SimpleObjectProperty<>(null);
         seasonModifier = new SimpleDoubleProperty(0.00);
 
-        isCanceled = false;
-        cancellationModifier = new SimpleDoubleProperty(0.00);
+        isCancelled = false;
+        cancellationValue = new SimpleDoubleProperty(0.00);
     }
 
     public Order(String id, LocalDate startDate, LocalDate endDate, String pickUp, String dropOff,
                  Client client, Motorhome motorhome, Double motorhomeValue,
                  int motorhomeMileageStart, int motorhomeMileageEnd,
-                 Season season, Double seasonModifier, boolean isCanceled, Double cancellationModifier) {
+                 Season season, Double seasonModifier, boolean isCanceled, Double cancellationValue) {
         this.id = id;
         this.startDate = new SimpleObjectProperty<>(startDate);
         this.endDate = new SimpleObjectProperty<>(endDate);
@@ -77,12 +79,47 @@ public class Order implements Storable {
         this.season = new SimpleObjectProperty<>(season);
         this.seasonModifier = new SimpleDoubleProperty(seasonModifier);
 
-        this.isCanceled = isCanceled;
-        this.seasonModifier = new SimpleDoubleProperty(seasonModifier);
+        this.isCancelled = isCanceled;
+        this.cancellationValue = new SimpleDoubleProperty(cancellationValue);
 
         if (this.id != null) {
             extras.setAll(Order.dbGetAllExtras(this.id));
         }
+    }
+
+    public void schedulePayment() {
+        Invoice invoice = generateInvoice();
+
+        Payment payment = new Payment(null, invoice, null, false);
+        Payment.dbInsert(payment);
+    }
+
+    public void scheduleCleaningJob() {
+        CleaningJob cleaningJob = new CleaningJob(null, this,
+                endDate.getValue().plusDays(1), false);
+        CleaningJob.dbInsert(cleaningJob);
+    }
+
+    public void scheduleServiceJob() {
+        ServiceJob serviceJob = new ServiceJob(null, this,
+                endDate.getValue().plusDays(1), false);
+        ServiceJob.dbInsert(serviceJob);
+    }
+
+    public Invoice generateInvoice() {
+        int paymentPeriod = Integer.valueOf(Config.getConfig("invoice")
+                .getProperty("INVOICE_PAYMENT_PERIOD"));
+        Invoice invoice = new Invoice(null, this,
+                LocalDate.now(), LocalDate.now().plusDays(paymentPeriod));
+
+        if (Invoice.dbInsert(invoice) == 1) {
+            return Invoice.dbGetByOrderID(id);
+        }
+        return null;
+    }
+
+    public boolean hasInvoice() {
+        return Invoice.dbGetByOrderID(id).id != null;
     }
 
     /*
@@ -91,7 +128,6 @@ public class Order implements Storable {
     @Override
     public HashMap<String, String> deconstruct() {
         HashMap<String, String> values = new HashMap<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DB_DATE_FORMAT);
 
         values.put("start_date", startDate.getValue().format(formatter));
         values.put("end_date", endDate.getValue().format(formatter));
@@ -105,18 +141,16 @@ public class Order implements Storable {
         values.put("season_id", season.getValue().id);
         values.put("season_price_modifier", seasonModifier.getValue().toString());
 
-        if (isCanceled) {
-            values.put("canceled_price_modifier", cancellationModifier.getValue().toString());
+        if (isCancelled) {
+            values.put("cancellation_price_value", cancellationValue.getValue().toString());
         } else {
-            values.put("canceled_price_modifier", null);
+            values.put("cancellation_price_value", null);
         }
 
         return values;
     }
 
     public static Order construct(HashMap<String, String> valuesMap) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DB_DATE_FORMAT);
-
         String id = valuesMap.get("id");
 
         LocalDate startDate = LocalDate.parse(valuesMap.get("start_date"), formatter);
@@ -133,36 +167,16 @@ public class Order implements Storable {
         Season season = Season.dbGet(valuesMap.get("season_id"));
         double seasonModifier = Double.valueOf(valuesMap.get("season_price_modifier"));
 
-        String canceledPriceModifierString = valuesMap.get("canceled_price_modifier");
-        boolean isCanceled = false;
-        double canceledPriceModifier = 0.00;
-        if (canceledPriceModifierString != null) {
-            isCanceled = true;
-            canceledPriceModifier = Double.valueOf(canceledPriceModifierString);
+        String cancellationValueString = valuesMap.get("cancellation_price_value");
+        boolean isCancelled = false;
+        double canceledPriceValue = 0.00;
+        if (cancellationValueString != null) {
+            isCancelled = true;
+            canceledPriceValue = Double.valueOf(cancellationValueString);
         }
 
         return new Order(id, startDate, endDate, pickUp, dropOff,
-                client, motorhome, motorhomeValue, motorhomeMileageStart, motorhomeMileageEnd, season, seasonModifier, isCanceled, canceledPriceModifier);
-    }
-
-    public void schedulePayment() {
-        Payment payment = new Payment(null, generateInvoice(), null);
-        Payment.dbInsert(payment);
-    }
-
-    public Invoice generateInvoice() {
-        int paymentPeriod = Integer.valueOf(Config.getConfig("invoice").getProperty("INVOICE_PAYMENT_PERIOD"));
-        Invoice invoice = new Invoice(null, this,
-                LocalDate.now(), LocalDate.now().plusDays(paymentPeriod));
-
-        if (Invoice.dbInsert(invoice) == 1) {
-            return Invoice.dbGetByOrderID(id);
-        }
-        return null;
-    }
-
-    public boolean hasInvoice() {
-        return Invoice.dbExists(id);
+                client, motorhome, motorhomeValue, motorhomeMileageStart, motorhomeMileageEnd, season, seasonModifier, isCancelled, canceledPriceValue);
     }
 
     /*
@@ -178,6 +192,29 @@ public class Order implements Storable {
                             searchQuery, new HashMap<>());
 
             if (returnValues.get("id") != null && returnValues.get("id").equals(orderID)) {
+                return Order.construct(returnValues);
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Order dbGetByDateMotorhomeClient(LocalDate startDate, LocalDate endDate,
+               String motorhomeID, String clientID) {
+        HashMap<String, String> searchQuery = new HashMap<>();
+        searchQuery.put("start_date", startDate.format(formatter));
+        searchQuery.put("end_date", endDate.format(formatter));
+        searchQuery.put("motorhome_id", motorhomeID);
+        searchQuery.put("client_id", clientID);
+
+        try {
+            HashMap<String, String> returnValues = Database.getTable(DB_TABLE_NAME)
+                    .get(Arrays.asList(DB_TABLE_COLUMNS),
+                            searchQuery, new HashMap<>());
+
+            if (returnValues.get("id") != null) {
                 return Order.construct(returnValues);
             }
             return null;
@@ -254,6 +291,24 @@ public class Order implements Storable {
         try {
             return Database.getTable(DB_INTERSECTION_TABLE_NAME)
                     .insert(entry);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public static int dbUpdate(String orderID, Double cancellationPriceValue) {
+        HashMap<String, String> entry = new HashMap<>();
+        entry.put("cancellation_price_value", (cancellationPriceValue == null)
+                ? null
+                : cancellationPriceValue.toString());
+
+        HashMap<String, String> whitelist = new HashMap<>();
+        whitelist.put("id", orderID);
+
+        try {
+            return Database.getTable(DB_TABLE_NAME)
+                    .update(entry, whitelist, new HashMap<>());
         } catch (Exception e) {
             e.printStackTrace();
             return 0;

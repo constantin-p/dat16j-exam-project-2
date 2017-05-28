@@ -1,7 +1,10 @@
 package assignment.model;
 
 
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import store.db.Database;
 import store.db.Storable;
 
@@ -12,30 +15,30 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class Payment implements Storable {
-    public static final String DB_TABLE_NAME = "payments";
-    public static final String[] DB_TABLE_COLUMNS = {"id", "invoice_id", "date", "cancelled"};
+public class CleaningJob implements Storable {
+    public static final String DB_TABLE_NAME = "cleaningjobs";
+    public static final String[] DB_TABLE_COLUMNS = {"id", "order_id", "date", "done"};
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DB_DATE_FORMAT);
 
     public String id;
-    public ObjectProperty<Invoice> invoice;
+    public ObjectProperty<Order> order;
     public ObjectProperty<LocalDate> date;
-    public BooleanProperty cancelled;
+    public BooleanProperty done;
 
-    public Payment() {
+    public CleaningJob() {
         id = null;
-        invoice = new SimpleObjectProperty<>(null);
+        order = new SimpleObjectProperty<>(null);
         date = new SimpleObjectProperty<>(null);
-        cancelled = new SimpleBooleanProperty(false);
+        done = new SimpleBooleanProperty(false);
     }
 
-    public Payment(String id, Invoice invoice, LocalDate date, boolean cancelled) {
+    public CleaningJob(String id, Order order, LocalDate date, boolean done) {
         this.id = id;
-        this.invoice = new SimpleObjectProperty(invoice);
+        this.order = new SimpleObjectProperty(order);
         this.date = new SimpleObjectProperty(date);
-        this.cancelled = new SimpleBooleanProperty(cancelled);
+        this.done = new SimpleBooleanProperty(done);
     }
 
     /*
@@ -45,48 +48,41 @@ public class Payment implements Storable {
     public HashMap<String, String> deconstruct() {
         HashMap<String, String> values = new HashMap<>();
 
-        values.put("invoice_id", invoice.getValue().id);
-        if (date.getValue() == null) {
-            values.put("date", null);
-        } else {
-            values.put("date", formatter.format(date.getValue()));
-        }
-        values.put("cancelled", cancelled.getValue() ? "1" : "0");
+        values.put("order_id", order.getValue().id);
+        values.put("date", formatter.format(date.getValue()));
+        values.put("done", done.getValue() ? "1" : "0");
 
         return values;
     }
 
-    public static Payment construct(HashMap<String, String> valuesMap) {
+    public static CleaningJob construct(HashMap<String, String> valuesMap) {
         String id = valuesMap.get("id");
 
-        Invoice invoice = Invoice.dbGet(valuesMap.get("invoice_id"));
+        Order order = Order.dbGet(valuesMap.get("order_id"));
 
-        LocalDate date = null;
-        if (valuesMap.get("date") != null) {
-            date = LocalDate.parse(valuesMap.get("date"), formatter);
-        }
-        boolean cancelled = Boolean.valueOf(valuesMap.get("cancelled"));
+        LocalDate date = LocalDate.parse(valuesMap.get("date"), formatter);
+        boolean done = Boolean.valueOf(valuesMap.get("done"));
 
-        return new Payment(id, invoice, date, cancelled);
+        return new CleaningJob(id, order, date, done);
     }
 
     /*
      *  DB helpers
      */
-    public static Payment dbGet(String paymentID) {
-        if (paymentID == null) {
+    public static CleaningJob dbGet(String cleaningJobID) {
+        if (cleaningJobID == null) {
             throw new IllegalArgumentException("Invalid ID given as argument! [null]");
         }
         HashMap<String, String> searchQuery = new HashMap<>();
-        searchQuery.put("id", paymentID);
+        searchQuery.put("id", cleaningJobID);
 
         try {
             HashMap<String, String> returnValues = Database.getTable(DB_TABLE_NAME)
                     .get(Arrays.asList(DB_TABLE_COLUMNS),
                             searchQuery, new HashMap<>());
 
-            if (returnValues.get("id") != null && returnValues.get("id").equals(paymentID)) {
-                return Payment.construct(returnValues);
+            if (returnValues.get("id") != null && returnValues.get("id").equals(cleaningJobID)) {
+                return CleaningJob.construct(returnValues);
             }
             return null;
         } catch (Exception e) {
@@ -95,15 +91,15 @@ public class Payment implements Storable {
         }
     }
 
-    public static List<Payment> dbGetAll() {
-        List<Payment> result = new ArrayList<>();
+    public static List<CleaningJob> dbGetAll() {
+        List<CleaningJob> result = new ArrayList<>();
         try {
             List<HashMap<String, String>> returnList = Database.getTable(DB_TABLE_NAME)
                     .getAll(Arrays.asList(DB_TABLE_COLUMNS),
                             null, null);
 
             returnList.forEach((HashMap<String, String> valuesMap) -> {
-                result.add(Payment.construct(valuesMap));
+                result.add(CleaningJob.construct(valuesMap));
             });
             return result;
         } catch (Exception e) {
@@ -112,22 +108,22 @@ public class Payment implements Storable {
         }
     }
 
-    public static int dbInsert(Payment payment) {
+    public static int dbInsert(CleaningJob cleaningJob) {
         try {
             return Database.getTable(DB_TABLE_NAME)
-                    .insert(payment.deconstruct());
+                    .insert(cleaningJob.deconstruct());
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
 
-    public static int dbUpdate(String paymentID, LocalDate date) {
+    public static int dbUpdate(String cleaningJobID, boolean done) {
         HashMap<String, String> entry = new HashMap<>();
-        entry.put("date", (date == null) ? null : formatter.format(date));
+        entry.put("done", done ? "1" : "0");
 
         HashMap<String, String> whitelist = new HashMap<>();
-        whitelist.put("id", paymentID);
+        whitelist.put("id", cleaningJobID);
 
         try {
             return Database.getTable(DB_TABLE_NAME)

@@ -15,6 +15,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -103,9 +104,9 @@ public class OrdersController implements UISection {
         List<Order> orders = Order.dbGetAll();
         orderList.clear();
         orders.forEach(entry -> {
-            if (!entry.hasInvoice()) {
-                entry.schedulePayment();
-            }
+//            if (!entry.hasInvoice()) {
+//                entry.schedulePayment();
+//            }
             orderList.add(entry);
         });
     }
@@ -116,8 +117,6 @@ public class OrdersController implements UISection {
             public TableCell call( final TableColumn<Order, String> param) {
                 final TableCell<Order, String> cell = new TableCell<Order, String>() {
 
-                    Button cancel = new Button("Cancel");
-
                     @Override
                     public void updateItem(String item, boolean empty) {
                         super.updateItem(item, empty);
@@ -125,12 +124,20 @@ public class OrdersController implements UISection {
                             setGraphic(null);
                             setText(null);
                         } else {
-                            cancel.setOnAction((ActionEvent event) -> {
-                                Order order = getTableView().getItems().get(getIndex());
-                                System.out.println("---- "+order.id + "  "+ item);
-                            });
-                            setGraphic(cancel);
-                            setText(null);
+                            Order order = getTableView().getItems().get(getIndex());
+
+                            if (order.startDate.getValue().isAfter(LocalDate.now())) {
+                                Button cancel = new Button("Cancel");
+                                cancel.setOnAction((ActionEvent event) -> {
+                                    System.out.println("---- " + order.id + "  " + item);
+                                    rootController.modalDispatcher.showCancelOrderModal(null, order);
+                                });
+                                setGraphic(cancel);
+                                setText(null);
+                            } else {
+                                setGraphic(null);
+                                setText("-");
+                            }
                         }
                     }
                 };

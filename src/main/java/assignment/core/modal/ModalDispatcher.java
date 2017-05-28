@@ -161,4 +161,10 @@ public class ModalDispatcher {
                     true, new Order());
         });
     }
+
+    public Order showCancelOrderModal(Stage stage, Order order) {
+        return (Order) showModal(stage, (Stage modalStage) -> {
+            return new OrderCancelFormController(this, modalStage, order);
+        });
+    }
 }
