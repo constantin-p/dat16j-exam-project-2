@@ -2,8 +2,10 @@ package assignment.core.section;
 
 
 import assignment.core.RootController;
-import assignment.model.Extra;
 import assignment.model.Motorhome;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
+import assignment.util.ScheduleManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class FleetController implements UISection {
@@ -44,7 +47,14 @@ public class FleetController implements UISection {
             new SimpleStringProperty(cellData.getValue().price.getValue().value.getValue() +
                         " / " + cellData.getValue().price.getValue().type.getValue().name.getValue())
         );
-        tableView.getColumns().addAll(brandColumn, modelColumn, capacityColumn, priceColumn);
+
+        TableColumn<Motorhome, String> statusColumn = new TableColumn("Status");
+        statusColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(ScheduleManager.isMotorhomeFree(LocalDate.now(),
+                        cellData.getValue().id) ? "..." : "Away")
+        );
+        tableView.getColumns().addAll(brandColumn, modelColumn, capacityColumn,
+                priceColumn, statusColumn);
         tableView.setItems(motorhomeList);
 
         populateTableView();
@@ -63,7 +73,7 @@ public class FleetController implements UISection {
     public void handleAddAction(ActionEvent event) {
         Motorhome motorhome = rootController.modalDispatcher.showCreateMotorhomeModal(null);
         if (motorhome != null) {
-            populateTableView();
+            CacheEngine.markForUpdate("fleet");
         }
     }
 
@@ -72,11 +82,14 @@ public class FleetController implements UISection {
      */
     private void populateTableView() {
 
-        List<Motorhome> motorhomes = Motorhome.dbGetAll();
-        motorhomeList.clear();
-        motorhomes.forEach(entry -> {
-            motorhomeList.add(entry);
-        });
+        CacheEngine.get("fleet", new DBOperation<>(() ->
+            Motorhome.dbGetAll(), (List<Motorhome> motorhomes) -> {
+
+            motorhomeList.clear();
+            motorhomes.forEach(entry -> {
+                motorhomeList.add(entry);
+            });
+        }));
     }
 }
 

@@ -3,6 +3,8 @@ package assignment.core.section;
 import assignment.core.RootController;
 import assignment.model.Motorhome;
 import assignment.model.Order;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -93,7 +95,7 @@ public class OrdersController implements UISection {
     public void handleAddAction(ActionEvent event) {
         Order order = rootController.modalDispatcher.showCreateOrderModal(null);
         if (order != null) {
-            populateTableView();
+            CacheEngine.markForUpdate("orders");
         }
     }
     /*
@@ -101,14 +103,16 @@ public class OrdersController implements UISection {
      */
     private void populateTableView() {
 
-        List<Order> orders = Order.dbGetAll();
-        orderList.clear();
-        orders.forEach(entry -> {
-//            if (!entry.hasInvoice()) {
-//                entry.schedulePayment();
-//            }
-            orderList.add(entry);
-        });
+        CacheEngine.get("orders", new DBOperation<>(() ->
+            Order.dbGetAll(), (List<Order> orders) -> {
+
+            orderList.clear();
+            orders.forEach(entry -> {
+                if (!entry.isCancelled) {
+                    orderList.add(entry);
+                }
+            });
+        }));
     }
 
     private Callback<TableColumn<Order, String>, TableCell<Order, String>> getActionCellFactory() {
@@ -126,10 +130,9 @@ public class OrdersController implements UISection {
                         } else {
                             Order order = getTableView().getItems().get(getIndex());
 
-                            if (order.startDate.getValue().isAfter(LocalDate.now())) {
+                            if (order.startDate.getValue().isAfter(LocalDate.now().minusDays(1))) {
                                 Button cancel = new Button("Cancel");
                                 cancel.setOnAction((ActionEvent event) -> {
-                                    System.out.println("---- " + order.id + "  " + item);
                                     rootController.modalDispatcher.showCancelOrderModal(null, order);
                                 });
                                 setGraphic(cancel);

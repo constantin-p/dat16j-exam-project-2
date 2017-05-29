@@ -2,6 +2,7 @@ package assignment.core.modal;
 
 
 import assignment.model.*;
+import assignment.util.CacheEngine;
 import assignment.util.Config;
 import assignment.util.Response;
 import assignment.util.ValidationHandler;
@@ -258,19 +259,25 @@ public class OrderCancelFormController extends ModalBaseController {
     @Override
     public void handleOKAction(ActionEvent event) {
         // 1. Update the order to mark it as cancelled
-        // 2. Update the service job as cancelled
-        // 3. Update the cleaning job as cancelled
-        // 4. If the original invoice has been paid
-        //          Schedule a refund
-        //    else
-        //          Cancel the scheduled payment
+        //    If the original invoice has been paid
+        // 2.       Schedule a refund
 
         boolean success = ValidationHandler.showError(errorLabel,
                     ValidationHandler.validateOrderDBOperation(Order.dbUpdate(order.id,
                             order.cancellationValue.getValue())));
         if (success) {
+            Invoice invoice = Invoice.dbGetByOrderID(order.id);
+            Payment payment = Payment.dbGetByInvoiceID(invoice.id);
 
+            if (payment.date.getValue() != null) {
+                Refund.dbInsert(new Refund(null, invoice, payment, null));
+                CacheEngine.markForUpdate("refunds");
+            }
 
+            CacheEngine.markForUpdate("payments");
+            CacheEngine.markForUpdate("cleaning");
+            CacheEngine.markForUpdate("service");
+            CacheEngine.markForUpdate("orders");
             super.handleOKAction(event);
         }
     }
@@ -357,58 +364,6 @@ public class OrderCancelFormController extends ModalBaseController {
             }
 
         }
-    }
-
-    private void setInvoiceMotorhome() {
-//        if (isMotorhomeValid.getValue()) {
-//
-//            motorhomeLabel.setText(order.motorhome.getValue().brand.getValue() +
-//                    " - " + order.motorhome.getValue().model.getValue());
-//            motorhomeMileageStartLabel.setText(order.motorhome.getValue().mileage.getValue() + "km");
-//        } else {
-//            motorhomeLabel.setText("...");
-//            motorhomeMileageStartLabel.setText("...");
-//        }
-//        setInvoiceDays();
-    }
-
-    private void setInvoiceClient() {
-//        if (isClientValid.getValue()) {
-//
-//            clientNameLabel.setText(order.client.getValue().firstName.getValue() +
-//                    " " + order.client.getValue().lastName.getValue());
-//            clientEmailLabel.setText(order.client.getValue().email.getValue());
-//        } else {
-//            clientNameLabel.setText("...");
-//            clientEmailLabel.setText("...");
-//        }
-    }
-
-    private void setInvoiceDays() {
-
-//        if (isMotorhomeValid.getValue()) {
-//            long days = DAYS.between(order.startDate.getValue(), order.endDate.getValue());
-//            daysLabel.setText(days + "× " +
-//                    decimalFormatter.format(order.motorhome.getValue().price.getValue().value.getValue()) + "kr");
-//
-//            invoiceDaysTotal.setValue(days * order.motorhome.getValue().price.getValue().value.getValue());
-//        } else {
-//            daysLabel.setText(DAYS.between(order.startDate.getValue(), order.endDate.getValue()) + "× ");
-//            invoiceDaysTotal.setValue(0);
-//        }
-    }
-
-    private void setInvoiceSeason() {
-//
-//        if (isStartDateValid.getValue()) {
-//            double modifier = order.seasonModifier.getValue();
-//            seasonModifierLabel.setText((modifier * 100) + "%");
-//
-//            invoiceSeasonModifier.setValue(modifier);
-//        } else {
-//            seasonModifierLabel.setText("...");
-//            invoiceSeasonModifier.setValue(0);
-//        }
     }
 
 }

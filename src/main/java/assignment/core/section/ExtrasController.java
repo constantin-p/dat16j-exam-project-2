@@ -3,6 +3,9 @@ package assignment.core.section;
 import assignment.core.RootController;
 import assignment.model.Account;
 import assignment.model.Extra;
+import assignment.model.Motorhome;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,8 +38,7 @@ public class ExtrasController implements UISection {
 
         TableColumn<Extra, String> priceColumn = new TableColumn("Price");
         priceColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(cellData.getValue().price.getValue().value.getValue() +
-                    " / " + cellData.getValue().price.getValue().type.getValue().name.getValue())
+            new SimpleStringProperty(cellData.getValue().price.getValue().value.getValue().toString())
         );
         tableView.getColumns().addAll(nameColumn, priceColumn);
         tableView.setItems(extraList);
@@ -57,7 +59,7 @@ public class ExtrasController implements UISection {
     public void handleAddAction(ActionEvent event) {
         Extra extra = rootController.modalDispatcher.showCreateExtrasModal(null);
         if (extra != null) {
-            populateTableView();
+            CacheEngine.markForUpdate("extras");
         }
     }
 
@@ -66,10 +68,13 @@ public class ExtrasController implements UISection {
      */
     private void populateTableView() {
 
-        List<Extra> extras = Extra.dbGetAll();
-        extraList.clear();
-        extras.forEach(entry -> {
-            extraList.add(entry);
-        });
+        CacheEngine.get("extras", new DBOperation<>(() ->
+            Extra.dbGetAll(), (List<Extra> extras) -> {
+
+            extraList.clear();
+            extras.forEach(entry -> {
+                extraList.add(entry);
+            });
+        }));
     }
 }

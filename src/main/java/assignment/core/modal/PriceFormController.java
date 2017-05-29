@@ -64,8 +64,8 @@ public class PriceFormController extends ModalBaseController {
                     ValidationHandler.validatePriceName(newValue)));
         });
 
-        valueTextField.doubleProperty().bindBidirectional(price.value);
-        valueTextField.doubleProperty().addListener((observable, oldValue, newValue) -> {
+        valueTextField.valueProperty().bindBidirectional(price.value);
+        valueTextField.valueProperty().addListener((observable, oldValue, newValue) -> {
             isValueValid.set(ValidationHandler.showError(errorLabel,
                     ValidationHandler.validatePriceValue(newValue.doubleValue())));
         });

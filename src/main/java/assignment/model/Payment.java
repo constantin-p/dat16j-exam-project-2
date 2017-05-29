@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Payment implements Storable {
     public static final String DB_TABLE_NAME = "payments";
-    public static final String[] DB_TABLE_COLUMNS = {"id", "invoice_id", "date", "cancelled"};
+    public static final String[] DB_TABLE_COLUMNS = {"id", "invoice_id", "date"};
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DB_DATE_FORMAT);
@@ -22,20 +22,17 @@ public class Payment implements Storable {
     public String id;
     public ObjectProperty<Invoice> invoice;
     public ObjectProperty<LocalDate> date;
-    public BooleanProperty cancelled;
 
     public Payment() {
         id = null;
         invoice = new SimpleObjectProperty<>(null);
         date = new SimpleObjectProperty<>(null);
-        cancelled = new SimpleBooleanProperty(false);
     }
 
-    public Payment(String id, Invoice invoice, LocalDate date, boolean cancelled) {
+    public Payment(String id, Invoice invoice, LocalDate date) {
         this.id = id;
         this.invoice = new SimpleObjectProperty(invoice);
         this.date = new SimpleObjectProperty(date);
-        this.cancelled = new SimpleBooleanProperty(cancelled);
     }
 
     /*
@@ -51,7 +48,6 @@ public class Payment implements Storable {
         } else {
             values.put("date", formatter.format(date.getValue()));
         }
-        values.put("cancelled", cancelled.getValue() ? "1" : "0");
 
         return values;
     }
@@ -65,9 +61,8 @@ public class Payment implements Storable {
         if (valuesMap.get("date") != null) {
             date = LocalDate.parse(valuesMap.get("date"), formatter);
         }
-        boolean cancelled = Boolean.valueOf(valuesMap.get("cancelled"));
 
-        return new Payment(id, invoice, date, cancelled);
+        return new Payment(id, invoice, date);
     }
 
     /*
@@ -86,6 +81,29 @@ public class Payment implements Storable {
                             searchQuery, new HashMap<>());
 
             if (returnValues.get("id") != null && returnValues.get("id").equals(paymentID)) {
+                return Payment.construct(returnValues);
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Payment dbGetByInvoiceID(String invoiceID) {
+        if (invoiceID == null) {
+            throw new IllegalArgumentException("Invalid ID given as argument! [null]");
+        }
+        HashMap<String, String> searchQuery = new HashMap<>();
+        searchQuery.put("invoice_id", invoiceID);
+
+        try {
+            HashMap<String, String> returnValues = Database.getTable(DB_TABLE_NAME)
+                    .get(Arrays.asList(DB_TABLE_COLUMNS),
+                            searchQuery, new HashMap<>());
+
+            if (returnValues.get("invoice_id") != null && returnValues.get("invoice_id")
+                    .equals(invoiceID)) {
                 return Payment.construct(returnValues);
             }
             return null;
@@ -122,7 +140,7 @@ public class Payment implements Storable {
         }
     }
 
-    public static int dbUpdate(String paymentID, LocalDate date) {
+    public static int dbUpdateDate(String paymentID, LocalDate date) {
         HashMap<String, String> entry = new HashMap<>();
         entry.put("date", (date == null) ? null : formatter.format(date));
 

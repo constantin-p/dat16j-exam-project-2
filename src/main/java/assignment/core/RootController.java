@@ -4,6 +4,10 @@ package assignment.core;
 import assignment.core.auth.AuthManager;
 import assignment.core.modal.ModalDispatcher;
 import assignment.core.section.*;
+import assignment.model.Order;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
+import assignment.util.ScheduleManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -14,6 +18,8 @@ import javafx.stage.Stage;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 public class RootController {
@@ -33,6 +39,7 @@ public class RootController {
     private void initialize() {
 
         loadSections();
+        initScheduleManager();
     }
 
     private void loadSections() {
@@ -100,5 +107,19 @@ public class RootController {
             ex.printStackTrace();
             return null;
         }
+    }
+
+    private void initScheduleManager() {
+        CacheEngine.get("orders", new DBOperation<>(() ->
+            Order.dbGetAll(), (List<Order> orders) -> {
+
+            List<Order> orderList = new ArrayList<>();
+            orders.forEach(entry -> {
+                if (!entry.isCancelled) {
+                    orderList.add(entry);
+                }
+            });
+            ScheduleManager.update(orderList);
+        }));
     }
 }

@@ -3,6 +3,9 @@ package assignment.core.section;
 import assignment.core.RootController;
 import assignment.model.AccessType;
 import assignment.model.AccountType;
+import assignment.model.CancellationPeriod;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -63,7 +66,7 @@ public class AccountTypesController implements UISection {
     public void handleAddAction(ActionEvent event) {
         AccountType accountType = rootController.modalDispatcher.showCreateAccountTypeModal(null);
         if (accountType != null) {
-            populateTableView();
+            CacheEngine.markForUpdate("account_types");
         }
     }
 
@@ -71,12 +74,15 @@ public class AccountTypesController implements UISection {
      *  Helpers
      */
     private void populateTableView() {
-        // Load account types
-        List<AccountType> accountTypes = AccountType.dbGetAll();
-        accountTypeList.clear();
-        accountTypes.forEach(entry -> {
-            accountTypeList.add(entry);
-        });
+
+        CacheEngine.get("account_types", new DBOperation<>(() ->
+            AccountType.dbGetAll(), (List<AccountType> accountTypes) -> {
+
+            accountTypeList.clear();
+            accountTypes.forEach(entry -> {
+                accountTypeList.add(entry);
+            });
+        }));
     }
 
     private boolean hasAccess(AccountType accountType, AccessType accessType) {

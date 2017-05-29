@@ -78,8 +78,8 @@ public class MotorhomeFormController extends ModalBaseController {
                     ValidationHandler.validateMotorhomeBrand(newValue)));
         });
 
-        capacityTextField.integerProperty().bindBidirectional(motorhome.capacity);
-        capacityTextField.integerProperty().addListener((observable, oldValue, newValue) -> {
+        capacityTextField.valueProperty().bindBidirectional(motorhome.capacity);
+        capacityTextField.valueProperty().addListener((observable, oldValue, newValue) -> {
             isCapacityValid.set(ValidationHandler.showError(errorLabel,
                     ValidationHandler.validateMotorhomeCapacity(newValue.intValue())));
         });

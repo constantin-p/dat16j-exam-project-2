@@ -2,7 +2,10 @@ package assignment.core.section;
 
 import assignment.core.RootController;
 import assignment.model.Account;
+import assignment.model.Payment;
 import assignment.model.Price;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -54,7 +57,7 @@ public class PricesController implements UISection {
     public void handleAddAction(ActionEvent event) {
         Price price = rootController.modalDispatcher.showCreatePriceModal(null);
         if (price != null) {
-            populateTableView();
+            CacheEngine.markForUpdate("prices");
         }
     }
 
@@ -62,11 +65,14 @@ public class PricesController implements UISection {
      *  Helpers
      */
     private void populateTableView() {
-        // Load prices
-        List<Price> prices = Price.dbGetAll();
-        priceList.clear();
-        prices.forEach(entry -> {
-            priceList.add(entry);
-        });
+
+        CacheEngine.get("prices", new DBOperation<>(() ->
+            Price.dbGetAll(), (List<Price> prices) -> {
+
+            priceList.clear();
+            prices.forEach(entry -> {
+                priceList.add(entry);
+            });
+        }));
     }
 }

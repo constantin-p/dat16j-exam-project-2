@@ -4,6 +4,8 @@ import assignment.core.RootController;
 import assignment.model.CleaningJob;
 import assignment.model.Client;
 import assignment.model.Motorhome;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -53,6 +55,8 @@ public class CleaningController implements UISection {
 
         tableView.getColumns().addAll(startColumn, motorhomeColumn);
         tableView.setItems(cleaningJobList);
+
+        populateTableView();
     }
 
     public static String getAccessTypeName() {
@@ -67,11 +71,16 @@ public class CleaningController implements UISection {
      *  Helpers
      */
     private void populateTableView() {
-        // Load cleaning jobs
-        List<CleaningJob> cleaningJobs = CleaningJob.dbGetAll();
-        cleaningJobList.clear();
-        cleaningJobs.forEach(entry -> {
-            cleaningJobList.add(entry);
-        });
+
+        CacheEngine.get("cleaning", new DBOperation<>(() ->
+            CleaningJob.dbGetAll(), (List<CleaningJob> cleaningJobs) -> {
+
+            cleaningJobList.clear();
+            cleaningJobs.forEach(entry -> {
+                if (!entry.order.getValue().isCancelled) {
+                    cleaningJobList.add(entry);
+                }
+            });
+        }));
     }
 }

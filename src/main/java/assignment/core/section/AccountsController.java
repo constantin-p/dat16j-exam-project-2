@@ -3,6 +3,9 @@ package assignment.core.section;
 
 import assignment.core.RootController;
 import assignment.model.Account;
+import assignment.model.AccountType;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -51,7 +54,7 @@ public class AccountsController implements UISection {
     public void handleAddAction(ActionEvent event) {
         Account account = rootController.modalDispatcher.showCreateAccountModal(null);
         if (account != null) {
-            populateTableView();
+            CacheEngine.markForUpdate("accounts");
         }
     }
 
@@ -59,11 +62,14 @@ public class AccountsController implements UISection {
      *  Helpers
      */
     private void populateTableView() {
-        // Load accounts
-        List<Account> accounts = Account.dbGetAll();
-        accountList.clear();
-        accounts.forEach(entry -> {
-            accountList.add(entry);
-        });
+
+        CacheEngine.get("accounts", new DBOperation<>(() ->
+            Account.dbGetAll(), (List<Account> accounts) -> {
+
+            accountList.clear();
+            accounts.forEach(entry -> {
+                accountList.add(entry);
+            });
+        }));
     }
 }

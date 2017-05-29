@@ -2,7 +2,10 @@ package assignment.core.section;
 
 import assignment.core.RootController;
 import assignment.model.Extra;
+import assignment.model.RepairJob;
 import assignment.model.Season;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,8 +36,7 @@ public class SeasonsController implements UISection {
 
         TableColumn<Season, String> priceColumn = new TableColumn("Price");
         priceColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().price.getValue().value.getValue() +
-                        " / " + cellData.getValue().price.getValue().type.getValue().name.getValue())
+                new SimpleStringProperty(cellData.getValue().price.getValue().value.getValue().toString())
         );
         tableView.getColumns().addAll(nameColumn, priceColumn);
         tableView.setItems(seasonList);
@@ -55,10 +57,13 @@ public class SeasonsController implements UISection {
      */
     private void populateTableView() {
 
-        List<Season> seasons = Season.dbGetAll();
-        seasonList.clear();
-        seasons.forEach(entry -> {
-            seasonList.add(entry);
-        });
+        CacheEngine.get("seasons", new DBOperation<>(() ->
+            Season.dbGetAll(), (List<Season> seasons) -> {
+
+            seasonList.clear();
+            seasons.forEach(entry -> {
+                seasonList.add(entry);
+            });
+        }));
     }
 }

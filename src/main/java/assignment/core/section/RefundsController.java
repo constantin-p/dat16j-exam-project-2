@@ -2,7 +2,10 @@ package assignment.core.section;
 
 import assignment.core.RootController;
 import assignment.model.Payment;
+import assignment.model.Price;
 import assignment.model.Refund;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -78,11 +81,14 @@ public class RefundsController implements UISection {
     */
     private void populateTableView() {
 
-        List<Refund> refunds = Refund.dbGetAll();
-        refundList.clear();
-        refunds.forEach(entry -> {
-            refundList.add(entry);
-        });
+        CacheEngine.get("refunds", new DBOperation<>(() ->
+            Refund.dbGetAll(), (List<Refund> refunds) -> {
+
+            refundList.clear();
+            refunds.forEach(entry -> {
+                refundList.add(entry);
+            });
+        }));
     }
 
     private Callback<TableColumn<Refund, String>, TableCell<Refund, String>> getActionCellFactory() {
@@ -103,7 +109,7 @@ public class RefundsController implements UISection {
                                 Button pay = new Button("Pay");
                                 pay.setOnAction((ActionEvent event) -> {
                                     Refund.dbUpdate(item, LocalDate.now());
-                                    populateTableView();
+                                    CacheEngine.markForUpdate("refunds");
                                 });
                                 setGraphic(pay);
                                 setText(null);

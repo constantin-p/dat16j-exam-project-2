@@ -4,6 +4,8 @@ import assignment.core.RootController;
 import assignment.model.Motorhome;
 import assignment.model.Order;
 import assignment.model.Payment;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -79,11 +81,16 @@ public class PaymentsController implements UISection {
     */
     private void populateTableView() {
 
-        List<Payment> payments = Payment.dbGetAll();
-        paymentList.clear();
-        payments.forEach(entry -> {
-            paymentList.add(entry);
-        });
+        CacheEngine.get("payments", new DBOperation<>(() ->
+            Payment.dbGetAll(), (List<Payment> payments) -> {
+
+            paymentList.clear();
+            payments.forEach(entry -> {
+                if (!entry.invoice.getValue().order.getValue().isCancelled) {
+                    paymentList.add(entry);
+                }
+            });
+        }));
     }
 
     private Callback<TableColumn<Payment, String>, TableCell<Payment, String>> getActionCellFactory() {
@@ -103,8 +110,8 @@ public class PaymentsController implements UISection {
                             if (getTableView().getItems().get(getIndex()).date.getValue() == null) {
                                 Button pay = new Button("Pay");
                                 pay.setOnAction((ActionEvent event) -> {
-                                    Payment.dbUpdate(item, LocalDate.now());
-                                    populateTableView();
+                                    Payment.dbUpdateDate(item, LocalDate.now());
+                                    CacheEngine.markForUpdate("payments");
                                 });
                                 setGraphic(pay);
                                 setText(null);

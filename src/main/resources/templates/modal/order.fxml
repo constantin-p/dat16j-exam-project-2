@@ -5,7 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -134,11 +134,18 @@
             GridPane.columnIndex="1"
             GridPane.rowIndex="11" />
 
-        <ListView fx:id="listView"
+        <TableView fx:id="tableView"
             minHeight="100.0"
             prefHeight="200.0"
             GridPane.columnIndex="1"
-            GridPane.rowIndex="13" />
+            GridPane.rowIndex="13">
+            <columns>
+                <!-- Table columns -->
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+        </TableView>
 
         <Button fx:id="addExtraButton"
             text="Add extra"

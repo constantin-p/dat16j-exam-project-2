@@ -4,9 +4,13 @@ package assignment.core.modal.selector;
 import assignment.core.modal.ModalDispatcher;
 import assignment.model.Client;
 import assignment.model.Motorhome;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -19,12 +23,17 @@ public class ClientSelectorController extends SelectorBaseController {
     private static final String TITLE = "client_select";
 
     private ObservableList<Client> clientList = FXCollections.observableArrayList();
+    private FilteredList<Client> filteredData = new FilteredList<>(clientList, p -> true);
+    private EntryValidator<Client> entryValidator;
 
     @FXML
     private TableView<Client> tableView;
 
-    public ClientSelectorController(ModalDispatcher modalDispatcher, Stage stage, boolean canCreate) {
+    public ClientSelectorController(ModalDispatcher modalDispatcher, Stage stage,
+                    boolean canCreate, EntryValidator<Client> entryValidator) {
         super(modalDispatcher, stage, canCreate);
+
+        this.entryValidator = entryValidator;
     }
 
     @Override
@@ -44,7 +53,6 @@ public class ClientSelectorController extends SelectorBaseController {
         dateOfBirthColumn.setCellValueFactory(cellData -> cellData.getValue().dateOfBirth.asString());
 
         tableView.getColumns().addAll(firstNameColumn, lastNameColumn, emailColumn, dateOfBirthColumn);
-        tableView.setItems(clientList);
 
         populateTableView();
     }
@@ -75,11 +83,48 @@ public class ClientSelectorController extends SelectorBaseController {
      *  Helpers
      */
     private void populateTableView() {
-        // Load clients
-        List<Client> clients = Client.dbGetAll();
-        clientList.clear();
-        clients.forEach(entry -> {
-            clientList.add(entry);
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filterTableView(newValue);
+        });
+
+        SortedList<Client> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(tableView.comparatorProperty());
+        tableView.setItems(sortedData);
+
+        CacheEngine.get("clients", new DBOperation<>(() ->
+            Client.dbGetAll(), (List<Client> clients) -> {
+
+            clientList.clear();
+            clients.forEach(entry -> {
+                clientList.add(entry);
+                filterTableView(searchField.getText());
+            });
+        }));
+    }
+
+    private void filterTableView(String searchValue) {
+        filteredData.setPredicate(client -> {
+            if (!entryValidator.isValid(client)) {
+                return false;
+            }
+
+            // No search term
+            if (searchValue == null || searchValue.isEmpty()) {
+                return true;
+            }
+
+            String lowerCaseFilter = searchValue.toLowerCase();
+
+            if (client.firstName.getValue().toLowerCase().contains(lowerCaseFilter)) {
+                return true;
+            } else if (client.lastName.getValue().toLowerCase().contains(lowerCaseFilter)) {
+                return true;
+            } else if (client.email.getValue().toLowerCase().contains(lowerCaseFilter)) {
+                return true;
+            } else if (client.dateOfBirth.getValue().toString().contains(lowerCaseFilter)) {
+                return true;
+            }
+            return false;
         });
     }
 }

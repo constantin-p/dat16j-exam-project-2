@@ -92,17 +92,19 @@ public class ModalDispatcher {
         });
     }
 
-    public Client showSelectClientModal(Stage stage) {
+    public Client showSelectClientModal(Stage stage,
+                SelectorBaseController.EntryValidator<Client> entryValidator) {
         return (Client) showModal(stage, (Stage modalStage) -> {
             return new ClientSelectorController(this, modalStage,
-                    false);
+                    false, entryValidator);
         });
     }
 
-    public Client showSelectClientModal(Stage stage, boolean canCreate) {
+    public Client showSelectClientModal(Stage stage, boolean canCreate,
+        SelectorBaseController.EntryValidator<Client> entryValidator) {
         return (Client) showModal(stage, (Stage modalStage) -> {
             return new ClientSelectorController(this, modalStage,
-                    canCreate);
+                    canCreate, entryValidator);
         });
     }
 
@@ -134,10 +136,11 @@ public class ModalDispatcher {
         });
     }
 
-    public Motorhome showSelectMotorhomeModal(Stage stage) {
+    public Motorhome showSelectMotorhomeModal(Stage stage,
+          SelectorBaseController.EntryValidator<Motorhome> entryValidator) {
         return (Motorhome) showModal(stage, (Stage modalStage) -> {
             return new MotorhomeSelectorController(this, modalStage,
-                    false);
+                    false, entryValidator);
         });
     }
 
@@ -148,10 +151,11 @@ public class ModalDispatcher {
         });
     }
 
-    public Extra showExtraClientModal(Stage stage) {
+    public Extra showSelectExtraModal(Stage stage,
+          SelectorBaseController.EntryValidator<Extra> entryValidator) {
         return (Extra) showModal(stage, (Stage modalStage) -> {
             return new ExtraSelectorController(this, modalStage,
-                    false);
+                    false, entryValidator);
         });
     }
 

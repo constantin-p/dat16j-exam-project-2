@@ -14,24 +14,27 @@ import java.util.List;
 
 public class Refund implements Storable {
     public static final String DB_TABLE_NAME = "refunds";
-    public static final String[] DB_TABLE_COLUMNS = {"id", "invoice_id", "date"};
+    public static final String[] DB_TABLE_COLUMNS = {"id", "invoice_id", "payment_id", "date"};
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DB_DATE_FORMAT);
 
     public String id;
     public ObjectProperty<Invoice> invoice;
+    public ObjectProperty<Payment> payment;
     public ObjectProperty<LocalDate> date;
 
     public Refund() {
         id = null;
         invoice = new SimpleObjectProperty<>(null);
+        payment = new SimpleObjectProperty<>(null);
         date = new SimpleObjectProperty<>(null);
     }
 
-    public Refund(String id, Invoice invoice, LocalDate date) {
+    public Refund(String id, Invoice invoice, Payment payment, LocalDate date) {
         this.id = id;
         this.invoice = new SimpleObjectProperty(invoice);
+        this.payment = new SimpleObjectProperty(payment);
         this.date = new SimpleObjectProperty(date);
     }
 
@@ -43,6 +46,7 @@ public class Refund implements Storable {
         HashMap<String, String> values = new HashMap<>();
 
         values.put("invoice_id", invoice.getValue().id);
+        values.put("payment_id", payment.getValue().id);
         if (date.getValue() == null) {
             values.put("date", null);
         } else {
@@ -56,13 +60,14 @@ public class Refund implements Storable {
         String id = valuesMap.get("id");
 
         Invoice invoice = Invoice.dbGet(valuesMap.get("invoice_id"));
+        Payment payment = Payment.dbGet(valuesMap.get("payment_id"));
 
         LocalDate date = null;
         if (valuesMap.get("date") != null) {
             date = LocalDate.parse(valuesMap.get("date"), formatter);
         }
 
-        return new Refund(id, invoice, date);
+        return new Refund(id, invoice, payment, date);
     }
 
     /*

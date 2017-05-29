@@ -2,8 +2,11 @@ package assignment.core.section;
 
 import assignment.core.RootController;
 import assignment.model.CancellationPeriod;
+import assignment.model.CleaningJob;
 import assignment.model.Extra;
 import assignment.model.Season;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -65,10 +68,13 @@ public class CancellationPeriodsController implements UISection {
      */
     private void populateTableView() {
 
-        List<CancellationPeriod> cancellationPeriods = CancellationPeriod.dbGetAll();
-        cancellationPeriodList.clear();
-        cancellationPeriods.forEach(entry -> {
-            cancellationPeriodList.add(entry);
-        });
+        CacheEngine.get("cancellation_periods", new DBOperation<>(() ->
+            CancellationPeriod.dbGetAll(), (List<CancellationPeriod> cancellationPeriods) -> {
+
+            cancellationPeriodList.clear();
+            cancellationPeriods.forEach(entry -> {
+                cancellationPeriodList.add(entry);
+            });
+        }));
     }
 }

@@ -34,12 +34,8 @@
             minHeight="42.0"
             GridPane.columnSpan="2147483647">
             <children>
-                <CPSearchField fx:id="searchTextField"
-                    HBox.hgrow="ALWAYS">
-                    <HBox.margin>
-                        <Insets right="15.0" />
-                    </HBox.margin>
-                </CPSearchField>
+                <CPSearchField fx:id="searchField"
+                    HBox.hgrow="ALWAYS" />
             </children>
             <padding>
                 <Insets left="15.0" right="15.0" />

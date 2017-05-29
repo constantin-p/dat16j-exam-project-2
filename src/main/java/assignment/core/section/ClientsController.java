@@ -3,6 +3,9 @@ package assignment.core.section;
 
 import assignment.core.RootController;
 import assignment.model.Client;
+import assignment.model.ServiceJob;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -66,7 +69,7 @@ public class ClientsController implements UISection {
     public void handleAddAction(ActionEvent event) {
         Client client = rootController.modalDispatcher.showCreateClientModal(null);
         if (client != null) {
-            populateTableView();
+            CacheEngine.markForUpdate("clients");
         }
     }
 
@@ -74,11 +77,14 @@ public class ClientsController implements UISection {
      *  Helpers
      */
     private void populateTableView() {
-        // Load clients
-        List<Client> clients = Client.dbGetAll();
-        clientList.clear();
-        clients.forEach(entry -> {
-            clientList.add(entry);
-        });
+
+        CacheEngine.get("clients", new DBOperation<>(() ->
+            Client.dbGetAll(), (List<Client> clients) -> {
+
+            clientList.clear();
+            clients.forEach(entry -> {
+                clientList.add(entry);
+            });
+        }));
     }
 }

@@ -1,16 +1,21 @@
 package assignment.core.modal;
 
 
+import assignment.core.modal.selector.SelectorBaseController;
 import assignment.model.*;
-import assignment.util.Config;
-import assignment.util.Response;
-import assignment.util.ValidationHandler;
+import assignment.util.*;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.*;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -20,9 +25,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -59,7 +62,7 @@ public class OrderFormController extends ModalBaseController {
     private BooleanProperty isClientValid = new SimpleBooleanProperty(false);
 
     @FXML
-    private ListView<Map.Entry<Extra, Double>> listView;
+    private TableView<Map.Entry<Extra, Double>> tableView;
 
     @FXML
     private Button addExtraButton;
@@ -220,6 +223,26 @@ public class OrderFormController extends ModalBaseController {
                 decimalFormatter.format(invoiceTotal.getValue()), invoiceTotal));
 
 
+
+
+        order.extras.addListener((ListChangeListener
+              .Change<? extends Map.Entry<Extra, Double>> c) -> {
+
+            double totalExtras = 0.0;
+            extrasVBox.getChildren().clear();
+            for (Map.Entry<Extra, Double> entry: c.getList()) {
+                totalExtras += entry.getValue();
+
+                setInvoiceExtra(entry.getKey().name.getValue(),
+                        decimalFormatter.format(entry.getValue()));
+            }
+
+            if (c.getList().isEmpty()) {
+               setInvoiceExtra("...", "...");
+            }
+            invoiceExtrasSubtotal.setValue(totalExtras);
+        });
+
         // 2. Editable fields
         startDatePicker.setConverter(new LocalDateStringConverter(formatter, formatter));
         startDatePicker.setDayCellFactory(new Callback<DatePicker, DateCell>() {
@@ -302,35 +325,49 @@ public class OrderFormController extends ModalBaseController {
         });
         isEndDateValid.set(ValidationHandler.showError(errorLabel,
                 ValidationHandler.validateOrderEndDate(endDatePicker.getValue())));
+
+
+        TableColumn<Map.Entry<Extra, Double>, String> nameColumn = new TableColumn("Name");
+        nameColumn.setCellValueFactory(cellData -> cellData.getValue().getKey().name);
+
+        TableColumn<Map.Entry<Extra, Double>, String> actionColumn = new TableColumn("Action");
+        actionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
+                .getKey().id));
+        actionColumn.setCellFactory(getActionCellFactory());
+
+        tableView.getColumns().addAll(nameColumn, actionColumn);
+        tableView.setItems(order.extras);
     }
 
     @Override
     public void handleOKAction(ActionEvent event) {
         if (create) {
-            System.out.println("\n\n " + order);
-            System.out.println("\n\n " + order.season);
+            List<Map.Entry<Extra, Double>> extras = order.extras;
             boolean success = ValidationHandler.showError(errorLabel,
                     ValidationHandler.validateOrderDBOperation(Order.dbInsert(order)));
             if (success) {
                 order = Order.dbGetByDateMotorhomeClient(order.startDate.getValue(),
                         order.endDate.getValue(), order.motorhome.getValue().id,
-                        order.motorhome.getValue().id);
-                System.out.println(order);
+                        order.client.getValue().id);
+
                 // 1. Add the extras
                 // 2. Schedule payment
                 // 3. Schedule cleaning job
                 // 4. Schedule service job
 
                 // Add the extras
-//                extraMap.forEach(entry -> {
-//                    if (entry.getValue().getValue() == true) {
-//                        accountType.addPermission(entry.getKey());
-//                    }
-//                });
+                for (Map.Entry<Extra, Double> entry: extras) {
+                    Order.dbInsertExtra(order.id, entry.getKey());
+                }
 
                 order.schedulePayment();
                 order.scheduleCleaningJob();
                 order.scheduleServiceJob();
+
+                CacheEngine.markForUpdate("payments");
+                CacheEngine.markForUpdate("cleaning");
+                CacheEngine.markForUpdate("service");
+
                 super.handleOKAction(event);
             }
         }
@@ -358,7 +395,9 @@ public class OrderFormController extends ModalBaseController {
 
     @FXML
     public void handleSelectMotorhomeAction(ActionEvent event) {
-        Motorhome motorhome = modalDispatcher.showSelectMotorhomeModal(super.stage);
+        Motorhome motorhome = modalDispatcher.showSelectMotorhomeModal(super.stage,
+            m -> ScheduleManager.isMotorhomeFree(order.startDate.getValue(),
+                order.endDate.getValue(), m.id));
 
         Response validation = ValidationHandler.validateOrderMotorhome(motorhome);
         if (validation.success) {
@@ -376,7 +415,9 @@ public class OrderFormController extends ModalBaseController {
 
     @FXML
     public void handleSelectClientAction(ActionEvent event) {
-        Client client = modalDispatcher.showSelectClientModal(super.stage, true);
+        Client client = modalDispatcher.showSelectClientModal(super.stage, true,
+                c -> ScheduleManager.isClientFree(order.startDate.getValue(),
+                        order.endDate.getValue(), c.id));
 
         Response validation = ValidationHandler.validateOrderClient(client);
         if (validation.success) {
@@ -393,18 +434,24 @@ public class OrderFormController extends ModalBaseController {
 
     @FXML
     public void handleAddExtraAction(ActionEvent event) {
-        Extra extra = modalDispatcher.showExtraClientModal(super.stage);
+        Extra extra = modalDispatcher.showSelectExtraModal(super.stage, e -> {
+            boolean isAvailable = ScheduleManager.isClientFree(order.startDate.getValue(),
+                            order.endDate.getValue(), e.id);
 
-//        Response validation = ValidationHandler.validateOrderClient(client);
-//        if (validation.success) {
-//            order.client.setValue(client);
-//            selectClientButton.setText(client.firstName.getValue() +
-//                    " " + client.lastName.getValue());
-//        } else {
-//            selectClientButton.setText("Select client");
-//        }
-
-//        isClientValid.set(ValidationHandler.showError(errorLabel, validation));
+            if (!isAvailable) {
+                return false;
+            }
+            for(Map.Entry<Extra, Double> entry: order.extras) {
+                if (entry.getKey().id.equals(e.id)) {
+                    return false;
+                }
+            }
+            return true;
+        });
+        if (extra != null) {
+            order.extras.add(new AbstractMap.SimpleEntry<>(extra,
+                    extra.price.getValue().value.getValue()));
+        }
     }
 
     /*
@@ -414,25 +461,40 @@ public class OrderFormController extends ModalBaseController {
         if (isStartDateValid.getValue()) {
             MonthDay startDate = MonthDay.of(startDatePicker.getValue().getMonth(),
                     startDatePicker.getValue().getDayOfMonth());
-            // TODO: sort seasons by date
+
+            seasons.sort(Comparator.comparing(o -> o.start.getValue()));
             boolean found = false;
             for (int i = 1; i < seasons.size(); i++) {
                 if (startDate.isBefore(seasons.get(i).start.getValue())) {
                     found = true;
-                    order.season.setValue(seasons.get(i - 1));
-                    order.seasonModifier.setValue(order.season.getValue().
+                    order.seasonModifier.setValue(seasons.get(i - 1).
                             price.getValue().value.getValue());
                     break;
                 }
             }
 
             if (!found) {
-                order.season.setValue(seasons.get(0));
-                order.seasonModifier.setValue(order.season.getValue().
+                order.seasonModifier.setValue(seasons.get(0).
                         price.getValue().value.getValue());
             }
         }
         setInvoiceSeason();
+    }
+
+    private void setInvoiceExtra(String left, String right) {
+        HBox hbox = new HBox();
+        Label leftLabel = new Label(left);
+        leftLabel.setMinWidth(100.0);
+        leftLabel.setAlignment(Pos.TOP_RIGHT);
+        HBox.setHgrow(leftLabel, Priority.NEVER);
+
+        Label rightLabel = new Label(right);
+        rightLabel.setMaxWidth(Double.MAX_VALUE);
+        rightLabel.setAlignment(Pos.TOP_RIGHT);
+        HBox.setHgrow(rightLabel, Priority.ALWAYS);
+
+        hbox.getChildren().addAll(leftLabel, rightLabel);
+        extrasVBox.getChildren().add(hbox);
     }
 
     private void setInvoiceMotorhome() {
@@ -487,4 +549,34 @@ public class OrderFormController extends ModalBaseController {
         }
     }
 
+    private Callback<TableColumn<Map.Entry<Extra, Double>, String>,
+            TableCell<Map.Entry<Extra, Double>, String>> getActionCellFactory() {
+        return new Callback<TableColumn<Map.Entry<Extra, Double>, String>,
+                TableCell<Map.Entry<Extra, Double>, String>>() {
+            @Override
+            public TableCell call( final TableColumn<Map.Entry<Extra, Double>, String> param) {
+                final TableCell<Map.Entry<Extra, Double>, String> cell = new TableCell<Map.Entry<Extra, Double>, String>() {
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                            setText(null);
+                        } else {
+                            Map.Entry<Extra, Double> entry = getTableView().getItems()
+                                    .get(getIndex());
+
+                            Button remove = new Button("Remove");
+                            remove.setOnAction((ActionEvent event) -> {
+                                order.extras.remove(entry);
+                            });
+                            setGraphic(remove);
+                            setText(null);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+    }
 }

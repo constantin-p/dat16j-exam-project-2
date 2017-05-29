@@ -2,6 +2,8 @@ package assignment.core.section;
 
 import assignment.core.RootController;
 import assignment.model.*;
+import assignment.util.CacheEngine;
+import assignment.util.DBOperation;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -52,6 +54,8 @@ public class RepairsController implements UISection {
 
         tableView.getColumns().addAll(startColumn, motorhomeColumn, detailsColumn);
         tableView.setItems(repairJobList);
+
+        populateTableView();
     }
 
     public static String getAccessTypeName() {
@@ -66,11 +70,14 @@ public class RepairsController implements UISection {
      *  Helpers
      */
     private void populateTableView() {
-        // Load repair jobs
-        List<RepairJob> repairJobs = RepairJob.dbGetAll();
-        repairJobList.clear();
-        repairJobs.forEach(entry -> {
-            repairJobList.add(entry);
-        });
+
+        CacheEngine.get("repairs", new DBOperation<>(() ->
+            RepairJob.dbGetAll(), (List<RepairJob> repairJobs) -> {
+
+            repairJobList.clear();
+            repairJobs.forEach(entry -> {
+                repairJobList.add(entry);
+            });
+        }));
     }
 }

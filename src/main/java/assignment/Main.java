@@ -4,6 +4,7 @@ package assignment;
 import assignment.core.RootController;
 import assignment.core.auth.AuthManager;
 import assignment.core.auth.LoginController;
+import assignment.util.CacheEngine;
 import assignment.util.Config;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +16,7 @@ import store.db.Database;
 import java.io.IOException;
 
 public class Main extends Application {
-    public static final String COMPANY_NAME = "NORDIC";
+    public static String windowPrefix;
 
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
@@ -28,10 +29,14 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
 
         // TODO: Catch unhandled errors and display the crash
+        Config.loadConfig("ui", "config/ui.properties");
+        Config.loadConfig("cache", "config/cache.properties");
         Config.loadConfig("invoice", "config/invoice.properties");
         Config.loadConfig("store", "config/store_secret.properties");
+        CacheEngine.configInstance(Config.getConfig("cache"));
         Database.configInstance(Config.getConfig("store"));
 
+        windowPrefix = Config.getConfig("ui").getProperty("WINDOW_PREFIX");
         initLoginLayout();
     }
 
@@ -50,7 +55,7 @@ public class Main extends Application {
             Parent layout = loader.load();
 
             primaryStage.setScene(new Scene(layout, 600, 500));
-            primaryStage.setTitle(COMPANY_NAME + " - Management System");
+            primaryStage.setTitle(windowPrefix + " Management System");
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,7 +72,7 @@ public class Main extends Application {
             Parent layout = loader.load();
 
             primaryStage.setScene(new Scene(layout, 300, 400));
-            primaryStage.setTitle(COMPANY_NAME + " - Login");
+            primaryStage.setTitle(windowPrefix + " Login");
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
