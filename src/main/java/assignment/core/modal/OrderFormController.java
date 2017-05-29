@@ -375,27 +375,27 @@ public class OrderFormController extends ModalBaseController {
 
         pickUpTextField.textProperty().bindBidirectional(order.pickUp);
         pickUpTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isPickUpTextValid.set(ValidationHandler.showError(errorLabel,
+            isPickUpTextValid.set(ValidationHandler.validateControl(pickUpTextField, errorLabel,
                     ValidationHandler.validateOrderPickUp(newValue)));
         });
 
         pickUpDistanceTextField.valueProperty().bindBidirectional(order.pickUpDistance);
         pickUpDistanceTextField.valueProperty().addListener((observable, oldValue, newValue) -> {
-            isPickUpDistanceValid.set(ValidationHandler.showError(errorLabel,
-                    ValidationHandler.validateOrderPickUpDistance(newValue.intValue())));
+            isPickUpDistanceValid.set(ValidationHandler.validateControl(pickUpDistanceTextField,
+                    errorLabel, ValidationHandler.validateOrderPickUpDistance(newValue.intValue())));
             setInvoiceTransport();
         });
 
         dropOffTextField.textProperty().bindBidirectional(order.dropOff);
         dropOffTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isDropOffTextValid.set(ValidationHandler.showError(errorLabel,
+            isDropOffTextValid.set(ValidationHandler.validateControl(dropOffTextField, errorLabel,
                     ValidationHandler.validateOrderDropOff(newValue)));
         });
 
         dropOffDistanceTextField.valueProperty().bindBidirectional(order.dropOffDistance);
         dropOffDistanceTextField.valueProperty().addListener((observable, oldValue, newValue) -> {
-            isDropOffDistanceValid.set(ValidationHandler.showError(errorLabel,
-                    ValidationHandler.validateOrderDropOffDistance(newValue.intValue())));
+            isDropOffDistanceValid.set(ValidationHandler.validateControl(dropOffDistanceTextField,
+                    errorLabel, ValidationHandler.validateOrderDropOffDistance(newValue.intValue())));
             setInvoiceTransport();
         });
 
@@ -407,6 +407,7 @@ public class OrderFormController extends ModalBaseController {
         actionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
                 .getKey().id));
         actionColumn.setCellFactory(getActionCellFactory());
+        actionColumn.getStyleClass().add("align-center");
 
         tableView.getColumns().addAll(nameColumn, actionColumn);
         tableView.setItems(order.extras);

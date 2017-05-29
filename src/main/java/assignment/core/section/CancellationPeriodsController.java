@@ -44,10 +44,11 @@ public class CancellationPeriodsController implements UISection {
         TableColumn<CancellationPeriod, String> minimumPriceColumn = new TableColumn("Minimum price");
         minimumPriceColumn.setCellValueFactory(cellData ->
             new SimpleStringProperty((cellData.getValue().minimumPrice.getValue() == null)
-                ? "-"
+                ? "..."
                 : cellData.getValue().minimumPrice.getValue().value.getValue() +
                     " / " + cellData.getValue().minimumPrice.getValue().type.getValue().name.getValue())
         );
+        minimumPriceColumn.getStyleClass().add("align-center");
 
         tableView.getColumns().addAll(nameColumn, priceColumn, minimumPriceColumn);
         tableView.setItems(cancellationPeriodList);

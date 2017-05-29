@@ -250,7 +250,7 @@
                            <children>
                               <Label fx:id="companyNameLabel"
                                 text="COMPANY NAME"
-                                textFill="#3e00d0"
+                                styleClass="invoice-blue-color"
                                 maxWidth="1.7976931348623157E308"
                                 HBox.hgrow="ALWAYS">
                                     <font>
@@ -270,11 +270,11 @@
 
                         <Label fx:id="companyAddressLabel"
                             text="company address"
-                            textFill="#777777"
+                            styleClass="invoice-base-color"
                             wrapText="true" />
                         <Label fx:id="companyEmailLabel"
                             text="company email"
-                            textFill="#777777"
+                            styleClass="invoice-base-color"
                             wrapText="true" />
 
                         <HBox>
@@ -319,21 +319,21 @@
                         </Label>
                         <Label fx:id="clientNameLabel"
                             text="..."
-                            textFill="#777777"
+                            styleClass="invoice-base-color"
                             wrapText="true" />
                         <Label fx:id="clientAddressLabel"
                             text="..."
-                            textFill="#777777"
+                            styleClass="invoice-base-color"
                             wrapText="true" />
                         <Label fx:id="clientEmailLabel"
                             text="..."
-                            textFill="#777777"
+                            styleClass="invoice-base-color"
                             wrapText="true" />
 
                         <!-- Rental details -->
                         <Label
                             text="Rental details:"
-                            textFill="#222222"
+                            styleClass="invoice-dark-color"
                             maxWidth="1.7976931348623157E308">
                             <font>
                                 <Font
@@ -348,7 +348,7 @@
                             <children>
                                 <Label
                                     text="Rented on:"
-                                    textFill="#999999"
+                                    styleClass="invoice-light-color"
                                     minWidth="100.0"
                                     HBox.hgrow="NEVER">
                                     <font>
@@ -379,7 +379,7 @@
                             <children>
                                 <Label
                                     text="Returned on:"
-                                    textFill="#999999"
+                                    styleClass="invoice-light-color"
                                     minWidth="100.0"
                                     HBox.hgrow="NEVER">
                                     <font>
@@ -410,7 +410,7 @@
                             <children>
                                 <Label
                                     text="Motorhome:"
-                                    textFill="#999999"
+                                    styleClass="invoice-light-color"
                                     minWidth="100.0"
                                     HBox.hgrow="NEVER">
                                     <font>
@@ -438,7 +438,7 @@
                             <children>
                                 <Label
                                     text="Mileage in:"
-                                    textFill="#999999"
+                                    styleClass="invoice-light-color"
                                     minWidth="100.0"
                                     HBox.hgrow="NEVER">
                                     <font>
@@ -468,7 +468,7 @@
                             <children>
                                 <Label
                                     text="Mileage out:"
-                                    textFill="#999999"
+                                    styleClass="invoice-light-color"
                                     minWidth="100.0"
                                     HBox.hgrow="NEVER">
                                     <font>
@@ -497,7 +497,7 @@
                         <!-- Rental charges -->
                         <Label
                             text="Rental charges:"
-                            textFill="#222222"
+                            styleClass="invoice-dark-color"
                             maxWidth="1.7976931348623157E308">
                             <font>
                                 <Font
@@ -559,7 +559,7 @@
                             <children>
                                 <Label
                                     text="SUBTOTAL"
-                                    textFill="#999999"
+                                    styleClass="invoice-light-color"
                                     minWidth="140.0"
                                     maxWidth="140.0"
                                     HBox.hgrow="NEVER">
@@ -570,7 +570,7 @@
                                 </Label>
                                 <Label fx:id="daysSeasonTotalLabel"
                                     text="..."
-                                    textFill="#999999"
+                                    styleClass="invoice-light-color"
                                     maxWidth="1.7976931348623157E308"
                                     alignment="TOP_RIGHT"
                                     HBox.hgrow="ALWAYS">
@@ -628,7 +628,7 @@
                             <children>
                                 <Label
                                     text="SUBTOTAL"
-                                    textFill="#999999"
+                                    styleClass="invoice-light-color"
                                     minWidth="140.0"
                                     maxWidth="140.0"
                                     HBox.hgrow="NEVER">
@@ -639,7 +639,7 @@
                                 </Label>
                                 <Label fx:id="extrasTotalLabel"
                                     text="..."
-                                    textFill="#999999"
+                                    styleClass="invoice-light-color"
                                     maxWidth="1.7976931348623157E308"
                                     alignment="TOP_RIGHT"
                                     HBox.hgrow="ALWAYS">
@@ -706,7 +706,7 @@
                             <children>
                                 <Label
                                     text="SUBTOTAL"
-                                    textFill="#999999"
+                                    styleClass="invoice-light-color"
                                     minWidth="140.0"
                                     maxWidth="140.0"
                                     HBox.hgrow="NEVER">
@@ -717,7 +717,7 @@
                                 </Label>
                                 <Label fx:id="fuelTransportTotalLabel"
                                     text="..."
-                                    textFill="#999999"
+                                    styleClass="invoice-light-color"
                                     maxWidth="1.7976931348623157E308"
                                     alignment="TOP_RIGHT"
                                     HBox.hgrow="ALWAYS">
@@ -738,7 +738,7 @@
                             <children>
                                 <Label
                                     text="TOTAL WITHOUT VAT"
-                                    textFill="#999999"
+                                    styleClass="invoice-light-color"
                                     minWidth="140.0"
                                     maxWidth="140.0"
                                     HBox.hgrow="NEVER">
@@ -749,7 +749,7 @@
                                 </Label>
                                 <Label fx:id="withoutVATTotalLabel"
                                     text="..."
-                                    textFill="#999999"
+                                    styleClass="invoice-light-color"
                                     maxWidth="1.7976931348623157E308"
                                     alignment="TOP_RIGHT"
                                     HBox.hgrow="ALWAYS">
@@ -792,7 +792,7 @@
                             <children>
                                 <Label
                                     text="TOTAL"
-                                    textFill="#3e00d0"
+                                    styleClass="invoice-blue-color"
                                     minWidth="140.0"
                                     maxWidth="140.0"
                                     HBox.hgrow="NEVER">

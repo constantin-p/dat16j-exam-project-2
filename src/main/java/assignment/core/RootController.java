@@ -8,10 +8,12 @@ import assignment.model.Order;
 import assignment.util.CacheEngine;
 import assignment.util.DBOperation;
 import assignment.util.ScheduleManager;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
@@ -30,6 +32,9 @@ public class RootController {
     @FXML
     private TabPane tabPane;
 
+    @FXML
+    private Label usernameLabel;
+
     public RootController(AuthManager authManager, Stage primaryStage) {
         this.authManager = authManager;
         modalDispatcher = new ModalDispatcher(primaryStage);
@@ -37,6 +42,8 @@ public class RootController {
 
     @FXML
     private void initialize() {
+
+        usernameLabel.textProperty().bind(authManager.currentUser.username);
 
         loadSections();
         initScheduleManager();
@@ -81,7 +88,7 @@ public class RootController {
             try {
                 // Initialize the controller
                 UISection controller = createSectionControllerRequest.call();
-                Tab sectionTab = new Tab(accessTypeName);
+                Tab sectionTab = new Tab(getDisplayString(accessTypeName));
 
                 // Load the template
                 Node layout = loadSectionContent(controller);
@@ -121,5 +128,19 @@ public class RootController {
             });
             ScheduleManager.update(orderList);
         }));
+    }
+
+    @FXML
+    public void handleSignOutAction(ActionEvent event) {
+        authManager.signOut();
+    }
+
+    /*
+     *  Helpers
+     */
+    private String getDisplayString(String string){
+
+        string = string.replaceAll("_", " ");
+        return Character.toUpperCase(string.charAt(0)) + string.substring(1);
     }
 }

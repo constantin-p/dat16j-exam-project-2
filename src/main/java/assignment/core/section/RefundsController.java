@@ -112,7 +112,7 @@ public class RefundsController implements UISection {
                                     CacheEngine.markForUpdate("refunds");
                                 });
                                 setGraphic(pay);
-                                setText(null);
+                                setText("...");
                             }
                         }
                     }
