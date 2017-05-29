@@ -14,6 +14,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import ui.control.CPTextField?>
+<?import ui.control.CPIntegerField?>
+
 <GridPane
     xmlns:fx="http://javafx.com/fxml"
     stylesheets="@../../css/main.css"
@@ -38,6 +41,11 @@
         <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="15.0" minHeight="15.0" vgrow="NEVER" />
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         <RowConstraints maxHeight="15.0" minHeight="15.0" vgrow="NEVER" />
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
@@ -120,25 +128,89 @@
             </children>
         </HBox>
 
+        <Label
+            text="Pick-up location:"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="9"
+            GridPane.valignment="BOTTOM">
+            <padding>
+                <Insets
+                    bottom="2.0" />
+            </padding>
+        </Label>
+
+        <HBox
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="10">
+            <children>
+                <CPTextField fx:id="pickUpTextField"
+                    minWidth="130.0"
+                    prefWidth="130.0"
+                    maxWidth="130.0"
+                    HBox.hgrow="NEVER" />
+                <CPIntegerField fx:id="pickUpDistanceTextField"
+                    minWidth="60.0"
+                    prefWidth="60.0"
+                    HBox.hgrow="NEVER">
+                   <HBox.margin>
+                      <Insets
+                        left="10.0" />
+                   </HBox.margin>
+                </CPIntegerField>
+            </children>
+        </HBox>
+
+        <Label
+            text="Drop-off location:"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="11"
+            GridPane.valignment="BOTTOM">
+            <padding>
+                <Insets
+                    bottom="2.0" />
+            </padding>
+        </Label>
+
+        <HBox
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="12">
+            <children>
+                <CPTextField fx:id="dropOffTextField"
+                    minWidth="130.0"
+                    prefWidth="130.0"
+                    maxWidth="130.0"
+                    HBox.hgrow="NEVER" />
+                <CPIntegerField fx:id="dropOffDistanceTextField"
+                    minWidth="60.0"
+                    prefWidth="60.0"
+                    HBox.hgrow="NEVER">
+                   <HBox.margin>
+                      <Insets
+                        left="10.0" />
+                   </HBox.margin>
+                </CPIntegerField>
+            </children>
+        </HBox>
+
         <Button fx:id="selectMotorhomeButton"
             text="Select vehicle"
             onAction="#handleSelectMotorhomeAction"
             maxWidth="1.7976931348623157E308"
             GridPane.columnIndex="1"
-            GridPane.rowIndex="9" />
+            GridPane.rowIndex="14" />
 
         <Button fx:id="selectClientButton"
             text="Select client"
             onAction="#handleSelectClientAction"
             maxWidth="1.7976931348623157E308"
             GridPane.columnIndex="1"
-            GridPane.rowIndex="11" />
+            GridPane.rowIndex="16" />
 
         <TableView fx:id="tableView"
             minHeight="100.0"
             prefHeight="200.0"
             GridPane.columnIndex="1"
-            GridPane.rowIndex="13">
+            GridPane.rowIndex="18">
             <columns>
                 <!-- Table columns -->
             </columns>
@@ -152,14 +224,14 @@
             onAction="#handleAddExtraAction"
             maxWidth="1.7976931348623157E308"
             GridPane.columnIndex="1"
-            GridPane.rowIndex="15" />
+            GridPane.rowIndex="20" />
 
         <!-- Middle Separator -->
         <Separator
             orientation="VERTICAL"
             GridPane.columnIndex="2"
             GridPane.rowIndex="2"
-            GridPane.rowSpan="14" />
+            GridPane.rowSpan="21" />
 
         <!-- Right Side (INVOICE) -->
         <ScrollPane
@@ -167,9 +239,9 @@
             fitToWidth="true"
             GridPane.columnIndex="3"
             GridPane.rowIndex="2"
-            GridPane.rowSpan="14">
+            GridPane.rowSpan="19">
             <content>
-                <VBox
+                <VBox fx:id="invoiceVBox"
                     maxWidth="1.7976931348623157E308">
                     <children>
                         <HBox
@@ -763,7 +835,7 @@
         <HBox
             alignment="CENTER_RIGHT"
             GridPane.columnIndex="1"
-            GridPane.rowIndex="17">
+            GridPane.rowIndex="22">
             <children>
                 <Button
                     text="Cancel"
@@ -778,6 +850,22 @@
                     text="OK"
                     defaultButton="true"
                     onAction="#handleOKAction" />
+            </children>
+            <padding>
+                <Insets
+                    bottom="8.0"
+                    top="8.0" />
+            </padding>
+        </HBox>
+
+        <HBox
+            alignment="CENTER_RIGHT"
+            GridPane.columnIndex="3"
+            GridPane.rowIndex="22">
+            <children>
+                <Button fx:id="printButton"
+                    text="Print"
+                    onAction="#handlePrintAction" />
             </children>
             <padding>
                 <Insets

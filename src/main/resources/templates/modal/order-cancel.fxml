@@ -50,7 +50,7 @@
             GridPane.rowIndex="2"
             GridPane.rowSpan="1">
             <content>
-                <VBox
+                <VBox fx:id="invoiceVBox"
                     maxWidth="1.7976931348623157E308">
                     <children>
                         <HBox
@@ -754,13 +754,17 @@
             GridPane.columnIndex="1"
             GridPane.rowIndex="6">
             <children>
+                <Button fx:id="printButton"
+                    text="Print"
+                    onAction="#handlePrintAction" 
+                    alignment="CENTER_LEFT" />
                 <Button
                     text="Cancel"
                     cancelButton="true"
                     onAction="#handleCancelAction">
                     <HBox.margin>
                         <Insets
-                                right="15.0" />
+                            right="15.0" />
                     </HBox.margin>
                 </Button>
                 <Button fx:id="submitButton"

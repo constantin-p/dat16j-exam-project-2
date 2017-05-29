@@ -31,8 +31,7 @@
                     alignment="CENTER_LEFT"
                     HBox.hgrow="ALWAYS">
                     <children>
-                        <ToggleButton
-                            text="Archived" />
+                        
                     </children>
                 </HBox>
                 <Button

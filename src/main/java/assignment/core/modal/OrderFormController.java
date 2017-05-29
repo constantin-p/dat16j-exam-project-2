@@ -9,27 +9,43 @@ import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.*;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.print.*;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.transform.Scale;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.converter.LocalDateStringConverter;
+import store.db.TableHandler;
+import ui.control.CPIntegerField;
+import ui.control.CPTextField;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
 public class OrderFormController extends ModalBaseController {
+    private static final Logger LOGGER = Logger.getLogger(OrderFormController.class.getName());
+
     private static final String TITLE_CREATE = "order_create";
     private static final String TITLE_EDIT = "order_edit";
     private static final String TEMPLATE_PATH = "templates/modal/order.fxml";
@@ -54,6 +70,22 @@ public class OrderFormController extends ModalBaseController {
     private BooleanProperty isEndDateValid = new SimpleBooleanProperty(false);
 
     @FXML
+    private CPTextField pickUpTextField;
+    private BooleanProperty isPickUpTextValid = new SimpleBooleanProperty(false);
+
+    @FXML
+    private CPIntegerField pickUpDistanceTextField;
+    private BooleanProperty isPickUpDistanceValid = new SimpleBooleanProperty(false);
+
+    @FXML
+    private CPTextField dropOffTextField;
+    private BooleanProperty isDropOffTextValid = new SimpleBooleanProperty(false);
+
+    @FXML
+    private CPIntegerField dropOffDistanceTextField;
+    private BooleanProperty isDropOffDistanceValid = new SimpleBooleanProperty(false);
+
+    @FXML
     private Button selectMotorhomeButton;
     private BooleanProperty isMotorhomeValid = new SimpleBooleanProperty(false);
 
@@ -69,6 +101,9 @@ public class OrderFormController extends ModalBaseController {
 
 
     // Invoice
+    @FXML
+    private VBox invoiceVBox;
+
     @FXML
     private Label companyNameLabel;
     @FXML
@@ -175,7 +210,15 @@ public class OrderFormController extends ModalBaseController {
             isStartDateValid.not().or(
                 isEndDateValid.not().or(
                     isClientValid.not().or(
-                        isMotorhomeValid.not()
+                        isMotorhomeValid.not().or(
+                            isPickUpTextValid.not().or(
+                                isPickUpDistanceValid.not().or(
+                                    isDropOffTextValid.not().or(
+                                        isDropOffDistanceValid.not()
+                                    )
+                                )
+                            )
+                        )
                     )
                 )
             )
@@ -199,6 +242,8 @@ public class OrderFormController extends ModalBaseController {
                 formatter.format(order.startDate.getValue()), order.startDate));
         endDateLabel.textProperty().bind(Bindings.createStringBinding(() ->
                 formatter.format(order.endDate.getValue()), order.endDate));
+        pickUpLabel.textProperty().bind(order.pickUp);
+        dropOffLabel.textProperty().bind(order.dropOff);
 
 
         daysTotalLabel.textProperty().bind(Bindings.createStringBinding(() ->
@@ -221,7 +266,6 @@ public class OrderFormController extends ModalBaseController {
                 decimalFormatter.format(invoiceVATTotal.getValue()), invoiceVATTotal));
         totalLabel.textProperty().bind(Bindings.createStringBinding(() ->
                 decimalFormatter.format(invoiceTotal.getValue()), invoiceTotal));
-
 
 
 
@@ -253,16 +297,12 @@ public class OrderFormController extends ModalBaseController {
                     public void updateItem(LocalDate item, boolean empty) {
                         super.updateItem(item, empty);
 
-                        if (item.isBefore(LocalDate.now())) {
+                        if (!item.isAfter(LocalDate.now())) {
                             // Not in the future
                             setDisable(true);
                             setStyle("-fx-background-color: #ffc0cb;");
                         } else if (endDatePicker.getValue() != null) {
-                            if (item.isAfter(endDatePicker.getValue().minusDays(1))) {
-                                // Not before endDate
-                                setDisable(true);
-                                setStyle("-fx-background-color: #ffc0cb;");
-                            } else if (startDatePicker.getValue() != null) {
+                            if (startDatePicker.getValue() != null) {
                                 if (item.isAfter(startDatePicker.getValue())
                                         && item.isBefore(endDatePicker.getValue())) {
                                     setStyle("-fx-background-color: #c0ffcb;");
@@ -279,6 +319,11 @@ public class OrderFormController extends ModalBaseController {
             isStartDateValid.set(ValidationHandler.showError(errorLabel,
                     ValidationHandler.validateOrderStartDate(newValue)));
 
+            if (newValue.isAfter(endDatePicker.getValue().minusDays(1))) {
+                endDatePicker.setValue(newValue.plusDays(1));
+            }
+
+            resetScheduleDependentFields();
             setSeasonPrice();
             setInvoiceDays();
         });
@@ -296,7 +341,7 @@ public class OrderFormController extends ModalBaseController {
                     public void updateItem(LocalDate item, boolean empty) {
                         super.updateItem(item, empty);
 
-                        if (item.isBefore(LocalDate.now().plusDays(1))) {
+                        if (!item.isAfter(LocalDate.now().plusDays(1))) {
                             // Not in the future
                             setDisable(true);
                             setStyle("-fx-background-color: #ffc0cb;");
@@ -321,10 +366,38 @@ public class OrderFormController extends ModalBaseController {
         endDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
             isEndDateValid.set(ValidationHandler.showError(errorLabel,
                     ValidationHandler.validateOrderEndDate(newValue)));
+
+            resetScheduleDependentFields();
             setInvoiceDays();
         });
         isEndDateValid.set(ValidationHandler.showError(errorLabel,
                 ValidationHandler.validateOrderEndDate(endDatePicker.getValue())));
+
+        pickUpTextField.textProperty().bindBidirectional(order.pickUp);
+        pickUpTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            isPickUpTextValid.set(ValidationHandler.showError(errorLabel,
+                    ValidationHandler.validateOrderPickUp(newValue)));
+        });
+
+        pickUpDistanceTextField.valueProperty().bindBidirectional(order.pickUpDistance);
+        pickUpDistanceTextField.valueProperty().addListener((observable, oldValue, newValue) -> {
+            isPickUpDistanceValid.set(ValidationHandler.showError(errorLabel,
+                    ValidationHandler.validateOrderPickUpDistance(newValue.intValue())));
+            setInvoiceTransport();
+        });
+
+        dropOffTextField.textProperty().bindBidirectional(order.dropOff);
+        dropOffTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            isDropOffTextValid.set(ValidationHandler.showError(errorLabel,
+                    ValidationHandler.validateOrderDropOff(newValue)));
+        });
+
+        dropOffDistanceTextField.valueProperty().bindBidirectional(order.dropOffDistance);
+        dropOffDistanceTextField.valueProperty().addListener((observable, oldValue, newValue) -> {
+            isDropOffDistanceValid.set(ValidationHandler.showError(errorLabel,
+                    ValidationHandler.validateOrderDropOffDistance(newValue.intValue())));
+            setInvoiceTransport();
+        });
 
 
         TableColumn<Map.Entry<Extra, Double>, String> nameColumn = new TableColumn("Name");
@@ -403,6 +476,7 @@ public class OrderFormController extends ModalBaseController {
         if (validation.success) {
             order.motorhome.setValue(motorhome);
             order.motorhomeValue.setValue(motorhome.price.getValue().value.getValue());
+            order.motorhomeMileageStart.setValue(motorhome.mileage.getValue());
             selectMotorhomeButton.setText(motorhome.brand.getValue() +
                     " - " + motorhome.model.getValue());
         } else {
@@ -454,9 +528,43 @@ public class OrderFormController extends ModalBaseController {
         }
     }
 
+    @FXML
+    public void handlePrintAction(ActionEvent event) {
+        WritableImage image = invoiceVBox.snapshot(new SnapshotParameters(), null);
+
+        File file = new FileChooser().showSaveDialog(stage);
+        if (file != null) {
+            try {
+                ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+            } catch (IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.toString(), ex);
+            }
+        }
+    }
+
     /*
      *  Helpers
      */
+    private void resetScheduleDependentFields() {
+        // 1. Client
+        // 2. Motorhome
+        // 3. Extras
+
+        order.motorhome.setValue(null);
+        order.motorhomeValue.setValue(null);
+        order.motorhomeMileageStart.setValue(0.0);
+        selectMotorhomeButton.setText("Select motorhome");
+        isMotorhomeValid.set(false);
+        setInvoiceMotorhome();
+
+        order.client.setValue(null);
+        selectClientButton.setText("Select client");
+        isClientValid.set(false);
+        setInvoiceClient();
+
+        order.extras.clear();
+    }
+
     private void setSeasonPrice() {
         if (isStartDateValid.getValue()) {
             MonthDay startDate = MonthDay.of(startDatePicker.getValue().getMonth(),
@@ -495,6 +603,23 @@ public class OrderFormController extends ModalBaseController {
 
         hbox.getChildren().addAll(leftLabel, rightLabel);
         extrasVBox.getChildren().add(hbox);
+    }
+
+    private void setInvoiceTransport() {
+        int distance = order.pickUpDistance.getValue() + order.dropOffDistance.getValue();
+
+        if (distance > 0) {
+
+            double kmPrice = Double.valueOf(Config.getConfig("invoice")
+                    .getProperty("INVOICE_PRICE_PER_KM"));
+
+            transportLabel.setText(distance + "× " +
+                    decimalFormatter.format(kmPrice) + "kr");
+            invoiceTransportTotal.setValue(distance * kmPrice);
+        } else {
+            transportLabel.setText("...");
+            invoiceTransportTotal.setValue(0.0);
+        }
     }
 
     private void setInvoiceMotorhome() {

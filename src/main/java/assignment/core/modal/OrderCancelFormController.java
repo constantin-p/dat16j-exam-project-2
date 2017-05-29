@@ -12,14 +12,25 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.ListChangeListener;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.converter.LocalDateStringConverter;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.MonthDay;
@@ -28,10 +39,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
 public class OrderCancelFormController extends ModalBaseController {
+    private static final Logger LOGGER = Logger.getLogger(OrderCancelFormController.class.getName());
+
     private static final String TITLE = "order_cancel";
     private static final String TEMPLATE_PATH = "templates/modal/order-cancel.fxml";
 
@@ -49,6 +64,9 @@ public class OrderCancelFormController extends ModalBaseController {
     private CheckBox confirmationCheckBox;
 
     // Invoice
+    @FXML
+    private VBox invoiceVBox;
+
     @FXML
     private Label companyNameLabel;
     @FXML
@@ -253,6 +271,21 @@ public class OrderCancelFormController extends ModalBaseController {
 
         invoiceSeasonModifier.setValue(modifier);
 
+        // Set extras
+        double totalExtras = 0.0;
+        extrasVBox.getChildren().clear();
+        for (Map.Entry<Extra, Double> entry: order.extras) {
+            totalExtras += entry.getValue();
+
+            setInvoiceExtra(entry.getKey().name.getValue(),
+                    decimalFormatter.format(entry.getValue()));
+        }
+
+        if (order.extras.isEmpty()) {
+            setInvoiceExtra("...", "...");
+        }
+        invoiceExtrasSubtotal.setValue(totalExtras);
+
         setCancellationCost();
     }
 
@@ -298,6 +331,20 @@ public class OrderCancelFormController extends ModalBaseController {
     @Override
     public String getTitle() {
         return TITLE;
+    }
+
+    @FXML
+    public void handlePrintAction(ActionEvent event) {
+        WritableImage image = invoiceVBox.snapshot(new SnapshotParameters(), null);
+
+        File file = new FileChooser().showSaveDialog(stage);
+        if (file != null) {
+            try {
+                ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+            } catch (IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.toString(), ex);
+            }
+        }
     }
 
     /*
@@ -366,4 +413,19 @@ public class OrderCancelFormController extends ModalBaseController {
         }
     }
 
+    private void setInvoiceExtra(String left, String right) {
+        HBox hbox = new HBox();
+        Label leftLabel = new Label(left);
+        leftLabel.setMinWidth(100.0);
+        leftLabel.setAlignment(Pos.TOP_RIGHT);
+        HBox.setHgrow(leftLabel, Priority.NEVER);
+
+        Label rightLabel = new Label(right);
+        rightLabel.setMaxWidth(Double.MAX_VALUE);
+        rightLabel.setAlignment(Pos.TOP_RIGHT);
+        HBox.setHgrow(rightLabel, Priority.ALWAYS);
+
+        hbox.getChildren().addAll(leftLabel, rightLabel);
+        extrasVBox.getChildren().add(hbox);
+    }
 }

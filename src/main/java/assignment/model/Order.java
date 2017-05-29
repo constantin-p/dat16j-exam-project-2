@@ -16,7 +16,8 @@ public class Order implements Storable {
     public static final String DB_TABLE_NAME = "orders";
     private static final String DB_INTERSECTION_TABLE_NAME = "order_extra";
     public static final String[] DB_TABLE_COLUMNS = {"id", "start_date", "end_date",
-            "pick_up", "drop_off", "client_id", "motorhome_id", "motorhome_price_value",
+            "pick_up", "pick_up_distance", "drop_off", "drop_off_distance",
+            "client_id", "motorhome_id", "motorhome_price_value",
             "motorhome_mileage_start", "motorhome_mileage_end",
             "season_price_modifier", "cancellation_price_value"};
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
@@ -27,7 +28,9 @@ public class Order implements Storable {
     public ObjectProperty<LocalDate> startDate;
     public ObjectProperty<LocalDate> endDate;
     public StringProperty pickUp;
+    public IntegerProperty pickUpDistance;
     public StringProperty dropOff;
+    public IntegerProperty dropOffDistance;
 
     public ObjectProperty<Client> client;
 
@@ -45,10 +48,12 @@ public class Order implements Storable {
 
     public Order() {
         id = null;
-        startDate = new SimpleObjectProperty<>(LocalDate.now());
-        endDate = new SimpleObjectProperty<>(LocalDate.now().plusDays(1));
+        startDate = new SimpleObjectProperty<>(LocalDate.now().plusDays(1));
+        endDate = new SimpleObjectProperty<>(startDate.getValue().plusDays(1));
         pickUp = new SimpleStringProperty("");
+        pickUpDistance = new SimpleIntegerProperty(0);
         dropOff = new SimpleStringProperty("");
+        dropOffDistance = new SimpleIntegerProperty(0);
         client = new SimpleObjectProperty<>(null);
         motorhome = new SimpleObjectProperty<>(null);
         motorhomeValue = new SimpleDoubleProperty(0.00);
@@ -60,7 +65,8 @@ public class Order implements Storable {
         cancellationValue = new SimpleDoubleProperty(0.00);
     }
 
-    public Order(String id, LocalDate startDate, LocalDate endDate, String pickUp, String dropOff,
+    public Order(String id, LocalDate startDate, LocalDate endDate,
+                 String pickUp, Integer pickUpDistance, String dropOff, Integer dropOffDistance,
                  Client client, Motorhome motorhome, Double motorhomeValue,
                  int motorhomeMileageStart, int motorhomeMileageEnd,
                  Double seasonModifier, boolean isCanceled, Double cancellationValue) {
@@ -68,7 +74,9 @@ public class Order implements Storable {
         this.startDate = new SimpleObjectProperty<>(startDate);
         this.endDate = new SimpleObjectProperty<>(endDate);
         this.pickUp = new SimpleStringProperty(pickUp);
+        this.pickUpDistance = new SimpleIntegerProperty(pickUpDistance);
         this.dropOff = new SimpleStringProperty(dropOff);
+        this.dropOffDistance = new SimpleIntegerProperty(dropOffDistance);
         this.client = new SimpleObjectProperty<>(client);
         this.motorhome = new SimpleObjectProperty<>(motorhome);
         this.motorhomeValue = new SimpleDoubleProperty(motorhomeValue);
@@ -129,7 +137,9 @@ public class Order implements Storable {
         values.put("start_date", startDate.getValue().format(formatter));
         values.put("end_date", endDate.getValue().format(formatter));
         values.put("pick_up", pickUp.getValue());
+        values.put("pick_up_distance", pickUpDistance.getValue().toString());
         values.put("drop_off", dropOff.getValue());
+        values.put("drop_off_distance", dropOffDistance.getValue().toString());
         values.put("client_id", client.getValue().id);
         values.put("motorhome_id", motorhome.getValue().id);
         values.put("motorhome_price_value", motorhomeValue.getValue().toString());
@@ -153,7 +163,9 @@ public class Order implements Storable {
         LocalDate endDate = LocalDate.parse(valuesMap.get("end_date"), formatter);
 
         String pickUp = valuesMap.get("pick_up");
+        int pickUpDistance = Integer.valueOf(valuesMap.get("pick_up_distance"));
         String dropOff = valuesMap.get("drop_off");
+        int dropOffDistance = Integer.valueOf(valuesMap.get("drop_off_distance"));
 
         Client client = Client.dbGet(valuesMap.get("client_id"));
         Motorhome motorhome = Motorhome.dbGet(valuesMap.get("motorhome_id"));
@@ -170,7 +182,7 @@ public class Order implements Storable {
             canceledPriceValue = Double.valueOf(cancellationValueString);
         }
 
-        return new Order(id, startDate, endDate, pickUp, dropOff,
+        return new Order(id, startDate, endDate, pickUp, pickUpDistance, dropOff, dropOffDistance,
                 client, motorhome, motorhomeValue, motorhomeMileageStart, motorhomeMileageEnd, seasonModifier, isCancelled, canceledPriceValue);
     }
 

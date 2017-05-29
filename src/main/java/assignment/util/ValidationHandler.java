@@ -2,6 +2,7 @@ package assignment.util;
 
 
 import assignment.model.*;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 
 import java.time.LocalDate;
@@ -82,9 +83,21 @@ public class ValidationHandler {
     public static final String ERROR_ORDER_START_DATE_PAST = "Start date not in future";
     public static final String ERROR_ORDER_END_DATE_REQUIRED = "End date required";
     public static final String ERROR_ORDER_END_DATE_PAST = "End date not in future";
+
+    public static final String ERROR_ORDER_PICK_UP_REQUIRED = "Pick-up location required";
+    public static final String ERROR_ORDER_PICK_UP_INVALID = "Invalid pick-up location (non-alphanumeric)";
+    public static final String ERROR_ORDER_PICK_UP_LONG = "Pick-up location too long >65";
+    public static final String ERROR_ORDER_PICK_UP_DISTANCE_LONG = "Pick-up distance too long >500";
+    public static final String ERROR_ORDER_PICK_UP_DISTANCE_INVALID = "Invalid pick-up distance (negative)";
+
+    public static final String ERROR_ORDER_DROP_OFF_REQUIRED = "Drop-off location required";
+    public static final String ERROR_ORDER_DROP_OFF_INVALID = "Invalid drop-off location (non-alphanumeric)";
+    public static final String ERROR_ORDER_DROP_OFF_LONG = "Drop-off location too long >65";
+    public static final String ERROR_ORDER_DROP_OFF_DISTANCE_LONG = "Drop-off distance too long >500";
+    public static final String ERROR_ORDER_DROP_OFF_DISTANCE_INVALID = "Invalid drop-off distance (negative)";
+
     public static final String ERROR_ORDER_CLIENT_REQUIRED = "Client required";
     public static final String ERROR_ORDER_MOTORHOME_REQUIRED = "Price required";
-
 
     public static boolean showError(Label errorLabel, Response validation) {
         if (validation.success) {
@@ -364,6 +377,46 @@ public class ValidationHandler {
             return new Response(false, ERROR_ORDER_END_DATE_REQUIRED);
         } else if (endDate.isBefore(LocalDate.now().plusDays(1))) {
             return new Response(false, ERROR_ORDER_END_DATE_PAST);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateOrderPickUp(String location) {
+        if(location == null || location.isEmpty()) {
+            return new Response(false, ERROR_ORDER_PICK_UP_REQUIRED);
+        } else if (!location.matches("[a-zA-Z0-9 ]+")) {
+            return new Response(false, ERROR_ORDER_PICK_UP_INVALID);
+        } else if (location.length() > 65) {
+            return new Response(false, ERROR_ORDER_PICK_UP_LONG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateOrderPickUpDistance(int distance) {
+        if (distance < 0) {
+            return new Response(false, ERROR_ORDER_PICK_UP_DISTANCE_INVALID);
+        } else if (distance > 500) {
+            return new Response(false, ERROR_ORDER_PICK_UP_DISTANCE_LONG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateOrderDropOff(String location) {
+        if(location == null || location.isEmpty()) {
+            return new Response(false, ERROR_ORDER_DROP_OFF_REQUIRED);
+        } else if (!location.matches("[a-zA-Z0-9 ]+")) {
+            return new Response(false, ERROR_ORDER_DROP_OFF_INVALID);
+        } else if (location.length() > 65) {
+            return new Response(false, ERROR_ORDER_DROP_OFF_LONG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateOrderDropOffDistance(int distance) {
+        if (distance < 0) {
+            return new Response(false, ERROR_ORDER_DROP_OFF_DISTANCE_INVALID);
+        } else if (distance > 500) {
+            return new Response(false, ERROR_ORDER_DROP_OFF_DISTANCE_LONG);
         }
         return new Response(true);
     }

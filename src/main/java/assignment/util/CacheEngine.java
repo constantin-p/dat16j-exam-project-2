@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class CacheEngine {
-    private static final Logger LOGGER = Logger.getLogger(TableHandler.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CacheEngine.class.getName());
 
     private static int lifespan = 10; // seconds, DEFAULT
 

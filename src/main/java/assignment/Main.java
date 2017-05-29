@@ -28,7 +28,6 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
 
-        // TODO: Catch unhandled errors and display the crash
         Config.loadConfig("ui", "config/ui.properties");
         Config.loadConfig("cache", "config/cache.properties");
         Config.loadConfig("invoice", "config/invoice.properties");
@@ -47,7 +46,8 @@ public class Main extends Application {
 
     public void initRootLayout() {
         try {
-            FXMLLoader loader = new FXMLLoader(classLoader.getResource("templates/root.fxml"));
+            FXMLLoader loader = new FXMLLoader(classLoader
+                    .getResource("templates/root.fxml"));
 
             RootController controller = new RootController(authManager, primaryStage);
             loader.setController(controller);
@@ -55,7 +55,7 @@ public class Main extends Application {
             Parent layout = loader.load();
 
             primaryStage.setScene(new Scene(layout, 600, 500));
-            primaryStage.setTitle(windowPrefix + " Management System");
+            primaryStage.setTitle(windowPrefix + "Management System");
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -64,7 +64,8 @@ public class Main extends Application {
 
     public void initLoginLayout() {
         try {
-            FXMLLoader loader = new FXMLLoader(classLoader.getResource("templates/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(classLoader
+                    .getResource("templates/login.fxml"));
 
             LoginController controller = new LoginController(authManager);
             loader.setController(controller);
@@ -72,7 +73,7 @@ public class Main extends Application {
             Parent layout = loader.load();
 
             primaryStage.setScene(new Scene(layout, 300, 400));
-            primaryStage.setTitle(windowPrefix + " Login");
+            primaryStage.setTitle(windowPrefix + "Login");
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
