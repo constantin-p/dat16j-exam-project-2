@@ -53,6 +53,7 @@ public class MotorhomeSelectorController extends SelectorBaseController {
                 new SimpleStringProperty(cellData.getValue().price.getValue().value.getValue() +
                         " / " + cellData.getValue().price.getValue().type.getValue().name.getValue())
         );
+        priceColumn.getStyleClass().add("align-center");
         tableView.getColumns().addAll(brandColumn, modelColumn, capacityColumn, priceColumn);
 
         populateTableView();

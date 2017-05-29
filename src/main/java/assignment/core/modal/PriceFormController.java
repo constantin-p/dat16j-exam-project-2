@@ -16,8 +16,8 @@ import ui.control.CPDecimalField;
 import ui.control.CPTextField;
 
 public class PriceFormController extends ModalBaseController {
-    private static final String TITLE_CREATE = "price_create";
-    private static final String TITLE_EDIT = "price_edit";
+    private static final String TITLE_CREATE = "Create price";
+    private static final String TITLE_EDIT = "Edit price";
     private static final String TEMPLATE_PATH = "templates/modal/price.fxml";
 
     private Price price;
@@ -60,13 +60,13 @@ public class PriceFormController extends ModalBaseController {
 
         nameTextField.textProperty().bindBidirectional(price.name);
         nameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isNameValid.set(ValidationHandler.showError(errorLabel,
+            isNameValid.set(ValidationHandler.validateControl(nameTextField, errorLabel,
                     ValidationHandler.validatePriceName(newValue)));
         });
 
         valueTextField.valueProperty().bindBidirectional(price.value);
         valueTextField.valueProperty().addListener((observable, oldValue, newValue) -> {
-            isValueValid.set(ValidationHandler.showError(errorLabel,
+            isValueValid.set(ValidationHandler.validateControl(valueTextField, errorLabel,
                     ValidationHandler.validatePriceValue(newValue.doubleValue())));
         });
     }
@@ -106,7 +106,8 @@ public class PriceFormController extends ModalBaseController {
 
     @FXML
     public void handleSelectPriceTypeAction(ActionEvent event) {
-        PriceType priceType = modalDispatcher.showSelectPriceTypeModal(super.stage);
+        PriceType priceType = modalDispatcher.showSelectPriceTypeModal(super.stage,
+                pt -> true);
 
         Response validation = ValidationHandler.validatePricePriceType(priceType);
         if (validation.success) {

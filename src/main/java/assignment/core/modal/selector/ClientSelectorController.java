@@ -75,7 +75,7 @@ public class ClientSelectorController extends SelectorBaseController {
     protected void handleCreateAction(ActionEvent event) {
         Client client = modalDispatcher.showCreateClientModal(null);
         if (client != null) {
-            populateTableView();
+            CacheEngine.markForUpdate("clients");
         }
     }
 

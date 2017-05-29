@@ -2,6 +2,7 @@ package assignment.core.modal;
 
 
 import assignment.model.Extra;
+import assignment.model.Motorhome;
 import assignment.model.Price;
 import assignment.util.Response;
 import assignment.util.ValidationHandler;
@@ -13,6 +14,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import ui.control.CPTextField;
+
+import java.util.Arrays;
 
 public class ExtraFormController extends ModalBaseController {
     private static final String TITLE_CREATE = "extras_create";
@@ -93,7 +96,10 @@ public class ExtraFormController extends ModalBaseController {
 
     @FXML
     public void handleSelectPriceAction(ActionEvent event) {
-        Price price = modalDispatcher.showSelectPriceModal(super.stage);
+        Price price = modalDispatcher.showSelectPriceModal(super.stage, true, p ->
+            Arrays.asList(Extra.ALLOWED_PRICE_TYPES).contains(p.type
+                    .getValue().name.getValue())
+        );
 
         Response validation = ValidationHandler.validateExtraPrice(price);
         if (validation.success) {

@@ -231,7 +231,7 @@
             orientation="VERTICAL"
             GridPane.columnIndex="2"
             GridPane.rowIndex="2"
-            GridPane.rowSpan="21" />
+            GridPane.rowSpan="19" />
 
         <!-- Right Side (INVOICE) -->
         <ScrollPane

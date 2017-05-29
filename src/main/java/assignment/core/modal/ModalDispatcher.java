@@ -92,14 +92,6 @@ public class ModalDispatcher {
         });
     }
 
-    public Client showSelectClientModal(Stage stage,
-                SelectorBaseController.EntryValidator<Client> entryValidator) {
-        return (Client) showModal(stage, (Stage modalStage) -> {
-            return new ClientSelectorController(this, modalStage,
-                    false, entryValidator);
-        });
-    }
-
     public Client showSelectClientModal(Stage stage, boolean canCreate,
         SelectorBaseController.EntryValidator<Client> entryValidator) {
         return (Client) showModal(stage, (Stage modalStage) -> {
@@ -108,10 +100,11 @@ public class ModalDispatcher {
         });
     }
 
-    public PriceType showSelectPriceTypeModal(Stage stage) {
+    public PriceType showSelectPriceTypeModal(Stage stage,
+            SelectorBaseController.EntryValidator<PriceType> entryValidator) {
         return (PriceType) showModal(stage, (Stage modalStage) -> {
             return new PriceTypeSelectorController(this, modalStage,
-                    false);
+                    false, entryValidator);
         });
     }
 
@@ -122,10 +115,11 @@ public class ModalDispatcher {
         });
     }
 
-    public Price showSelectPriceModal(Stage stage) {
+    public Price showSelectPriceModal(Stage stage, boolean canCreate,
+              SelectorBaseController.EntryValidator<Price> entryValidator) {
         return (Price) showModal(stage, (Stage modalStage) -> {
             return new PriceSelectorController(this, modalStage,
-                    false);
+                    canCreate, entryValidator);
         });
     }
 

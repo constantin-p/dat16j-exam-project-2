@@ -53,9 +53,10 @@ public class ValidationHandler {
     public static final String ERROR_PRICE_NAME_REQUIRED = "Name required";
     public static final String ERROR_PRICE_NAME_SHORT = "Name too short";
     public static final String ERROR_PRICE_NAME_LONG = "Name too long";
-    public static final String ERROR_PRICE_NAME_INVALID = "Invalid name (non-alphanumeric  +_-)";
+    public static final String ERROR_PRICE_NAME_INVALID = "Invalid name (non-alphanumeric +_-)";
     public static final String ERROR_PRICE_NAME_DUPLICATE = "Name already registered";
-    public static final String ERROR_PRICE_VALUE_REQUIRED = "Amount required";
+    public static final String ERROR_PRICE_VALUE_REQUIRED = "Price value required";
+    public static final String ERROR_PRICE_VALUE_INVALID = "Invalid price value (negative)";
     public static final String ERROR_PRICE_PRICE_TYPE_REQUIRED = "Price type required";
 
     public static final String ERROR_MOTORHOME_MODEL_REQUIRED = "Model required";
@@ -69,8 +70,8 @@ public class ValidationHandler {
     public static final String ERROR_MOTORHOME_BRAND_INVALID = "Invalid Brand (non-alphanumeric)";
     public static final String ERROR_MOTORHOME_CAPACITY_LOW = "Capacity too low <1";
     public static final String ERROR_MOTORHOME_CAPACITY_BIG = "Capacity too big >10";
+    public static final String ERROR_MOTORHOME_MILEAGE_INVALID = "Invalid mileage (negative)";
     public static final String ERROR_MOTORHOME_PRICE_REQUIRED = "Price required";
-
 
     public static final String ERROR_EXTRA_NAME_REQUIRED = "Name required";
     public static final String ERROR_EXTRA_NAME_SHORT = "Name too short";
@@ -83,21 +84,29 @@ public class ValidationHandler {
     public static final String ERROR_ORDER_START_DATE_PAST = "Start date not in future";
     public static final String ERROR_ORDER_END_DATE_REQUIRED = "End date required";
     public static final String ERROR_ORDER_END_DATE_PAST = "End date not in future";
-
     public static final String ERROR_ORDER_PICK_UP_REQUIRED = "Pick-up location required";
     public static final String ERROR_ORDER_PICK_UP_INVALID = "Invalid pick-up location (non-alphanumeric)";
     public static final String ERROR_ORDER_PICK_UP_LONG = "Pick-up location too long >65";
     public static final String ERROR_ORDER_PICK_UP_DISTANCE_LONG = "Pick-up distance too long >500";
     public static final String ERROR_ORDER_PICK_UP_DISTANCE_INVALID = "Invalid pick-up distance (negative)";
-
     public static final String ERROR_ORDER_DROP_OFF_REQUIRED = "Drop-off location required";
     public static final String ERROR_ORDER_DROP_OFF_INVALID = "Invalid drop-off location (non-alphanumeric)";
     public static final String ERROR_ORDER_DROP_OFF_LONG = "Drop-off location too long >65";
     public static final String ERROR_ORDER_DROP_OFF_DISTANCE_LONG = "Drop-off distance too long >500";
     public static final String ERROR_ORDER_DROP_OFF_DISTANCE_INVALID = "Invalid drop-off distance (negative)";
-
     public static final String ERROR_ORDER_CLIENT_REQUIRED = "Client required";
     public static final String ERROR_ORDER_MOTORHOME_REQUIRED = "Price required";
+
+
+    public static boolean validateControl(Control control, Label errorLabel, Response validation) {
+        if (showError(errorLabel, validation)) {
+            control.setStyle( "-fx-text-fill: #5a5a5a;");
+            return true;
+        } else {
+            control.setStyle( "-fx-text-fill: #ff6d70;");
+            return false;
+        }
+    }
 
     public static boolean showError(Label errorLabel, Response validation) {
         if (validation.success) {
@@ -201,6 +210,8 @@ public class ValidationHandler {
     public static Response validatePriceValue(double value) {
         if(value == 0) {
             return new Response(false, ERROR_PRICE_VALUE_REQUIRED);
+        } else if(value < 0) {
+            return new Response(false, ERROR_PRICE_VALUE_INVALID);
         }
         return new Response(true);
     }
@@ -282,7 +293,7 @@ public class ValidationHandler {
     public static Response validateMotorhomeBrand(String brand) {
         if(brand == null || brand.isEmpty()) {
             return new Response(false, ERROR_MOTORHOME_BRAND_REQUIRED);
-        } else if (!brand.matches("[a-zA-Z0-9]+")) {
+        } else if (!brand.matches("[a-zA-Z0-9 ]+")) {
             return new Response(false, ERROR_MOTORHOME_BRAND_INVALID);
         } else if (brand.length() <= 3) {
             return new Response(false, ERROR_MOTORHOME_BRAND_SHORT);
@@ -292,11 +303,10 @@ public class ValidationHandler {
         return new Response(true);
     }
 
-
     public static Response validateMotorhomeModel(String model) {
         if(model == null || model.isEmpty()) {
             return new Response(false, ERROR_MOTORHOME_MODEL_REQUIRED);
-        } else if (!model.matches("[a-zA-Z0-9]+")) {
+        } else if (!model.matches("[a-zA-Z0-9 ]+")) {
             return new Response(false, ERROR_MOTORHOME_MODEL_INVALID);
         } else if (model.length() <= 3) {
             return new Response(false, ERROR_MOTORHOME_MODEL_SHORT);
@@ -311,6 +321,13 @@ public class ValidationHandler {
             return new Response(false, ERROR_MOTORHOME_CAPACITY_LOW);
         } else if (capacity > 10) {
             return new Response(false, ERROR_MOTORHOME_CAPACITY_BIG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateMotorhomeMileage(int mileage) {
+        if(mileage < 0) {
+            return new Response(false, ERROR_MOTORHOME_MILEAGE_INVALID);
         }
         return new Response(true);
     }

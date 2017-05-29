@@ -34,6 +34,8 @@
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
         <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="30.0" minHeight="28.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
         
         <RowConstraints prefHeight="28.0" minHeight="28.0" vgrow="ALWAYS" />
         <RowConstraints maxHeight="15.0" minHeight="15.0" vgrow="NEVER" />
@@ -74,7 +76,7 @@
             GridPane.rowIndex="5" />
 
         <Label
-            text="Capacity"
+            text="Capacity:"
             GridPane.columnIndex="1"
             GridPane.rowIndex="6"
             GridPane.valignment="BOTTOM">
@@ -87,18 +89,31 @@
             GridPane.columnIndex="1"
             GridPane.rowIndex="7" />
 
+        <Label
+            text="Mileage:"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="8"
+            GridPane.valignment="BOTTOM">
+            <padding>
+                <Insets
+                    bottom="2.0" />
+            </padding>
+        </Label>
+        <CPIntegerField fx:id="mileageTextField"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="9" />
 
         <Button fx:id="selectPriceButton"
                 text="Select price"
                 onAction="#handleSelectPriceAction"
                 maxWidth="1.7976931348623157E308"
                 GridPane.columnIndex="1"
-                GridPane.rowIndex="9" />
+                GridPane.rowIndex="11" />
 
         <HBox
             alignment="CENTER_RIGHT"
             GridPane.columnIndex="1"
-            GridPane.rowIndex="14">
+            GridPane.rowIndex="16">
             <children>
                 <Button
                     text="Cancel"

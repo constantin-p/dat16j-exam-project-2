@@ -210,8 +210,16 @@
   -fx-padding: 20;
 }
 
-.table-row-cell .btn-save {
+.table-view .table-cell {
+    -fx-alignment: CENTER-LEFT;
+}
 
+.table-view .table-cell.align-right {
+    -fx-alignment: CENTER-RIGHT;
+}
+
+.table-view .table-cell.align-center {
+    -fx-alignment: CENTER;
 }
 
 /*
@@ -306,7 +314,8 @@
   -fx-border-color: -cp-ui-border-dark-color;
 }
 
-.button.btn-primary {
+.button.btn-primary,
+.button:default {
   -fx-border-color: -cp-control-primary-dark-color;
   -fx-background-color: -cp-control-primary-base-color;
   -fx-font-weight: bold;
@@ -386,6 +395,7 @@
   -fx-background-insets: 2, 0, 0;
   -fx-background-radius: 2em;
 }
+
 
 
 /* Clear */

@@ -43,8 +43,9 @@
             </menus>
         </MenuBar>
         <TabPane fx:id="tabPane"
-                 tabClosingPolicy="UNAVAILABLE"
-                 VBox.vgrow="ALWAYS">
+            styleClass="master"
+            tabClosingPolicy="UNAVAILABLE"
+            VBox.vgrow="ALWAYS">
             <tabs>
                 <!-- Tabs -->
             </tabs>

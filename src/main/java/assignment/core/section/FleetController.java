@@ -41,18 +41,22 @@ public class FleetController implements UISection {
 
         TableColumn<Motorhome, String> capacityColumn = new TableColumn("Capacity");
         capacityColumn.setCellValueFactory(cellData -> cellData.getValue().capacity.asString());
+        capacityColumn.getStyleClass().add("align-center");
 
         TableColumn<Motorhome, String> priceColumn = new TableColumn("Base price");
         priceColumn.setCellValueFactory(cellData ->
             new SimpleStringProperty(cellData.getValue().price.getValue().value.getValue() +
                         " / " + cellData.getValue().price.getValue().type.getValue().name.getValue())
         );
+        priceColumn.getStyleClass().add("align-center");
 
         TableColumn<Motorhome, String> statusColumn = new TableColumn("Status");
         statusColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(ScheduleManager.isMotorhomeFree(LocalDate.now(),
                         cellData.getValue().id) ? "..." : "Away")
         );
+        statusColumn.getStyleClass().add("align-center");
+
         tableView.getColumns().addAll(brandColumn, modelColumn, capacityColumn,
                 priceColumn, statusColumn);
         tableView.setItems(motorhomeList);

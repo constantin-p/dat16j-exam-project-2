@@ -12,6 +12,7 @@ import java.util.List;
 
 public class Motorhome implements Storable {
     public static final String DB_TABLE_NAME = "motorhomes";
+    public static final String[] ALLOWED_PRICE_TYPES = {"day"};
     public static final String[] DB_TABLE_COLUMNS = {"id", "brand", "model", "capacity", "mileage", "price_id"};
 
     public String id;

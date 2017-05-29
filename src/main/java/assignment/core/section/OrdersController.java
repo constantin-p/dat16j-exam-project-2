@@ -46,6 +46,7 @@ public class OrdersController implements UISection {
         TableColumn<Order, String> actionColumn = new TableColumn("Actions");
         actionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().id));
         actionColumn.setCellFactory(getActionCellFactory());
+        actionColumn.getStyleClass().add("align-center");
 
         TableColumn<Order, String> startColumn = new TableColumn("Start");
         startColumn.setCellValueFactory(cellData -> {

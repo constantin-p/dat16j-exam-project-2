@@ -15,6 +15,7 @@ import java.util.List;
 
 public class Extra implements Storable {
     public static final String DB_TABLE_NAME = "extras";
+    public static final String[] ALLOWED_PRICE_TYPES = {"unit"};
 
     public String id;
     public StringProperty name;
