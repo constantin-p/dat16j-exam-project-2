@@ -18,8 +18,8 @@ import ui.control.CPTextField;
 import java.util.Arrays;
 
 public class ExtraFormController extends ModalBaseController {
-    private static final String TITLE_CREATE = "extras_create";
-    private static final String TITLE_EDIT = "extras_edit";
+    private static final String TITLE_CREATE = "Create extra";
+    private static final String TITLE_EDIT = "Edit extra";
     private static final String TEMPLATE_PATH = "templates/modal/extras.fxml";
 
     private Extra extra;
@@ -55,7 +55,7 @@ public class ExtraFormController extends ModalBaseController {
 
         nameTextField.textProperty().bindBidirectional(extra.name);
         nameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isNameValid.set(ValidationHandler.showError(errorLabel,
+            isNameValid.set(ValidationHandler.validateControl(nameTextField, errorLabel,
                     ValidationHandler.validateExtraName(newValue)));
         });
     }

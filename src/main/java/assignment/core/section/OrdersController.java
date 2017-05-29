@@ -54,12 +54,16 @@ public class OrdersController implements UISection {
                 formatter.format(cellData.getValue().startDate.getValue()),
                      cellData.getValue().startDate);
         });
+        startColumn.getStyleClass().add("align-center");
+
         TableColumn<Order, String> endColumn = new TableColumn("End");
         endColumn.setCellValueFactory(cellData -> {
             return Bindings.createStringBinding(() ->
                             formatter.format(cellData.getValue().endDate.getValue()),
                     cellData.getValue().endDate);
         });
+        endColumn.getStyleClass().add("align-center");
+
         durationColumn.getColumns().addAll(startColumn, endColumn);
 
 

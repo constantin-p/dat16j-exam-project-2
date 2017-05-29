@@ -14,7 +14,8 @@ import java.util.List;
 
 public class RepairJob implements Storable {
     public static final String DB_TABLE_NAME = "repairjobs";
-    public static final String[] DB_TABLE_COLUMNS = {"id", "motorhome_id", "date", "details"};
+    public static final String[] DB_TABLE_COLUMNS = {"id", "motorhome_id",
+            "date", "done", "details"};
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DB_DATE_FORMAT);
@@ -62,7 +63,7 @@ public class RepairJob implements Storable {
         Motorhome motorhome = Motorhome.dbGet(valuesMap.get("motorhome_id"));
 
         LocalDate date = LocalDate.parse(valuesMap.get("date"), formatter);
-        boolean done = Boolean.valueOf(valuesMap.get("done"));
+        boolean done = valuesMap.get("done").equals("1");
         String details = valuesMap.get("details");
 
         return new RepairJob(id, motorhome, date, done, details);
@@ -101,6 +102,7 @@ public class RepairJob implements Storable {
                             null, null);
 
             returnList.forEach((HashMap<String, String> valuesMap) -> {
+                System.out.println("   REPAIR" + valuesMap);
                 result.add(RepairJob.construct(valuesMap));
             });
             return result;

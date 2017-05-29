@@ -38,8 +38,12 @@ public class ExtrasController implements UISection {
 
         TableColumn<Extra, String> priceColumn = new TableColumn("Price");
         priceColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(cellData.getValue().price.getValue().value.getValue().toString())
-        );
+            new SimpleStringProperty(cellData.getValue().price.getValue()
+                    .value.getValue().toString() + " / " +
+                    cellData.getValue().price.getValue().type.getValue().name.getValue()
+            ));
+
+
         tableView.getColumns().addAll(nameColumn, priceColumn);
         tableView.setItems(extraList);
 

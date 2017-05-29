@@ -46,8 +46,8 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class OrderFormController extends ModalBaseController {
     private static final Logger LOGGER = Logger.getLogger(OrderFormController.class.getName());
 
-    private static final String TITLE_CREATE = "order_create";
-    private static final String TITLE_EDIT = "order_edit";
+    private static final String TITLE_CREATE = "Create order";
+    private static final String TITLE_EDIT = "Edit order";
     private static final String TEMPLATE_PATH = "templates/modal/order.fxml";
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");

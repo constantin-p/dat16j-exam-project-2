@@ -61,7 +61,7 @@ public class ServiceJob implements Storable {
         Order order = Order.dbGet(valuesMap.get("order_id"));
 
         LocalDate date = LocalDate.parse(valuesMap.get("date"), formatter);
-        boolean done = Boolean.valueOf(valuesMap.get("done"));
+        boolean done = valuesMap.get("done").equals("1");
 
         return new ServiceJob(id, order, date, done);
     }

@@ -5,12 +5,20 @@ import assignment.model.*;
 import assignment.util.CacheEngine;
 import assignment.util.DBOperation;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
+import javafx.util.Callback;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -38,6 +46,7 @@ public class ServiceController implements UISection {
                             formatter.format(cellData.getValue().date.getValue()),
                     cellData.getValue().date);
         });
+        startColumn.getStyleClass().add("align-center");
 
         TableColumn<ServiceJob, String> motorhomeColumn = new TableColumn("Motorhome");
 
@@ -50,8 +59,12 @@ public class ServiceController implements UISection {
                 .motorhome.getValue().model);
         motorhomeColumn.getColumns().addAll(brandColumn, modelColumn);
 
+        TableColumn<ServiceJob, String> actionColumn = new TableColumn("Actions");
+        actionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().id));
+        actionColumn.setCellFactory(getActionCellFactory());
+        actionColumn.getStyleClass().add("align-center");
 
-        tableView.getColumns().addAll(startColumn, motorhomeColumn);
+        tableView.getColumns().addAll(startColumn, motorhomeColumn, actionColumn);
         tableView.setItems(serviceJobList);
 
         populateTableView();
@@ -76,9 +89,63 @@ public class ServiceController implements UISection {
             serviceJobList.clear();
             serviceJobs.forEach(entry -> {
                 if (!entry.order.getValue().isCancelled) {
-                    serviceJobList.add(entry);
+                    if (!entry.order.getValue().isCancelled) {
+                        // The order is not canceled
+                        if (!entry.done.getValue()) {
+                            // The order is not done
+                            serviceJobList.add(entry);
+                        }
+                    }
                 }
             });
         }));
+    }
+
+    private Callback<TableColumn<ServiceJob, String>, TableCell<ServiceJob, String>> getActionCellFactory() {
+        return new Callback<TableColumn<ServiceJob, String>, TableCell<ServiceJob, String>>() {
+            @Override
+            public TableCell call( final TableColumn<ServiceJob, String> param) {
+                final TableCell<ServiceJob, String> cell = new TableCell<ServiceJob, String>() {
+
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                            setText(null);
+                        } else {
+                            ServiceJob serviceJob = getTableView().getItems().get(getIndex());
+
+                             if (!serviceJob.date.getValue().isAfter(LocalDate.now())) {
+                                 Button done = new Button("Done");
+                                 Button reapair = new Button("Mark for repairs");
+                                 done.setOnAction((ActionEvent event) -> {
+                                    ServiceJob.dbUpdate(serviceJob.id, true);
+                                    CacheEngine.markForUpdate("service");
+                                 });
+                                 reapair.setOnAction((ActionEvent event) -> {
+                                     RepairJob.dbInsert(new RepairJob(null,
+                                         serviceJob.order.getValue().motorhome.getValue(),
+                                         LocalDate.now(), false, ""));
+
+                                     ServiceJob.dbUpdate(serviceJob.id, true);
+                                     CacheEngine.markForUpdate("repairs");
+                                     CacheEngine.markForUpdate("service");
+                                 });
+                                 HBox buttons = new HBox(6);
+                                 buttons.setAlignment(Pos.CENTER);
+                                 buttons.getChildren().addAll(done, reapair);
+                                 setGraphic(buttons);
+                                 setText(null);
+                            } else {
+                                setGraphic(null);
+                                setText("...");
+                            }
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
     }
 }

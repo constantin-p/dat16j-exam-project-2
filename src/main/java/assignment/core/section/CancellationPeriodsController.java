@@ -18,7 +18,7 @@ import java.util.List;
 
 public class CancellationPeriodsController implements UISection {
     private static final String ACCESS_TYPE_NAME = "cancellation_periods";
-    private static final String TEMPLATE_PATH = "templates/section/seasons.fxml";
+    private static final String TEMPLATE_PATH = "templates/section/cancellation_periods.fxml";
 
     private RootController rootController;
     private ObservableList<CancellationPeriod> cancellationPeriodList = FXCollections.observableArrayList();

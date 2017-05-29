@@ -47,6 +47,7 @@ public class AccountTypesController implements UISection {
             accessTypeColumn.setCellValueFactory(cellData ->
                     new SimpleBooleanProperty(cellData.getValue().hasAccess(accessType)));
             accessTypeColumn.setCellFactory(column -> new CheckBoxTableCell());
+            accessTypeColumn.getStyleClass().add("align-center");
 
             permissionsColumn.getColumns().add(accessTypeColumn);
         });

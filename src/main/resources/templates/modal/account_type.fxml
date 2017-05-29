@@ -36,7 +36,7 @@
     <children>
         <Label fx:id="errorLabel"
             styleClass="error-label"
-            text="INFO LABEL"
+            text=""
             GridPane.columnIndex="1"
             GridPane.rowIndex="1" />
         <Label
@@ -64,8 +64,8 @@
         </Label>
 
         <TableView fx:id="tableView"
-               GridPane.columnIndex="1"
-               GridPane.rowIndex="5">
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="5">
             <columns>
                 <!-- Table columns -->
             </columns>

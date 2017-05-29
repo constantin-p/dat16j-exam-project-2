@@ -17,8 +17,8 @@ import javafx.stage.Stage;
 import ui.control.CPTextField;
 
 public class AccountFormController extends ModalBaseController {
-    private static final String TITLE_CREATE = "account_create";
-    private static final String TITLE_EDIT = "account_create";
+    private static final String TITLE_CREATE = "Create account";
+    private static final String TITLE_EDIT = "Edit account";
     private static final String TEMPLATE_PATH = "templates/modal/account.fxml";
 
     private Account account;
@@ -63,18 +63,18 @@ public class AccountFormController extends ModalBaseController {
 
         usernameTextField.textProperty().bindBidirectional(account.username);
         usernameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isUsernameValid.set(ValidationHandler.showError(errorLabel,
+            isUsernameValid.set(ValidationHandler.validateControl(usernameTextField, errorLabel,
                 ValidationHandler.validateAccountUsername(newValue)));
         });
 
         passwordPasswordField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isPasswordValid.set(ValidationHandler.showError(errorLabel,
+            isPasswordValid.set(ValidationHandler.validateControl(passwordPasswordField, errorLabel,
                 ValidationHandler.validateAccountPassword(newValue, repeatPasswordPasswordField.getText())));
         });
 
         repeatPasswordPasswordField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isPasswordValid.set(ValidationHandler.showError(errorLabel,
-                ValidationHandler.validateAccountPassword(passwordPasswordField.getText(), newValue)));
+            isPasswordValid.set(ValidationHandler.validateControl(repeatPasswordPasswordField,
+                    errorLabel, ValidationHandler.validateAccountPassword(passwordPasswordField.getText(), newValue)));
         });
     }
 

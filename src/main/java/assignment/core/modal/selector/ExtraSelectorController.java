@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 import java.util.List;
 
 public class ExtraSelectorController extends SelectorBaseController {
-    private static final String TITLE = "extra_select";
+    private static final String TITLE = "Select extra";
 
     private ObservableList<Extra> extraList = FXCollections.observableArrayList();
     private FilteredList<Extra> filteredData = new FilteredList<>(extraList, p -> true);
@@ -48,6 +48,8 @@ public class ExtraSelectorController extends SelectorBaseController {
                 new SimpleStringProperty(cellData.getValue().price.getValue().value.getValue() +
                         " / " + cellData.getValue().price.getValue().type.getValue().name.getValue())
         );
+        priceColumn.getStyleClass().add("align-center");
+
         tableView.getColumns().addAll(nameColumn, priceColumn);
         tableView.setItems(extraList);
 

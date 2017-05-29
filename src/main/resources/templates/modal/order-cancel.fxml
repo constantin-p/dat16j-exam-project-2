@@ -38,7 +38,7 @@
 
         <Label fx:id="errorLabel"
             styleClass="error-label"
-            text="INFO LABEL"
+            text=""
             GridPane.columnIndex="1"
             GridPane.rowIndex="1" />
        
@@ -754,14 +754,19 @@
             GridPane.columnIndex="1"
             GridPane.rowIndex="6">
             <children>
-                <Button fx:id="printButton"
+                 <Button fx:id="printButton"
                     text="Print"
-                    onAction="#handlePrintAction" 
-                    alignment="CENTER_LEFT" />
+                    cancelButton="true"
+                    onAction="#handlePrintAction">
+                    <HBox.margin>
+                        <Insets
+                            right="35.0" />
+                    </HBox.margin>
+                </Button>
                 <Button
                     text="Cancel"
-                    cancelButton="true"
-                    onAction="#handleCancelAction">
+                    onAction="#handleCancelAction" 
+                    alignment="CENTER_LEFT">
                     <HBox.margin>
                         <Insets
                             right="15.0" />

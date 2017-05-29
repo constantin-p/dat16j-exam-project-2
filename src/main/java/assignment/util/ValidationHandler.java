@@ -47,6 +47,10 @@ public class ValidationHandler {
     public static final String ERROR_CLIENT_EMAIL_LONG = "Email too long";
     public static final String ERROR_CLIENT_EMAIL_DUPLICATE = "Email already registered";
     public static final String ERROR_CLIENT_EMAIL_INVALID = "Invalid email address";
+    public static final String ERROR_CLIENT_ADDRESS_REQUIRED = "Address required";
+    public static final String ERROR_CLIENT_ADDRESS_INVALID = "Invalid address (non-alphanumeric .,+_-)";
+    public static final String ERROR_CLIENT_ADDRESS_LONG = "Address too long >65";
+
     public static final String ERROR_CLIENT_DOB_REQUIRED = "Date of birth required";
     public static final String ERROR_CLIENT_DOB_YOUNG = "Too young (<16 years)";
 
@@ -103,7 +107,7 @@ public class ValidationHandler {
             control.setStyle( "-fx-text-fill: #5a5a5a;");
             return true;
         } else {
-            control.setStyle( "-fx-text-fill: #ff6d70;");
+            control.setStyle( "-fx-text-fill: #e53935;");
             return false;
         }
     }
@@ -266,6 +270,17 @@ public class ValidationHandler {
             return new Response(false, ERROR_CLIENT_EMAIL_INVALID);
         } else if (email.length() > 25) {
             return new Response(false, ERROR_CLIENT_EMAIL_LONG);
+        }
+        return new Response(true);
+    }
+
+    public static Response validateClientAddress(String location) {
+        if(location == null || location.isEmpty()) {
+            return new Response(false, ERROR_CLIENT_ADDRESS_REQUIRED);
+        } else if (!location.matches("[a-zA-Z0-9 .,+_-]+")) {
+            return new Response(false, ERROR_CLIENT_ADDRESS_INVALID);
+        } else if (location.length() > 65) {
+            return new Response(false, ERROR_CLIENT_ADDRESS_LONG);
         }
         return new Response(true);
     }

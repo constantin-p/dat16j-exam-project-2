@@ -2,17 +2,21 @@ package assignment.core.section;
 
 import assignment.core.RootController;
 import assignment.model.CleaningJob;
-import assignment.model.Client;
-import assignment.model.Motorhome;
 import assignment.util.CacheEngine;
 import assignment.util.DBOperation;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.util.Callback;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -40,6 +44,7 @@ public class CleaningController implements UISection {
                 formatter.format(cellData.getValue().date.getValue()),
                     cellData.getValue().date);
         });
+        startColumn.getStyleClass().add("align-center");
 
         TableColumn<CleaningJob, String> motorhomeColumn = new TableColumn("Motorhome");
 
@@ -52,8 +57,12 @@ public class CleaningController implements UISection {
                 .motorhome.getValue().model);
         motorhomeColumn.getColumns().addAll(brandColumn, modelColumn);
 
+        TableColumn<CleaningJob, String> actionColumn = new TableColumn("Actions");
+        actionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().id));
+        actionColumn.setCellFactory(getActionCellFactory());
+        actionColumn.getStyleClass().add("align-center");
 
-        tableView.getColumns().addAll(startColumn, motorhomeColumn);
+        tableView.getColumns().addAll(startColumn, motorhomeColumn, actionColumn);
         tableView.setItems(cleaningJobList);
 
         populateTableView();
@@ -78,9 +87,48 @@ public class CleaningController implements UISection {
             cleaningJobList.clear();
             cleaningJobs.forEach(entry -> {
                 if (!entry.order.getValue().isCancelled) {
-                    cleaningJobList.add(entry);
+                    // The order is not canceled
+                    if (!entry.done.getValue()) {
+                        // The order is not done
+                        cleaningJobList.add(entry);
+                    }
                 }
             });
         }));
+    }
+
+    private Callback<TableColumn<CleaningJob, String>, TableCell<CleaningJob, String>> getActionCellFactory() {
+        return new Callback<TableColumn<CleaningJob, String>, TableCell<CleaningJob, String>>() {
+            @Override
+            public TableCell call( final TableColumn<CleaningJob, String> param) {
+                final TableCell<CleaningJob, String> cell = new TableCell<CleaningJob, String>() {
+
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                            setText(null);
+                        } else {
+                            CleaningJob cleaningJob = getTableView().getItems().get(getIndex());
+
+                            if (!cleaningJob.date.getValue().isAfter(LocalDate.now())) {
+                                Button done = new Button("Done");
+                                done.setOnAction((ActionEvent event) -> {
+                                    CleaningJob.dbUpdate(cleaningJob.id, true);
+                                    CacheEngine.markForUpdate("cleaning");
+                                });
+                                setGraphic(done);
+                                setText(null);
+                            } else {
+                                setGraphic(null);
+                                setText("...");
+                            }
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
     }
 }

@@ -17,13 +17,15 @@ import java.util.List;
 
 public class Client implements Storable {
     public static final String DB_TABLE_NAME = "clients";
-    public static final String[] DB_TABLE_COLUMNS = {"id", "first_name", "last_name", "email", "date_of_birth"};
+    public static final String[] DB_TABLE_COLUMNS = {"id", "first_name", "last_name",
+            "email", "address", "date_of_birth"};
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
 
     public String id;
     public StringProperty firstName;
     public StringProperty lastName;
     public StringProperty email;
+    public StringProperty address;
     public ObjectProperty<LocalDate> dateOfBirth;
 
     public Client() {
@@ -31,14 +33,17 @@ public class Client implements Storable {
         firstName = new SimpleStringProperty("");
         lastName = new SimpleStringProperty("");
         email = new SimpleStringProperty("");
+        address = new SimpleStringProperty("");
         dateOfBirth = new SimpleObjectProperty<>(LocalDate.now().minusYears(16));
     }
 
-    public Client(String id, String firstName, String lastName, String email, LocalDate dateOfBirth) {
+    public Client(String id, String firstName, String lastName, String email,
+                  String address, LocalDate dateOfBirth) {
         this.id = id;
         this.firstName = new SimpleStringProperty(firstName);
         this.lastName = new SimpleStringProperty(lastName);
         this.email = new SimpleStringProperty(email);
+        this.address = new SimpleStringProperty(address);
         this.dateOfBirth = new SimpleObjectProperty<>(dateOfBirth);
     }
 
@@ -52,6 +57,7 @@ public class Client implements Storable {
         values.put("first_name", firstName.getValue());
         values.put("last_name", lastName.getValue());
         values.put("email", email.getValue());
+        values.put("address", address.getValue());
         values.put("date_of_birth", DateTimeFormatter.ofPattern(DB_DATE_FORMAT)
                 .format(dateOfBirth.getValue()));
 
@@ -64,11 +70,12 @@ public class Client implements Storable {
         String firstName = valuesMap.get("first_name");
         String lastName = valuesMap.get("last_name");
         String email = valuesMap.get("email");
+        String address = valuesMap.get("address");
 
         LocalDate dateOfBirth = LocalDate.parse(valuesMap.get("date_of_birth"),
                 DateTimeFormatter.ofPattern(DB_DATE_FORMAT));
 
-        return new Client(id, firstName, lastName, email, dateOfBirth);
+        return new Client(id, firstName, lastName, email, address, dateOfBirth);
     }
 
 

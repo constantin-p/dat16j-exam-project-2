@@ -17,31 +17,5 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-
-        <HBox
-            styleClass="action-bar"
-            alignment="CENTER_LEFT"
-            minHeight="34.0"
-            maxHeight="34.0"
-            VBox.vgrow="NEVER">
-            <children>
-                <HBox
-                    styleClass="button-group"
-                    alignment="CENTER_LEFT"
-                    HBox.hgrow="ALWAYS">
-                    <children>
-                        <ToggleButton
-                            text="Archived" />
-                        <ToggleButton
-                            text="Scheduled" />
-                    </children>
-                </HBox>
-            </children>
-            <padding>
-                <Insets
-                    left="15.0"
-                    right="15.0" />
-            </padding>
-        </HBox>
     </children>
 </VBox>

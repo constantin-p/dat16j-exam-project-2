@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 import java.util.List;
 
 public class MotorhomeSelectorController extends SelectorBaseController {
-    private static final String TITLE = "motorhome_select";
+    private static final String TITLE = "Select motorhome";
 
     private ObservableList<Motorhome> motorhomeList = FXCollections.observableArrayList();
     private FilteredList<Motorhome> filteredData = new FilteredList<>(motorhomeList, p -> true);

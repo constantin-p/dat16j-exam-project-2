@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 import java.util.List;
 
 public class ClientSelectorController extends SelectorBaseController {
-    private static final String TITLE = "client_select";
+    private static final String TITLE = "Select client";
 
     private ObservableList<Client> clientList = FXCollections.observableArrayList();
     private FilteredList<Client> filteredData = new FilteredList<>(clientList, p -> true);
@@ -51,6 +51,7 @@ public class ClientSelectorController extends SelectorBaseController {
 
         TableColumn<Client, String> dateOfBirthColumn = new TableColumn("Date of birth");
         dateOfBirthColumn.setCellValueFactory(cellData -> cellData.getValue().dateOfBirth.asString());
+        dateOfBirthColumn.getStyleClass().add("align-center");
 
         tableView.getColumns().addAll(firstNameColumn, lastNameColumn, emailColumn, dateOfBirthColumn);
 

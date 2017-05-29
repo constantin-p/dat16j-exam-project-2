@@ -47,7 +47,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class OrderCancelFormController extends ModalBaseController {
     private static final Logger LOGGER = Logger.getLogger(OrderCancelFormController.class.getName());
 
-    private static final String TITLE = "order_cancel";
+    private static final String TITLE = "Cancel order";
     private static final String TEMPLATE_PATH = "templates/modal/order-cancel.fxml";
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -286,6 +286,7 @@ public class OrderCancelFormController extends ModalBaseController {
         }
         invoiceExtrasSubtotal.setValue(totalExtras);
 
+        setInvoiceTransport();
         setCancellationCost();
     }
 
@@ -427,5 +428,22 @@ public class OrderCancelFormController extends ModalBaseController {
 
         hbox.getChildren().addAll(leftLabel, rightLabel);
         extrasVBox.getChildren().add(hbox);
+    }
+
+    private void setInvoiceTransport() {
+        int distance = order.pickUpDistance.getValue() + order.dropOffDistance.getValue();
+
+        if (distance > 0) {
+
+            double kmPrice = Double.valueOf(Config.getConfig("invoice")
+                    .getProperty("INVOICE_PRICE_PER_KM"));
+
+            transportLabel.setText(distance + "× " +
+                    decimalFormatter.format(kmPrice) + "kr");
+            invoiceTransportTotal.setValue(distance * kmPrice);
+        } else {
+            transportLabel.setText("...");
+            invoiceTransportTotal.setValue(0.0);
+        }
     }
 }

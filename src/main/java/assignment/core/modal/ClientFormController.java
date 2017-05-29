@@ -23,8 +23,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class ClientFormController extends ModalBaseController {
-    private static final String TITLE_CREATE = "client_create";
-    private static final String TITLE_EDIT = "client_edit";
+    private static final String TITLE_CREATE = "Create client";
+    private static final String TITLE_EDIT = "Edit client";
     private static final String TEMPLATE_PATH = "templates/modal/client.fxml";
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -42,9 +42,15 @@ public class ClientFormController extends ModalBaseController {
     @FXML
     private CPTextField lastNameTextField;
     private BooleanProperty isLastNameValid = new SimpleBooleanProperty(false);
+
     @FXML
     private CPTextField emailTextField;
     private BooleanProperty isEmailValid = new SimpleBooleanProperty(false);
+
+    @FXML
+    private CPTextField addressTextField;
+    private BooleanProperty isAddressValid = new SimpleBooleanProperty(false);
+
     @FXML
     private DatePicker dateOfBirthDatePicker;
     private BooleanProperty isDateOfBirthValid = new SimpleBooleanProperty(false);
@@ -63,10 +69,14 @@ public class ClientFormController extends ModalBaseController {
     public void initialize() {
         super.initialize();
 
-        super.isDisabled.bind(isFirstNameValid.not().or(
-            isLastNameValid.not()).or(
-                isEmailValid.not().or(
-                    isDateOfBirthValid.not()
+        super.isDisabled.bind(
+            isFirstNameValid.not().or(
+                isLastNameValid.not().or(
+                    isEmailValid.not().or(
+                        isDateOfBirthValid.not().or(
+                            isAddressValid.not()
+                        )
+                    )
                 )
             )
         );
@@ -89,6 +99,11 @@ public class ClientFormController extends ModalBaseController {
                     ValidationHandler.validateClientEmail(newValue)));
         });
 
+        addressTextField.textProperty().bindBidirectional(client.address);
+        addressTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            isEmailValid.set(ValidationHandler.showError(errorLabel,
+                    ValidationHandler.validateClientAddress(newValue)));
+        });
 
         dateOfBirthDatePicker.setConverter(new LocalDateStringConverter(formatter, formatter));
         dateOfBirthDatePicker.setDayCellFactory(new Callback<DatePicker, DateCell>() {

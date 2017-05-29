@@ -38,7 +38,7 @@
     <children>
         <Label fx:id="errorLabel"
             styleClass="error-label"
-            text="INFO LABEL"
+            text=""
             GridPane.columnIndex="1"
             GridPane.rowIndex="1" />
         <Label

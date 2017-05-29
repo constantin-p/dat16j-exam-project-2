@@ -5,12 +5,20 @@ import assignment.model.*;
 import assignment.util.CacheEngine;
 import assignment.util.DBOperation;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
+import javafx.util.Callback;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -48,11 +56,15 @@ public class RepairsController implements UISection {
         modelColumn.setCellValueFactory(cellData -> cellData.getValue().motorhome.getValue().model);
         motorhomeColumn.getColumns().addAll(brandColumn, modelColumn);
 
-        TableColumn<RepairJob, String> detailsColumn = new TableColumn("Details");
-        detailsColumn.setCellValueFactory(cellData -> cellData.getValue().details);
+//        TableColumn<RepairJob, String> detailsColumn = new TableColumn("Details");
+//        detailsColumn.setCellValueFactory(cellData -> cellData.getValue().details);
 
+        TableColumn<RepairJob, String> actionColumn = new TableColumn("Actions");
+        actionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().id));
+        actionColumn.setCellFactory(getActionCellFactory());
+        actionColumn.getStyleClass().add("align-center");
 
-        tableView.getColumns().addAll(startColumn, motorhomeColumn, detailsColumn);
+        tableView.getColumns().addAll(startColumn, motorhomeColumn, actionColumn);
         tableView.setItems(repairJobList);
 
         populateTableView();
@@ -76,8 +88,46 @@ public class RepairsController implements UISection {
 
             repairJobList.clear();
             repairJobs.forEach(entry -> {
-                repairJobList.add(entry);
+                if (!entry.done.getValue()) {
+                    // The order is not done
+                    repairJobList.add(entry);
+                }
             });
         }));
+    }
+
+    private Callback<TableColumn<RepairJob, String>, TableCell<RepairJob, String>> getActionCellFactory() {
+        return new Callback<TableColumn<RepairJob, String>, TableCell<RepairJob, String>>() {
+            @Override
+            public TableCell call( final TableColumn<RepairJob, String> param) {
+                final TableCell<RepairJob, String> cell = new TableCell<RepairJob, String>() {
+
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                            setText(null);
+                        } else {
+                            RepairJob repairJob = getTableView().getItems().get(getIndex());
+
+                            if (!repairJob.date.getValue().isBefore(LocalDate.now())) {
+                                Button done = new Button("Done");
+                                done.setOnAction((ActionEvent event) -> {
+                                    RepairJob.dbUpdate(repairJob.id, true);
+                                    CacheEngine.markForUpdate("repairs");
+                                });
+                                setGraphic(done);
+                                setText(null);
+                            } else {
+                                setGraphic(null);
+                                setText("...");
+                            }
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
     }
 }

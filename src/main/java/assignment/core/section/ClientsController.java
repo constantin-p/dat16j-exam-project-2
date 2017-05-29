@@ -44,14 +44,19 @@ public class ClientsController implements UISection {
         TableColumn<Client, String> emailColumn = new TableColumn("Email");
         emailColumn.setCellValueFactory(cellData -> cellData.getValue().email);
 
+        TableColumn<Client, String> addressColumn = new TableColumn("Address");
+        addressColumn.setCellValueFactory(cellData -> cellData.getValue().address);
+
         TableColumn<Client, String> dateOfBirthColumn = new TableColumn("Date of birth");
         dateOfBirthColumn.setCellValueFactory(cellData -> {
             return Bindings.createStringBinding(() ->
                 formatter.format(cellData.getValue().dateOfBirth.getValue()),
                     cellData.getValue().dateOfBirth);
         });
+        dateOfBirthColumn.getStyleClass().add("align-center");
 
-        tableView.getColumns().addAll(firstNameColumn, lastNameColumn, emailColumn, dateOfBirthColumn);
+        tableView.getColumns().addAll(firstNameColumn, lastNameColumn,
+                emailColumn, addressColumn, dateOfBirthColumn);
         tableView.setItems(clientList);
 
         populateTableView();

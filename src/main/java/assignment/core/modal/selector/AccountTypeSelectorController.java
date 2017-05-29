@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 import java.util.List;
 
 public class AccountTypeSelectorController extends SelectorBaseController {
-    private static final String TITLE = "account_type_select";
+    private static final String TITLE = "Select account type";
 
     private ObservableList<AccountType> accountTypeList = FXCollections.observableArrayList();
 
