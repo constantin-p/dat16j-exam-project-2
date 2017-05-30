@@ -382,9 +382,13 @@ public class OrderFormController extends ModalBaseController {
         pickUpDistanceTextField.valueProperty().bindBidirectional(order.pickUpDistance);
         pickUpDistanceTextField.valueProperty().addListener((observable, oldValue, newValue) -> {
             isPickUpDistanceValid.set(ValidationHandler.validateControl(pickUpDistanceTextField,
-                    errorLabel, ValidationHandler.validateOrderPickUpDistance(newValue.intValue())));
+                    errorLabel, ValidationHandler
+                            .validateOrderPickUpDistance(newValue.intValue())));
             setInvoiceTransport();
         });
+        isPickUpDistanceValid.set(ValidationHandler.validateControl(pickUpDistanceTextField,
+                errorLabel, ValidationHandler
+                        .validateOrderPickUpDistance(pickUpDistanceTextField.getValue())));
 
         dropOffTextField.textProperty().bindBidirectional(order.dropOff);
         dropOffTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -395,9 +399,13 @@ public class OrderFormController extends ModalBaseController {
         dropOffDistanceTextField.valueProperty().bindBidirectional(order.dropOffDistance);
         dropOffDistanceTextField.valueProperty().addListener((observable, oldValue, newValue) -> {
             isDropOffDistanceValid.set(ValidationHandler.validateControl(dropOffDistanceTextField,
-                    errorLabel, ValidationHandler.validateOrderDropOffDistance(newValue.intValue())));
+                    errorLabel, ValidationHandler
+                            .validateOrderDropOffDistance(newValue.intValue())));
             setInvoiceTransport();
         });
+        isDropOffDistanceValid.set(ValidationHandler.validateControl(dropOffDistanceTextField,
+                errorLabel, ValidationHandler
+                        .validateOrderDropOffDistance(dropOffDistanceTextField.getValue())));
 
 
         TableColumn<Map.Entry<Extra, Double>, String> nameColumn = new TableColumn("Name");
@@ -471,7 +479,7 @@ public class OrderFormController extends ModalBaseController {
     public void handleSelectMotorhomeAction(ActionEvent event) {
         Motorhome motorhome = modalDispatcher.showSelectMotorhomeModal(super.stage,
             m -> ScheduleManager.isMotorhomeFree(order.startDate.getValue(),
-                order.endDate.getValue(), m.id));
+                        order.endDate.getValue(), m.id));
 
         Response validation = ValidationHandler.validateOrderMotorhome(motorhome);
         if (validation.success) {

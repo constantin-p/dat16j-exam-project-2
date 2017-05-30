@@ -1,16 +1,16 @@
 package assignment.model;
 
 
+import assignment.util.Config;
 import javafx.beans.property.*;
 import store.db.Database;
 import store.db.Storable;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class Payment implements Storable {
     public static final String DB_TABLE_NAME = "payments";
@@ -33,6 +33,33 @@ public class Payment implements Storable {
         this.id = id;
         this.invoice = new SimpleObjectProperty(invoice);
         this.date = new SimpleObjectProperty(date);
+    }
+
+    public double getTotal() {
+        double total;
+
+        Properties invoiceProperties = Config.getConfig("invoice");
+        Order order = invoice.getValue().order.getValue();
+        long days = DAYS.between(order.startDate.getValue(), order.endDate.getValue());
+
+        total = days * order.motorhomeValue.getValue();
+        // Add season modifier
+        total += total * order.seasonModifier.getValue();
+        // Add extras
+        for (Map.Entry<Extra, Double> entry: order.extras) {
+            total += entry.getValue().doubleValue();
+        }
+        // Add fuel
+        int distance = order.pickUpDistance.getValue() + order.dropOffDistance.getValue();
+        if (distance > 0) {
+            double kmPrice = Double.valueOf(invoiceProperties.getProperty("INVOICE_PRICE_PER_KM"));
+            total += distance * kmPrice;
+        }
+        // Add VAT
+        double VATModifier = Double.valueOf(invoiceProperties.getProperty("INVOICE_VAT_MODIFIER"));
+        total += total * VATModifier;
+
+        return total;
     }
 
     /*

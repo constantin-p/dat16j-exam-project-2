@@ -104,7 +104,8 @@ public class RootController {
     private Node loadSectionContent(UISection controller) {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
-            FXMLLoader loader = new FXMLLoader(classLoader.getResource(controller.getTemplatePath()));
+            FXMLLoader loader = new FXMLLoader(classLoader
+                    .getResource(controller.getTemplatePath()));
 
             loader.setController(controller);
             Parent layout = loader.load();

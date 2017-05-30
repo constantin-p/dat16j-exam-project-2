@@ -99,7 +99,7 @@ public class ValidationHandler {
     public static final String ERROR_ORDER_DROP_OFF_DISTANCE_LONG = "Drop-off distance too long >500";
     public static final String ERROR_ORDER_DROP_OFF_DISTANCE_INVALID = "Invalid drop-off distance (negative)";
     public static final String ERROR_ORDER_CLIENT_REQUIRED = "Client required";
-    public static final String ERROR_ORDER_MOTORHOME_REQUIRED = "Price required";
+    public static final String ERROR_ORDER_MOTORHOME_REQUIRED = "Motorhome required";
 
 
     public static boolean validateControl(Control control, Label errorLabel, Response validation) {

@@ -117,4 +117,25 @@ public class Motorhome implements Storable {
             return 0;
         }
     }
+
+    public static int dbUpdate(String motorhomeID, String brand, String model,
+                               Integer capacity, Integer mileage, String priceID) {
+        HashMap<String, String> entry = new HashMap<>();
+        entry.put("brand", brand);
+        entry.put("model", model);
+        entry.put("capacity", capacity.toString());
+        entry.put("mileage", mileage.toString());
+        entry.put("price_id", priceID);
+
+        HashMap<String, String> whitelist = new HashMap<>();
+        whitelist.put("id", motorhomeID);
+
+        try {
+            return Database.getTable(DB_TABLE_NAME)
+                    .update(entry, whitelist, new HashMap<>());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }

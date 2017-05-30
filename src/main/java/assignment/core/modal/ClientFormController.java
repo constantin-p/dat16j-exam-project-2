@@ -139,7 +139,6 @@ public class ClientFormController extends ModalBaseController {
 
             if (success) {
                 client = Client.dbGetByEmail(client.email.getValue());
-                System.out.println(client);
                 super.handleOKAction(event);
             }
         } else {

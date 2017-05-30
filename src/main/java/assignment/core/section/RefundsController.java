@@ -17,6 +17,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -26,6 +27,7 @@ public class RefundsController implements UISection {
     private static final String TEMPLATE_PATH = "templates/section/refunds.fxml";
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private DecimalFormat decimalFormatter = new DecimalFormat(".##");
 
     private RootController rootController;
     private ObservableList<Refund> refundList = FXCollections.observableArrayList();
@@ -55,10 +57,14 @@ public class RefundsController implements UISection {
                 .order.getValue().client.getValue().lastName);
         clientColumn.getColumns().addAll(firstNameColumn, lastnameColumn);
 
+        priceColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(decimalFormatter.format(cellData.getValue()
+                        .getTotal()) + "kr"));
+        priceColumn.getStyleClass().add("align-right");
 
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
                 (cellData.getValue().date.getValue() == null)
-                        ? "Awaiting"
+                        ? "..."
                         : "Paid on: "+ formatter.format(cellData.getValue().date.getValue())
         ));
 
@@ -112,6 +118,9 @@ public class RefundsController implements UISection {
                                     CacheEngine.markForUpdate("refunds");
                                 });
                                 setGraphic(pay);
+                                setText(null);
+                            } else {
+                                setGraphic(null);
                                 setText("...");
                             }
                         }

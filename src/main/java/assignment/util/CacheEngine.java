@@ -58,7 +58,6 @@ public class CacheEngine {
 //                        T result = operation.dataGetter.get();
 //                        operation.dataSetter.set(result);
 //
-//                        System.out.println("  FORCE UPDATE RESULT" + result);
 //
 //
 //                        // Save the data to the stateMap
@@ -87,17 +86,18 @@ public class CacheEngine {
             stateMap.put(key, result);
             accessMap.put(key, Instant.now());
 
-            if (!listenersMap.containsKey(key)) {
-                List<DBOperation> dbOperations = new ArrayList<>();
-                dbOperations.add(operation);
-                listenersMap.put(key, dbOperations);
-            } else if (!listenersMap.get(key).contains(operation)) {
-                List<DBOperation> dbOperations = listenersMap.get(key);
-                dbOperations.add(operation);
-                listenersMap.put(key, dbOperations);
-            }
         } else {
             operation.dataSetter.set((T) stateMap.get(key));
+        }
+
+        if (!listenersMap.containsKey(key)) {
+            List<DBOperation> dbOperations = new ArrayList<>();
+            dbOperations.add(operation);
+            listenersMap.put(key, dbOperations);
+        } else if (!listenersMap.get(key).contains(operation)) {
+            List<DBOperation> dbOperations = listenersMap.get(key);
+            dbOperations.add(operation);
+            listenersMap.put(key, dbOperations);
         }
     }
 

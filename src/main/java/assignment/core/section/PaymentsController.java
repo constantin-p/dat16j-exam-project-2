@@ -65,7 +65,8 @@ public class PaymentsController implements UISection {
         clientColumn.getColumns().addAll(firstNameColumn, lastnameColumn);
 
         priceColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(decimalFormatter.format(getTotal(cellData.getValue())) + "kr"));
+            new SimpleStringProperty(decimalFormatter.format(cellData.getValue()
+                    .getTotal()) + "kr"));
         priceColumn.getStyleClass().add("align-right");
 
 
@@ -107,33 +108,6 @@ public class PaymentsController implements UISection {
         }));
     }
 
-    private double getTotal(Payment payment) {
-        double total;
-
-        Properties invoiceProperties = Config.getConfig("invoice");
-        Order order = payment.invoice.getValue().order.getValue();
-        long days = DAYS.between(order.startDate.getValue(), order.endDate.getValue());
-
-        total = days * order.motorhomeValue.getValue();
-        // Add season modifier
-        total += total * order.seasonModifier.getValue();
-        // Add extras
-        for (Map.Entry<Extra, Double> entry: order.extras) {
-            total += entry.getValue().doubleValue();
-        }
-        // Add fuel
-        int distance = order.pickUpDistance.getValue() + order.dropOffDistance.getValue();
-        if (distance > 0) {
-            double kmPrice = Double.valueOf(invoiceProperties.getProperty("INVOICE_PRICE_PER_KM"));
-            total += distance * kmPrice;
-        }
-        // Add VAT
-        double VATModifier = Double.valueOf(invoiceProperties.getProperty("INVOICE_VAT_MODIFIER"));
-        total += total * VATModifier;
-
-        return total;
-    }
-
     private Callback<TableColumn<Payment, String>, TableCell<Payment, String>> getActionCellFactory() {
         return new Callback<TableColumn<Payment, String>, TableCell<Payment, String>>() {
             @Override
@@ -155,6 +129,9 @@ public class PaymentsController implements UISection {
                                     CacheEngine.markForUpdate("payments");
                                 });
                                 setGraphic(pay);
+                                setText(null);
+                            } else {
+                                setGraphic(null);
                                 setText("...");
                             }
                         }

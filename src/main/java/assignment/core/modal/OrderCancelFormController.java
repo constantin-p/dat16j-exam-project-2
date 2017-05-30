@@ -410,7 +410,6 @@ public class OrderCancelFormController extends ModalBaseController {
                             .doubleValue() + invoiceCancellationTotal.getValue());
                 }
             }
-
         }
     }
 

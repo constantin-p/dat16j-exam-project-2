@@ -102,7 +102,6 @@ public class RepairJob implements Storable {
                             null, null);
 
             returnList.forEach((HashMap<String, String> valuesMap) -> {
-                System.out.println("   REPAIR" + valuesMap);
                 result.add(RepairJob.construct(valuesMap));
             });
             return result;

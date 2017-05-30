@@ -42,7 +42,6 @@ public class OrdersController implements UISection {
         TableColumn<Order, String> durationColumn = new TableColumn("Duration");
         TableColumn<Order, String> motorhomeColumn = new TableColumn("Motorhome");
         TableColumn<Order, String> clientColumn = new TableColumn("Client");
-        TableColumn<Order, String> priceColumn = new TableColumn("Price");
         TableColumn<Order, String> actionColumn = new TableColumn("Actions");
         actionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().id));
         actionColumn.setCellFactory(getActionCellFactory());
@@ -82,7 +81,7 @@ public class OrdersController implements UISection {
         clientColumn.getColumns().addAll(firstNameColumn, lastnameColumn);
 
 
-        tableView.getColumns().addAll(durationColumn, motorhomeColumn, clientColumn, priceColumn, actionColumn);
+        tableView.getColumns().addAll(durationColumn, motorhomeColumn, clientColumn, actionColumn);
         tableView.setItems(orderList);
 
         populateTableView();
@@ -144,7 +143,7 @@ public class OrdersController implements UISection {
                                 setText(null);
                             } else {
                                 setGraphic(null);
-                                setText("-");
+                                setText("...");
                             }
                         }
                     }

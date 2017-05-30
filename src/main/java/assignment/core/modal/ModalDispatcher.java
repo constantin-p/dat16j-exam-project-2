@@ -130,6 +130,13 @@ public class ModalDispatcher {
         });
     }
 
+    public Motorhome showEditMotorhomeModal(Stage stage, Motorhome motorhome) {
+        return (Motorhome) showModal(stage, (Stage modalStage) -> {
+            return new MotorhomeFormController(this, modalStage,
+                    false, motorhome);
+        });
+    }
+
     public Motorhome showSelectMotorhomeModal(Stage stage,
           SelectorBaseController.EntryValidator<Motorhome> entryValidator) {
         return (Motorhome) showModal(stage, (Stage modalStage) -> {

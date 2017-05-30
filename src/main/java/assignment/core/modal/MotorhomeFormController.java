@@ -100,6 +100,19 @@ public class MotorhomeFormController extends ModalBaseController {
         });
         isMileageValid.set(ValidationHandler.validateControl(mileageTextField, errorLabel,
                 ValidationHandler.validateMotorhomeMileage(mileageTextField.getValue())));
+
+        if (!create) {
+            Response validation = ValidationHandler.validateMotorhomePrice(motorhome
+                    .price.getValue());
+            if (validation.success) {
+                selectPriceButton.setText(motorhome.price.getValue().name.getValue() + " - " +
+                        motorhome.price.getValue().value.getValue() + "kr");
+            } else {
+                selectPriceButton.setText("Select price");
+            }
+
+            isPriceValid.set(ValidationHandler.showError(errorLabel, validation));
+        }
     }
 
     @Override
@@ -112,7 +125,15 @@ public class MotorhomeFormController extends ModalBaseController {
                 super.handleOKAction(event);
             }
         } else {
+            boolean success = ValidationHandler.showError(errorLabel,
+                    ValidationHandler.validateMotorhomeDBOperation(Motorhome.dbUpdate(motorhome.id,
+                            motorhome.brand.getValue(), motorhome.model.getValue(),
+                            motorhome.capacity.getValue(), motorhome.mileage.getValue(),
+                            motorhome.price.getValue().id)));
 
+            if (success) {
+                super.handleOKAction(event);
+            }
         }
     }
 

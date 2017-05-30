@@ -14,6 +14,7 @@ public class ScheduleManager {
 
     public static void update(List<Order> orders) {
         orderList = orders;
+        schedule = new HashMap();
         calculateYear(LocalDate.now().getYear());
         CacheEngine.markForUpdate("clients");
         CacheEngine.markForUpdate("extras");
