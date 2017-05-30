@@ -89,7 +89,7 @@ public class AccountType implements Storable {
         searchQuery.put("id", accountTypeID);
 
         try {
-            HashMap<String, String> returnValues = Database.getTable(AccountType.DB_TABLE_NAME)
+            HashMap<String, String> returnValues = Database.getTable(DB_TABLE_NAME)
                     .get(Arrays.asList("id", "name"), searchQuery, new HashMap<>());
 
             if (returnValues.get("id") != null && returnValues.get("id").equals(accountTypeID)) {
@@ -107,7 +107,7 @@ public class AccountType implements Storable {
         searchQuery.put("name", name);
 
         try {
-            HashMap<String, String> returnValues = Database.getTable(AccountType.DB_TABLE_NAME)
+            HashMap<String, String> returnValues = Database.getTable(DB_TABLE_NAME)
                     .get(Arrays.asList("id", "name"), searchQuery, new HashMap<>());
 
             if (returnValues.get("name") != null && returnValues.get("name").equals(name)) {
@@ -124,7 +124,7 @@ public class AccountType implements Storable {
         List<AccountType> result = new ArrayList<>();
 
         try {
-            List<HashMap<String, String>> returnList = Database.getTable(AccountType.DB_TABLE_NAME)
+            List<HashMap<String, String>> returnList = Database.getTable(DB_TABLE_NAME)
                     .getAll(Arrays.asList("id", "name"), null, null);
 
             returnList.forEach((HashMap<String, String> valuesMap) -> {
@@ -148,7 +148,7 @@ public class AccountType implements Storable {
 
         try {
             List<HashMap<String, String>> returnList = Database
-                    .getTable(AccountType.DB_INTERSECTION_TABLE_NAME)
+                    .getTable(DB_INTERSECTION_TABLE_NAME)
                     .getAll(Arrays.asList("accesstype_id"),
                             searchQuery, null);
 
@@ -164,7 +164,7 @@ public class AccountType implements Storable {
 
     public static int dbInsert(AccountType accountType) {
         try {
-            return Database.getTable(AccountType.DB_TABLE_NAME)
+            return Database.getTable(DB_TABLE_NAME)
                     .insert(accountType.deconstruct());
         } catch (Exception e) {
             e.printStackTrace();
@@ -181,7 +181,7 @@ public class AccountType implements Storable {
         entry.put("accesstype_id", accessTypeID);
 
         try {
-            return Database.getTable(AccountType.DB_INTERSECTION_TABLE_NAME)
+            return Database.getTable(DB_INTERSECTION_TABLE_NAME)
                 .insert(entry);
         } catch (Exception e) {
             e.printStackTrace();

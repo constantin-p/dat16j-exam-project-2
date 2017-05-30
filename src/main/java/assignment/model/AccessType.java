@@ -87,7 +87,4 @@ public class AccessType implements Storable {
             return result;
         }
     }
-
-
-
 }

@@ -1,9 +1,8 @@
 package assignment.core.modal;
 
 
-import assignment.core.modal.selector.AccountTypeSelectorController;
-import assignment.model.Account;
-import assignment.model.AccountType;
+import assignment.core.modal.selector.*;
+import assignment.model.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -83,6 +82,94 @@ public class ModalDispatcher {
         return (Account) showModal(stage, (Stage modalStage) -> {
             return new AccountFormController(this, modalStage,
                     true, new Account());
+        });
+    }
+
+    public Client showCreateClientModal(Stage stage) {
+        return (Client) showModal(stage, (Stage modalStage) -> {
+            return new ClientFormController(this, modalStage,
+                    true, new Client());
+        });
+    }
+
+    public Client showSelectClientModal(Stage stage, boolean canCreate,
+        SelectorBaseController.EntryValidator<Client> entryValidator) {
+        return (Client) showModal(stage, (Stage modalStage) -> {
+            return new ClientSelectorController(this, modalStage,
+                    canCreate, entryValidator);
+        });
+    }
+
+    public PriceType showSelectPriceTypeModal(Stage stage,
+            SelectorBaseController.EntryValidator<PriceType> entryValidator) {
+        return (PriceType) showModal(stage, (Stage modalStage) -> {
+            return new PriceTypeSelectorController(this, modalStage,
+                    false, entryValidator);
+        });
+    }
+
+    public Price showCreatePriceModal(Stage stage) {
+        return (Price) showModal(stage, (Stage modalStage) -> {
+            return new PriceFormController(this, modalStage,
+                    true, new Price());
+        });
+    }
+
+    public Price showSelectPriceModal(Stage stage, boolean canCreate,
+              SelectorBaseController.EntryValidator<Price> entryValidator) {
+        return (Price) showModal(stage, (Stage modalStage) -> {
+            return new PriceSelectorController(this, modalStage,
+                    canCreate, entryValidator);
+        });
+    }
+
+    public Motorhome showCreateMotorhomeModal(Stage stage) {
+        return (Motorhome) showModal(stage, (Stage modalStage) -> {
+            return new MotorhomeFormController(this, modalStage,
+                    true, new Motorhome());
+        });
+    }
+
+    public Motorhome showEditMotorhomeModal(Stage stage, Motorhome motorhome) {
+        return (Motorhome) showModal(stage, (Stage modalStage) -> {
+            return new MotorhomeFormController(this, modalStage,
+                    false, motorhome);
+        });
+    }
+
+    public Motorhome showSelectMotorhomeModal(Stage stage,
+          SelectorBaseController.EntryValidator<Motorhome> entryValidator) {
+        return (Motorhome) showModal(stage, (Stage modalStage) -> {
+            return new MotorhomeSelectorController(this, modalStage,
+                    false, entryValidator);
+        });
+    }
+
+    public Extra showCreateExtrasModal(Stage stage) {
+        return (Extra) showModal(stage, (Stage modalStage) -> {
+            return new ExtraFormController(this, modalStage,
+                    true, new Extra());
+        });
+    }
+
+    public Extra showSelectExtraModal(Stage stage,
+          SelectorBaseController.EntryValidator<Extra> entryValidator) {
+        return (Extra) showModal(stage, (Stage modalStage) -> {
+            return new ExtraSelectorController(this, modalStage,
+                    false, entryValidator);
+        });
+    }
+
+    public Order showCreateOrderModal(Stage stage) {
+        return (Order) showModal(stage, (Stage modalStage) -> {
+            return new OrderFormController(this, modalStage,
+                    true, new Order());
+        });
+    }
+
+    public Order showCancelOrderModal(Stage stage, Order order) {
+        return (Order) showModal(stage, (Stage modalStage) -> {
+            return new OrderCancelFormController(this, modalStage, order);
         });
     }
 }

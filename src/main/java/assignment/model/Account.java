@@ -65,23 +65,6 @@ public class Account implements Storable {
     /*
      *  DB helpers
      */
-    public static List<Account> dbGetAll() {
-        List<Account> result = new ArrayList<>();
-        try {
-            List<HashMap<String, String>> returnList = Database.getTable(Account.DB_TABLE_NAME)
-                    .getAll(Arrays.asList("id", "username", "accounttype_id"),
-                            null, null);
-
-            returnList.forEach((HashMap<String, String> valuesMap) -> {
-                result.add(Account.construct(valuesMap));
-            });
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return result;
-        }
-    }
-
     public static Account dbGetByUsername(String username) {
         HashMap<String, String> searchQuery = new HashMap<>();
         searchQuery.put("username", username);
@@ -98,6 +81,23 @@ public class Account implements Storable {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static List<Account> dbGetAll() {
+        List<Account> result = new ArrayList<>();
+        try {
+            List<HashMap<String, String>> returnList = Database.getTable(Account.DB_TABLE_NAME)
+                    .getAll(Arrays.asList("id", "username", "accounttype_id"),
+                            null, null);
+
+            returnList.forEach((HashMap<String, String> valuesMap) -> {
+                result.add(Account.construct(valuesMap));
+            });
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result;
         }
     }
 }

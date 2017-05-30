@@ -13,12 +13,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import ui.control.CPTextField;
 
 public class AccountFormController extends ModalBaseController {
-    private static final String TITLE_CREATE = "account_create";
-    private static final String TITLE_EDIT = "account_create";
+    private static final String TITLE_CREATE = "Create account";
+    private static final String TITLE_EDIT = "Edit account";
     private static final String TEMPLATE_PATH = "templates/modal/account.fxml";
 
     private Account account;
@@ -28,7 +28,7 @@ public class AccountFormController extends ModalBaseController {
     private Label errorLabel;
 
     @FXML
-    private TextField usernameTextField;
+    private CPTextField usernameTextField;
     private BooleanProperty isUsernameValid = new SimpleBooleanProperty(false);
 
     @FXML
@@ -63,18 +63,46 @@ public class AccountFormController extends ModalBaseController {
 
         usernameTextField.textProperty().bindBidirectional(account.username);
         usernameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isUsernameValid.set(ValidationHandler.showError(errorLabel,
+            isUsernameValid.set(ValidationHandler.validateControl(usernameTextField, errorLabel,
                 ValidationHandler.validateAccountUsername(newValue)));
         });
 
         passwordPasswordField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isPasswordValid.set(ValidationHandler.showError(errorLabel,
-                ValidationHandler.validateAccountPassword(newValue, repeatPasswordPasswordField.getText())));
+            Response validation = ValidationHandler.validateAccountPassword(newValue);
+            isPasswordValid.set(ValidationHandler
+                    .validateControl(passwordPasswordField, errorLabel, validation));
+            Response validationRepeat = ValidationHandler
+                    .validateAccountRepeatPassword(newValue, repeatPasswordPasswordField.getText());
+
+            if (validation.success && !validationRepeat.success) {
+                isPasswordValid.set(ValidationHandler
+                        .validateControl(passwordPasswordField, errorLabel, validationRepeat));
+            }
+
+            if (validationRepeat.success) {
+                isPasswordValid.set(ValidationHandler
+                        .validateControl(repeatPasswordPasswordField, errorLabel,
+                                validationRepeat));
+            }
         });
 
         repeatPasswordPasswordField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isPasswordValid.set(ValidationHandler.showError(errorLabel,
-                ValidationHandler.validateAccountPassword(passwordPasswordField.getText(), newValue)));
+            Response validation = ValidationHandler.validateAccountPassword(newValue);
+            isPasswordValid.set(ValidationHandler
+                    .validateControl(repeatPasswordPasswordField, errorLabel, validation));
+            Response validationRepeat = ValidationHandler
+                    .validateAccountRepeatPassword(passwordPasswordField.getText(), newValue);
+
+            if (validation.success && !validationRepeat.success) {
+                isPasswordValid.set(ValidationHandler
+                        .validateControl(repeatPasswordPasswordField, errorLabel,
+                                validationRepeat));
+            }
+
+            if (validationRepeat.success) {
+                isPasswordValid.set(ValidationHandler
+                        .validateControl(passwordPasswordField, errorLabel, validationRepeat));
+            }
         });
     }
 

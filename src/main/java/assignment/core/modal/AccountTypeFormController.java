@@ -13,17 +13,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.stage.Stage;
+import ui.control.CPTextField;
 
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 
 public class AccountTypeFormController extends ModalBaseController {
-    private static final String TITLE_CREATE = "account_type_create";
-    private static final String TITLE_EDIT = "account_type_create";
+    private static final String TITLE_CREATE = "Create account type";
+    private static final String TITLE_EDIT = "Edit account type";
     private static final String TEMPLATE_PATH = "templates/modal/account_type.fxml";
 
     private AccountType accountType;
@@ -34,7 +34,7 @@ public class AccountTypeFormController extends ModalBaseController {
     private Label errorLabel;
 
     @FXML
-    private TextField nameTextField;
+    private CPTextField nameTextField;
     private BooleanProperty isNameValid = new SimpleBooleanProperty(false);
 
     @FXML
@@ -55,7 +55,7 @@ public class AccountTypeFormController extends ModalBaseController {
 
         nameTextField.textProperty().bindBidirectional(accountType.name);
         nameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isNameValid.set(ValidationHandler.showError(errorLabel,
+            isNameValid.set(ValidationHandler.validateControl(nameTextField, errorLabel,
                 ValidationHandler.validateAccountTypeName(newValue)));
         });
 
@@ -64,6 +64,8 @@ public class AccountTypeFormController extends ModalBaseController {
         accessColumn.setCellValueFactory(cellData -> cellData.getValue().getValue());
         accessColumn.setCellFactory(column -> new CheckBoxTableCell());
         accessColumn.setEditable(true);
+        accessColumn.getStyleClass().add("align-center");
+
 
         TableColumn<Map.Entry<AccessType, BooleanProperty>, String> nameColumn = new TableColumn("Name");
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().getKey().name);
@@ -110,7 +112,6 @@ public class AccountTypeFormController extends ModalBaseController {
         }
         return null;
     }
-
 
     @Override
     public String getTemplatePath() {

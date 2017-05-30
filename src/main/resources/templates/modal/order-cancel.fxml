@@ -1,0 +1,787 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<GridPane
+    xmlns:fx="http://javafx.com/fxml"
+    stylesheets="@../../css/main.css"
+    prefHeight="400.0"
+    prefWidth="300.0"
+    hgap="15.0">
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" maxWidth="15.0" minWidth="15.0" />
+        <ColumnConstraints hgrow="ALWAYS" minWidth="460.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="15.0" minWidth="15.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="15.0" minHeight="15.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
+
+        <RowConstraints minHeight="100.0" prefHeight="200.0" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="15.0" minHeight="15.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="28.0" minHeight="28.0" vgrow="NEVER" />
+
+        <RowConstraints maxHeight="15.0" minHeight="15.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="42.0" minHeight="42.0" vgrow="NEVER" />
+    </rowConstraints>
+    <children>
+
+        <Label fx:id="errorLabel"
+            styleClass="error-label"
+            text=""
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="1" />
+       
+        <!-- Right Side (INVOICE) -->
+        <ScrollPane
+            fitToHeight="true"
+            fitToWidth="true"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="2"
+            GridPane.rowSpan="1">
+            <content>
+                <VBox fx:id="invoiceVBox"
+                    maxWidth="1.7976931348623157E308">
+                    <children>
+                        <HBox
+                            alignment="CENTER_LEFT"
+                            VBox.vgrow="NEVER">
+                            <children>
+                                <Label fx:id="companyNameLabel"
+                                   text="COMPANY NAME"
+                                   styleClass="invoice-blue-color"
+                                   maxWidth="1.7976931348623157E308"
+                                   HBox.hgrow="ALWAYS">
+                                    <font>
+                                        <Font
+                                            name="System Bold" />
+                                    </font>
+                                </Label>
+                                <Label
+                                    text="INVOICE"
+                                    maxWidth="1.7976931348623157E308" />
+                            </children>
+                            <padding>
+                                <Insets
+                                    bottom="10.0" />
+                            </padding>
+                        </HBox>
+
+                        <Label fx:id="companyAddressLabel"
+                            text="company address"
+                            styleClass="invoice-base-color"
+                            wrapText="true" />
+                        <Label fx:id="companyEmailLabel"
+                            text="company email"
+                            styleClass="invoice-base-color"
+                            wrapText="true" />
+
+                        <HBox>
+                            <children>
+                                <Label
+                                    text="Date:"
+                                    minWidth="260.0"
+                                    maxWidth="260.0" />
+                                <Label fx:id="dateLabel"
+                                    text="..."
+                                    maxWidth="1.7976931348623157E308"
+                                    alignment="TOP_RIGHT"
+                                    HBox.hgrow="ALWAYS" />
+                            </children>
+                            <padding>
+                                <Insets
+                                    top="5.0" />
+                            </padding>
+                        </HBox>
+                        <HBox>
+                            <children>
+                                <Label
+                                    text="Due date:"
+                                    minWidth="260.0"
+                                    maxWidth="260.0" />
+                                <Label fx:id="dueDateLabel"
+                                    text="..."
+                                    maxWidth="1.7976931348623157E308"
+                                    alignment="TOP_RIGHT"
+                                    HBox.hgrow="ALWAYS" />
+                            </children>
+                        </HBox>
+
+
+                        <!-- Bill to -->
+                        <Label
+                            text="Bill to:">
+                            <padding>
+                                <Insets
+                                    top="10.0" />
+                            </padding>
+                        </Label>
+                        <Label fx:id="clientNameLabel"
+                               text="..."
+                               styleClass="invoice-base-color"
+                               wrapText="true" />
+                        <Label fx:id="clientAddressLabel"
+                               text="..."
+                               styleClass="invoice-base-color"
+                               wrapText="true" />
+                        <Label fx:id="clientEmailLabel"
+                               text="..."
+                               styleClass="invoice-base-color"
+                               wrapText="true" />
+
+                        <!-- Rental details -->
+                        <Label
+                                text="Rental details:"
+                                styleClass="invoice-dark-color"
+                                maxWidth="1.7976931348623157E308">
+                            <font>
+                                <Font
+                                        name="System Bold" />
+                            </font>
+                            <padding>
+                                <Insets
+                                        top="10.0" />
+                            </padding>
+                        </Label>
+                        <HBox>
+                            <children>
+                                <Label
+                                        text="Rented on:"
+                                        styleClass="invoice-light-color"
+                                        minWidth="100.0"
+                                        HBox.hgrow="NEVER">
+                                    <font>
+                                        <Font
+                                                name="System Bold" />
+                                    </font>
+                                </Label>
+                                <VBox
+                                        maxWidth="1.7976931348623157E308"
+                                        HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label fx:id="startDateLabel"
+                                               text="..."
+                                               wrapText="true" />
+                                        <Label fx:id="pickUpLabel"
+                                               text="..."
+                                               wrapText="true" />
+                                    </children>
+                                </VBox>
+
+                            </children>
+                            <padding>
+                                <Insets
+                                        top="5.0" />
+                            </padding>
+                        </HBox>
+                        <HBox>
+                            <children>
+                                <Label
+                                        text="Returned on:"
+                                        styleClass="invoice-light-color"
+                                        minWidth="100.0"
+                                        HBox.hgrow="NEVER">
+                                    <font>
+                                        <Font
+                                                name="System Bold" />
+                                    </font>
+                                </Label>
+                                <VBox
+                                        maxWidth="1.7976931348623157E308"
+                                        HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label fx:id="endDateLabel"
+                                           text="..."
+                                           wrapText="true" />
+                                        <Label fx:id="dropOffLabel"
+                                           text="..."
+                                           wrapText="true" />
+                                    </children>
+                                </VBox>
+
+                            </children>
+                            <padding>
+                                <Insets
+                                        top="5.0" />
+                            </padding>
+                        </HBox>
+                        <HBox>
+                            <children>
+                                <Label
+                                    text="Motorhome:"
+                                    styleClass="invoice-light-color"
+                                    minWidth="100.0"
+                                    HBox.hgrow="NEVER">
+                                    <font>
+                                        <Font
+                                            name="System Bold" />
+                                    </font>
+                                </Label>
+                                <VBox
+                                        maxWidth="1.7976931348623157E308"
+                                        HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label fx:id="motorhomeLabel"
+                                               text="..."
+                                               wrapText="true" />
+                                    </children>
+                                </VBox>
+
+                            </children>
+                            <padding>
+                                <Insets
+                                        top="5.0" />
+                            </padding>
+                        </HBox>
+                        <HBox>
+                            <children>
+                                <Label
+                                        text="Mileage in:"
+                                        styleClass="invoice-light-color"
+                                        minWidth="100.0"
+                                        HBox.hgrow="NEVER">
+                                    <font>
+                                        <Font
+                                                name="System Bold" />
+                                    </font>
+                                </Label>
+                                <VBox
+                                        maxWidth="1.7976931348623157E308"
+                                        alignment="TOP_RIGHT"
+                                        HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label fx:id="motorhomeMileageStartLabel"
+                                               text="..."
+                                               alignment="TOP_RIGHT"
+                                               wrapText="true" />
+                                    </children>
+                                </VBox>
+
+                            </children>
+                            <padding>
+                                <Insets
+                                        top="5.0" />
+                            </padding>
+                        </HBox>
+                        <HBox>
+                            <children>
+                                <Label
+                                        text="Mileage out:"
+                                        styleClass="invoice-light-color"
+                                        minWidth="100.0"
+                                        HBox.hgrow="NEVER">
+                                    <font>
+                                        <Font
+                                                name="System Bold" />
+                                    </font>
+                                </Label>
+                                <VBox
+                                        maxWidth="1.7976931348623157E308"
+                                        alignment="TOP_RIGHT"
+                                        HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label fx:id="motorhomeMileageEndLabel"
+                                               text="..."
+                                               wrapText="true" />
+                                    </children>
+                                </VBox>
+
+                            </children>
+                            <padding>
+                                <Insets
+                                        top="5.0" />
+                            </padding>
+                        </HBox>
+
+                        <!-- Rental charges -->
+                        <Label
+                            text="Rental charges:"
+                            styleClass="invoice-dark-color"
+                            maxWidth="1.7976931348623157E308">
+                            <font>
+                                <Font
+                                        name="System Bold" />
+                            </font>
+                            <padding>
+                                <Insets
+                                        top="10.0" />
+                            </padding>
+                        </Label>
+
+                        <VBox fx:id="cancellationDiscountVBox"
+                            maxWidth="1.7976931348623157E308"
+                            alignment="TOP_RIGHT">
+                            <children>
+
+                                <HBox>
+                                    <children>
+                                        <Label
+                                                text="DAYS"
+                                                minWidth="260.0"
+                                                maxWidth="260.0"
+                                                HBox.hgrow="NEVER" />
+                                        <Label fx:id="daysLabel"
+                                               text="..."
+                                               minWidth="100.0"
+                                               alignment="TOP_RIGHT"
+                                               HBox.hgrow="NEVER" />
+                                        <Label fx:id="daysTotalLabel"
+                                               text="..."
+                                               maxWidth="1.7976931348623157E308"
+                                               alignment="TOP_RIGHT"
+                                               HBox.hgrow="ALWAYS" />
+                                    </children>
+                                    <padding>
+                                        <Insets
+                                                top="5.0" />
+                                    </padding>
+                                </HBox>
+                                <HBox>
+                                    <children>
+                                        <Label
+                                                text="SEASON MARK-UP"
+                                                minWidth="260.0"
+                                                maxWidth="260.0"
+                                                HBox.hgrow="NEVER" />
+                                        <Label fx:id="seasonModifierLabel"
+                                               text="..."
+                                               minWidth="100.0"
+                                               alignment="TOP_RIGHT"
+                                               HBox.hgrow="NEVER" />
+                                        <Label fx:id="seasonTotalLabel"
+                                               text="..."
+                                               maxWidth="1.7976931348623157E308"
+                                               alignment="TOP_RIGHT"
+                                               HBox.hgrow="ALWAYS" />
+                                    </children>
+                                    <padding>
+                                        <Insets
+                                                top="5.0" />
+                                    </padding>
+                                </HBox>
+                                <HBox>
+                                    <children>
+                                        <Label
+                                                text="SUBTOTAL"
+                                                styleClass="invoice-light-color"
+                                                minWidth="260.0"
+                                                maxWidth="260.0"
+                                                HBox.hgrow="NEVER">
+                                            <font>
+                                                <Font
+                                                        name="System Bold" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="daysSeasonTotalLabel"
+                                               text="..."
+                                               styleClass="invoice-light-color"
+                                               maxWidth="1.7976931348623157E308"
+                                               alignment="TOP_RIGHT"
+                                               HBox.hgrow="ALWAYS">
+                                            <font>
+                                                <Font
+                                                        name="System Bold" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                    <padding>
+                                        <Insets
+                                                top="5.0"
+                                                bottom="10.0" />
+                                    </padding>
+                                </HBox>
+
+                                <HBox>
+                                    <children>
+                                        <Label
+                                                text="EXTRAS"
+                                                minWidth="260.0"
+                                                maxWidth="260.0"
+                                                HBox.hgrow="NEVER" />
+
+                                        <VBox fx:id="extrasVBox"
+                                              maxWidth="1.7976931348623157E308"
+                                              alignment="TOP_RIGHT"
+                                              HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <HBox>
+                                                    <children>
+                                                        <Label
+                                                                text="..."
+                                                                minWidth="100.0"
+                                                                alignment="TOP_RIGHT"
+                                                                HBox.hgrow="NEVER" />
+                                                        <Label
+                                                                text="..."
+                                                                maxWidth="1.7976931348623157E308"
+                                                                alignment="TOP_RIGHT"
+                                                                HBox.hgrow="ALWAYS" />
+                                                    </children>
+                                                </HBox>
+
+                                            </children>
+                                        </VBox>
+
+                                    </children>
+                                    <padding>
+                                        <Insets
+                                                top="5.0" />
+                                    </padding>
+                                </HBox>
+                                <HBox>
+                                    <children>
+                                        <Label
+                                                text="SUBTOTAL"
+                                                styleClass="invoice-light-color"
+                                                minWidth="260.0"
+                                                maxWidth="260.0"
+                                                HBox.hgrow="NEVER">
+                                            <font>
+                                                <Font
+                                                        name="System Bold" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="extrasTotalLabel"
+                                               text="..."
+                                               styleClass="invoice-light-color"
+                                               maxWidth="1.7976931348623157E308"
+                                               alignment="TOP_RIGHT"
+                                               HBox.hgrow="ALWAYS">
+                                            <font>
+                                                <Font
+                                                        name="System Bold" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                    <padding>
+                                        <Insets
+                                                top="5.0"
+                                                bottom="10.0" />
+                                    </padding>
+                                </HBox>
+
+                                <HBox>
+                                    <children>
+                                        <Label
+                                                text="FUEL"
+                                                minWidth="260.0"
+                                                maxWidth="260.0"
+                                                HBox.hgrow="NEVER" />
+                                        <Label fx:id="fuelLabel"
+                                               text="..."
+                                               minWidth="100.0"
+                                               alignment="TOP_RIGHT"
+                                               HBox.hgrow="NEVER" />
+                                        <Label fx:id="fuelTotalLabel"
+                                               text="..."
+                                               maxWidth="1.7976931348623157E308"
+                                               alignment="TOP_RIGHT"
+                                               HBox.hgrow="ALWAYS" />
+                                    </children>
+                                    <padding>
+                                        <Insets
+                                                top="5.0" />
+                                    </padding>
+                                </HBox>
+                                <HBox>
+                                    <children>
+                                        <Label
+                                                text="TRANSPORT"
+                                                minWidth="260.0"
+                                                maxWidth="260.0"
+                                                HBox.hgrow="NEVER" />
+                                        <Label fx:id="transportLabel"
+                                               text="..."
+                                               minWidth="100.0"
+                                               alignment="TOP_RIGHT"
+                                               HBox.hgrow="NEVER" />
+                                        <Label fx:id="transportTotalLabel"
+                                               text="..."
+                                               maxWidth="1.7976931348623157E308"
+                                               alignment="TOP_RIGHT"
+                                               HBox.hgrow="ALWAYS"/>
+                                    </children>
+                                    <padding>
+                                        <Insets
+                                            top="5.0" />
+                                    </padding>
+                                </HBox>
+                                <HBox>
+                                    <children>
+                                        <Label
+                                            text="SUBTOTAL"
+                                            styleClass="invoice-light-color"
+                                            minWidth="260.0"
+                                            maxWidth="260.0"
+                                            HBox.hgrow="NEVER">
+                                            <font>
+                                                <Font
+                                                    name="System Bold" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="fuelTransportTotalLabel"
+                                               text="..."
+                                               styleClass="invoice-light-color"
+                                               maxWidth="1.7976931348623157E308"
+                                               alignment="TOP_RIGHT"
+                                               HBox.hgrow="ALWAYS">
+                                            <font>
+                                                <Font
+                                                    name="System Bold" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                    <padding>
+                                        <Insets
+                                                top="5.0"
+                                                bottom="10.0" />
+                                    </padding>
+                                </HBox>
+
+                                <!-- Cancellation discount -->
+                                <HBox>
+                                    <children>
+                                        <Label
+                                            text="TOTAL WITHOUT VAT &amp; CANCELLATION DISCOUNT"
+                                            styleClass="invoice-light-color"
+                                            minHeight="-Infinity"
+                                            minWidth="260.0"
+                                            maxWidth="260.0"
+                                            wrapText="true"
+                                            HBox.hgrow="NEVER">
+                                            <font>
+                                                <Font
+                                                    name="System Bold" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="withoutVATCancellationTotalLabel"
+                                           text="..."
+                                           styleClass="invoice-light-color"
+                                           maxWidth="1.7976931348623157E308"
+                                           alignment="TOP_RIGHT"
+                                           HBox.hgrow="ALWAYS">
+                                            <font>
+                                                <Font
+                                                    name="System Bold" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                    <padding>
+                                        <Insets
+                                            top="5.0"
+                                            bottom="10.0" />
+                                    </padding>
+                                </HBox>
+
+                                <HBox>
+                                    <children>
+                                        <Label
+                                            text="CANCELLATION DISCOUNT"
+                                            styleClass="invoice-red-color"
+                                            minHeight="-Infinity"
+                                            minWidth="260.0"
+                                            maxWidth="260.0"
+                                            HBox.hgrow="NEVER" />
+                                        <Label fx:id="cancellationLabel"
+                                           text="..."
+                                           styleClass="invoice-red-color"
+                                           minWidth="100.0"
+                                           alignment="TOP_RIGHT"
+                                           HBox.hgrow="NEVER" />
+                                        <Label fx:id="cancellationTotalLabel"
+                                           text="..."
+                                           styleClass="invoice-red-color"
+                                           maxWidth="1.7976931348623157E308"
+                                           alignment="TOP_RIGHT"
+                                           HBox.hgrow="ALWAYS"/>
+                                    </children>
+                                    <padding>
+                                        <Insets
+                                            top="5.0"
+                                            bottom="10.0" />
+                                    </padding>
+                                </HBox>
+
+                            </children>
+                        </VBox>
+                        <VBox fx:id="cancellationFeeVBox"
+                            maxWidth="1.7976931348623157E308"
+                            alignment="TOP_RIGHT">
+                            <children>
+                                <HBox>
+                                    <children>
+                                        <Label
+                                            text="CANCELLATION FEE"
+                                            styleClass="invoice-red-color"
+                                            minHeight="-Infinity"
+                                            minWidth="260.0"
+                                            maxWidth="260.0"
+                                            HBox.hgrow="NEVER" />
+                                        <Label fx:id="cancellationFeeLabel"
+                                           text="..."
+                                           styleClass="invoice-red-color"
+                                           maxWidth="1.7976931348623157E308"
+                                           alignment="TOP_RIGHT"
+                                           HBox.hgrow="ALWAYS"/>
+                                    </children>
+                                    <padding>
+                                        <Insets
+                                            top="5.0"
+                                            bottom="10.0" />
+                                    </padding>
+                                </HBox>
+
+                            </children>
+                        </VBox>
+
+                       
+
+                        <HBox>
+                            <children>
+                                <Label
+                                    text="TOTAL WITHOUT VAT"
+                                    styleClass="invoice-light-color"
+                                    minWidth="260.0"
+                                    maxWidth="260.0"
+                                    HBox.hgrow="NEVER">
+                                    <font>
+                                        <Font
+                                            name="System Bold" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="withoutVATTotalLabel"
+                                   text="..."
+                                   styleClass="invoice-light-color"
+                                   maxWidth="1.7976931348623157E308"
+                                   alignment="TOP_RIGHT"
+                                   HBox.hgrow="ALWAYS">
+                                    <font>
+                                        <Font
+                                            name="System Bold" />
+                                    </font>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets
+                                    top="5.0"
+                                    bottom="10.0" />
+                            </padding>
+                        </HBox>
+                        <HBox>
+                            <children>
+                                <Label
+                                    text="VAT"
+                                    minWidth="260.0"
+                                    maxWidth="260.0"
+                                    HBox.hgrow="NEVER" />
+                                <Label fx:id="VATLabel"
+                                   text="..."
+                                   minWidth="100.0"
+                                   alignment="TOP_RIGHT"
+                                   HBox.hgrow="NEVER" />
+                                <Label fx:id="VATTotalLabel"
+                                   text="..."
+                                   maxWidth="1.7976931348623157E308"
+                                   alignment="TOP_RIGHT"
+                                   HBox.hgrow="ALWAYS"/>
+                            </children>
+                            <padding>
+                                <Insets
+                                        top="5.0" />
+                            </padding>
+                        </HBox>
+                        <HBox>
+                            <children>
+                                <Label
+                                    text="TOTAL"
+                                    styleClass="invoice-blue-color"
+                                    minWidth="260.0"
+                                    maxWidth="260.0"
+                                    HBox.hgrow="NEVER">
+                                    <font>
+                                        <Font
+                                                name="System Bold" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="totalLabel"
+                                       text="..."
+                                       maxWidth="1.7976931348623157E308"
+                                       alignment="TOP_RIGHT"
+                                       HBox.hgrow="ALWAYS">
+                                    <font>
+                                        <Font
+                                            name="System Bold" />
+                                    </font>
+                                </Label>
+                            </children>
+                            <padding>
+                                <Insets
+                                    top="5.0"
+                                    bottom="10.0" />
+                            </padding>
+                        </HBox>
+
+                    </children>
+                    <padding>
+                        <Insets
+                            bottom="10.0"
+                            left="10.0"
+                            right="10.0"
+                            top="10.0" />
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+
+        <CheckBox fx:id="confirmationCheckBox"
+            text="Do you agree with the new price?"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="4" />
+
+        <!-- Bottom actions -->
+        <HBox
+            alignment="CENTER_RIGHT"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="6">
+            <children>
+                 <Button fx:id="printButton"
+                    text="Print"
+                    cancelButton="true"
+                    onAction="#handlePrintAction">
+                    <HBox.margin>
+                        <Insets
+                            right="35.0" />
+                    </HBox.margin>
+                </Button>
+                <Button
+                    text="Cancel"
+                    onAction="#handleCancelAction" 
+                    alignment="CENTER_LEFT">
+                    <HBox.margin>
+                        <Insets
+                            right="15.0" />
+                    </HBox.margin>
+                </Button>
+                <Button fx:id="submitButton"
+                    text="OK"
+                    defaultButton="true"
+                    onAction="#handleOKAction" />
+            </children>
+            <padding>
+                <Insets
+                    bottom="8.0"
+                    top="8.0" />
+            </padding>
+        </HBox>
+    </children>
+</GridPane>

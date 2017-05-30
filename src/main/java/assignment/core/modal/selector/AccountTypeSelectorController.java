@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 import java.util.List;
 
 public class AccountTypeSelectorController extends SelectorBaseController {
-    private static final String TITLE = "account_type_select";
+    private static final String TITLE = "Select account type";
 
     private ObservableList<AccountType> accountTypeList = FXCollections.observableArrayList();
 
@@ -22,8 +22,6 @@ public class AccountTypeSelectorController extends SelectorBaseController {
 
     public AccountTypeSelectorController(ModalDispatcher modalDispatcher, Stage stage, boolean canCreate) {
         super(modalDispatcher, stage, canCreate);
-
-        populateTableView();
     }
 
     @Override
@@ -35,6 +33,8 @@ public class AccountTypeSelectorController extends SelectorBaseController {
 
         tableView.getColumns().addAll(nameColumn);
         tableView.setItems(accountTypeList);
+
+        populateTableView();
     }
 
     @Override

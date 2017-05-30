@@ -26,8 +26,9 @@
             VBox.vgrow="NEVER">
             <children>
                 <Button
-                    text="Add vehicle"
-                    defaultButton="true" />
+                    text="Add motorhome"
+                    defaultButton="true"
+                    onAction="#handleAddAction" />
             </children>
             <padding>
                 <Insets

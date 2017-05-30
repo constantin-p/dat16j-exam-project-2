@@ -44,12 +44,12 @@ public class LoginController {
         );
 
         usernameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isUsernameValid.set(ValidationHandler.showError(errorLabel,
+            isUsernameValid.set(ValidationHandler.validateControl(usernameTextField, errorLabel,
                     ValidationHandler.validateAccountUsername(newValue)));
         });
 
         passwordPasswordField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isPasswordValid.set(ValidationHandler.showError(errorLabel,
+            isPasswordValid.set(ValidationHandler.validateControl(passwordPasswordField, errorLabel,
                     ValidationHandler.validateAccountPassword(newValue)));
         });
     }
