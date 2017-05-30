@@ -101,7 +101,7 @@ public class ClientFormController extends ModalBaseController {
 
         addressTextField.textProperty().bindBidirectional(client.address);
         addressTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isEmailValid.set(ValidationHandler.showError(errorLabel,
+            isAddressValid.set(ValidationHandler.showError(errorLabel,
                     ValidationHandler.validateClientAddress(newValue)));
         });
 

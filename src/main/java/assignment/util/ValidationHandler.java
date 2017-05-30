@@ -152,16 +152,8 @@ public class ValidationHandler {
         return new Response(true);
     }
 
-    public static Response validateAccountPassword(String password, String repeatPassword) {
-        if(password == null || password.isEmpty()) {
-            return new Response(false, ERROR_ACCOUNT_PASSWORD_REQUIRED);
-        } else if (!password.matches("[a-zA-Z0-9]+")) {
-            return new Response(false, ERROR_ACCOUNT_PASSWORD_INVALID);
-        } else if (password.length() <= 3) {
-            return new Response(false, ERROR_ACCOUNT_PASSWORD_SHORT);
-        } else if (password.length() > 25) {
-            return new Response(false, ERROR_ACCOUNT_PASSWORD_LONG);
-        } else if(!password.equals(repeatPassword)) {
+    public static Response validateAccountRepeatPassword(String password, String repeatPassword) {
+        if(!password.equals(repeatPassword)) {
             return new Response(false, ERROR_ACCOUNT_PASSWORD_DIFFERENT);
         }
         return new Response(true);

@@ -68,13 +68,41 @@ public class AccountFormController extends ModalBaseController {
         });
 
         passwordPasswordField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isPasswordValid.set(ValidationHandler.validateControl(passwordPasswordField, errorLabel,
-                ValidationHandler.validateAccountPassword(newValue, repeatPasswordPasswordField.getText())));
+            Response validation = ValidationHandler.validateAccountPassword(newValue);
+            isPasswordValid.set(ValidationHandler
+                    .validateControl(passwordPasswordField, errorLabel, validation));
+            Response validationRepeat = ValidationHandler
+                    .validateAccountRepeatPassword(newValue, repeatPasswordPasswordField.getText());
+
+            if (validation.success && !validationRepeat.success) {
+                isPasswordValid.set(ValidationHandler
+                        .validateControl(passwordPasswordField, errorLabel, validationRepeat));
+            }
+
+            if (validationRepeat.success) {
+                isPasswordValid.set(ValidationHandler
+                        .validateControl(repeatPasswordPasswordField, errorLabel,
+                                validationRepeat));
+            }
         });
 
         repeatPasswordPasswordField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isPasswordValid.set(ValidationHandler.validateControl(repeatPasswordPasswordField,
-                    errorLabel, ValidationHandler.validateAccountPassword(passwordPasswordField.getText(), newValue)));
+            Response validation = ValidationHandler.validateAccountPassword(newValue);
+            isPasswordValid.set(ValidationHandler
+                    .validateControl(repeatPasswordPasswordField, errorLabel, validation));
+            Response validationRepeat = ValidationHandler
+                    .validateAccountRepeatPassword(passwordPasswordField.getText(), newValue);
+
+            if (validation.success && !validationRepeat.success) {
+                isPasswordValid.set(ValidationHandler
+                        .validateControl(repeatPasswordPasswordField, errorLabel,
+                                validationRepeat));
+            }
+
+            if (validationRepeat.success) {
+                isPasswordValid.set(ValidationHandler
+                        .validateControl(passwordPasswordField, errorLabel, validationRepeat));
+            }
         });
     }
 
