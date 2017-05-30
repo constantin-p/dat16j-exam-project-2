@@ -94,7 +94,6 @@ public class PriceSelectorController extends SelectorBaseController {
 
         CacheEngine.get("prices", new DBOperation<>(() ->
                 Price.dbGetAll(), (List<Price> prices) -> {
-
             priceList.clear();
             prices.forEach(entry -> {
                 priceList.add(entry);
