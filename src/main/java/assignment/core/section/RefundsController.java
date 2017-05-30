@@ -61,12 +61,14 @@ public class RefundsController implements UISection {
                 new SimpleStringProperty(decimalFormatter.format(cellData.getValue()
                         .getTotal()) + "kr"));
         priceColumn.getStyleClass().add("align-right");
+        priceColumn.getStyleClass().add("align-center");
 
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
                 (cellData.getValue().date.getValue() == null)
                         ? "..."
                         : "Paid on: "+ formatter.format(cellData.getValue().date.getValue())
         ));
+        statusColumn.getStyleClass().add("align-center");
 
         tableView.getColumns().addAll(clientColumn, priceColumn, statusColumn, actionColumn);
         tableView.setItems(refundList);

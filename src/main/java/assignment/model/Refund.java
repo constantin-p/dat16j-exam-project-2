@@ -39,16 +39,20 @@ public class Refund implements Storable {
     }
 
     public double getTotal() {
+        double total;
+
         Properties invoiceProperties = Config.getConfig("invoice");
+        double VATModifier = Double.valueOf(invoiceProperties
+                .getProperty("INVOICE_VAT_MODIFIER"));
         Order order = invoice.getValue().order.getValue();
         if (order.cancellationValue.getValue() > 1) {
             // fixed cost
-            double orderTotal = order.cancellationValue.getValue();
+            total = order.cancellationValue.getValue();
+            total += total * VATModifier;
 
-            return payment.getValue().getTotal() - orderTotal;
+            return payment.getValue().getTotal() - total;
         }
         // cancellation modifier
-        double total;
         long days = DAYS.between(order.startDate.getValue(), order.endDate.getValue());
 
         total = days * order.motorhomeValue.getValue();
@@ -66,10 +70,10 @@ public class Refund implements Storable {
         }
         // Add cancellation discount
         double cancellationModifier = order.cancellationValue.getValue();
+
         total += total * cancellationModifier * -1;
 
         // Add VAT
-        double VATModifier = Double.valueOf(invoiceProperties.getProperty("INVOICE_VAT_MODIFIER"));
         total += total * VATModifier;
 
         return payment.getValue().getTotal() - total;
